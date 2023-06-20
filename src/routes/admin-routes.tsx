@@ -4,6 +4,10 @@ import {
   DealerManagementPageClone,
   ProvinceManagementPage,
   ProvinceManagement,
+  PortManagementPage,
+  PortTypeManagementPage,
+  BasePage,
+  DistrictPage,
 } from "@/pages";
 import { RouteItem } from "@/types";
 
@@ -15,6 +19,15 @@ export const adminRoutes: RouteItem[] = [
     mainMenuKey: "admin",
     permissionCode: "MNU_ADMIN",
     getPageElement: () => <AdminPage />,
+  },
+  {
+    key: "PortTypeManagement", // Key menu con
+    path: "admin/base", // Address trên browser
+    subMenuTitle: "BasePage", // Title menu con
+    mainMenuKey: "admin", // Key của menu cha
+    permissionCode: "MNU_ADMIN_PORT_TYPE",
+
+    getPageElement: () => <BasePage />,
   },
   {
     key: "dealerManagement",
@@ -47,5 +60,32 @@ export const adminRoutes: RouteItem[] = [
     mainMenuKey: "admin", // Key của menu cha
     permissionCode: "MNU_ADMIN_PROVINCE",
     getPageElement: () => <ProvinceManagement />,
+  },
+  {
+    key: "PortManagement", // Key menu con
+    path: "admin/port", // Address trên browser
+    subMenuTitle: "Quản lý Cảng", // Title menu con
+    mainMenuKey: "admin", // Key của menu cha
+    permissionCode: "MNU_ADMIN_PORT",
+
+    getPageElement: () => <PortManagementPage />,
+  },
+  {
+    key: "PortTypeManagement", // Key menu con
+    path: "admin/portType", // Address trên browser
+    subMenuTitle: "Quản lý loại Cảng", // Title menu con
+    mainMenuKey: "admin", // Key của menu cha
+    permissionCode: "MNU_ADMIN_PORT_TYPE",
+
+    getPageElement: () => <PortTypeManagementPage />,
+  },
+  {
+    key: "DistrictManagement", // Key menu con
+    path: "admin/district", // Address trên browser
+    subMenuTitle: "Quản lý Quận/Huyện", // Title menu con
+    mainMenuKey: "admin", // Key của menu cha
+    permissionCode: "MNU_ADMIN_PORT_TYPE",
+
+    getPageElement: () => <DistrictPage />,
   },
 ];

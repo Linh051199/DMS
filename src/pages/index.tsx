@@ -6,3 +6,7 @@ export * from "./admin/provinceClone/list/province-management";
 export * from "./login-sso/login-sso-page";
 export * from "./page-404/page-404";
 export * from "./select-network/select-network";
+export * from "./admin/port/list/port-management";
+export * from "./admin/port-type/list/port-type-management";
+export * from "./admin/ABasePage/list/base";
+export * from "./admin/district/list/district";

@@ -198,7 +198,6 @@ export const ProvinceManagementPage = () => {
 
   const handleAddNew = () => {
     gridRef.current.instance.addRow();
-    
   };
 
   const handleEditorPreparing = (e: EditorPreparingEvent<any, any>) => {

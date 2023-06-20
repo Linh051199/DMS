@@ -247,7 +247,7 @@ const GridViewRaw = ({
       <PageSize
         title={t("Showing")}
         onChangePageSize={onChangePageSize}
-        allowdPageSizes={[100, 200, 500, 1000]}
+        allowdPageSizes={[10, 100, 200, 500, 1000]}
         showAllOption={true}
         showAllOptionText={t("ShowAll")}
         defaultPageSize={datagridRef.current?.instance.pageSize()}
