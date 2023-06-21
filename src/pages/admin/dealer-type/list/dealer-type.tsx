@@ -1,78 +1,70 @@
-import { useI18n } from "@/i18n/useI18n";
+import { AdminContentLayout } from "@/packages/layouts/admin-content-layout";
+import { PageHeaderLayout } from "@/packages/layouts/page-header-layout";
+import { HeaderPart } from "./header-part";
+import "./dealer-type.scss";
+import { BaseGridView } from "@/packages/ui/base-gridview";
+import { useConfiguration } from "@/packages/hooks";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useMemo, useRef } from "react";
+import { ColumnOptions } from "@/types";
+import { DataGrid } from "devextreme-react";
 import { useClientgateApi } from "@/packages/api";
-import { filterByFlagActive, uniqueFilterByDataField } from "@/packages/common";
+import { EditorPreparingEvent } from "devextreme/ui/data_grid";
+import { useAtomValue, useSetAtom } from "jotai";
+import { keywordAtom, selectedItemAtom } from "../components/screen-atom";
+import { toast } from "react-toastify";
+import { showErrorAtom } from "@/packages/store";
+import { useI18n } from "@/i18n/useI18n";
 import {
   ExcludeSpecialCharactersType,
   requiredType,
 } from "@/packages/common/Validation_Rules";
-import { useConfiguration } from "@/packages/hooks";
-import { AdminContentLayout } from "@/packages/layouts/admin-content-layout";
-import { PageHeaderLayout } from "@/packages/layouts/page-header-layout";
-import { showErrorAtom } from "@/packages/store";
-import { FlagActiveEnum, SearchParam } from "@/packages/types";
-import { BaseGridView } from "@/packages/ui/base-gridview";
 import { StatusButton } from "@/packages/ui/status-button";
-import { ColumnOptions } from "@/types";
-import { useQuery } from "@tanstack/react-query";
-import DataGrid, { HeaderFilter } from "devextreme-react/data-grid";
-import { EditorPreparingEvent } from "devextreme/ui/data_grid";
-import { useAtomValue, useSetAtom } from "jotai";
-import React, { useEffect, useMemo, useRef } from "react";
-import { toast } from "react-toastify";
-import { keywordAtom, selectedItemAtom } from "../components/screen-atom";
-import HeaderPart from "./header-part";
-import "./port-management.scss";
+import { filterByFlagActive, uniqueFilterByDataField } from "@/packages/common";
+import { FlagActiveEnum, SearchParam } from "@/packages/types";
 
-export const PortManagementPage = () => {
-  const { t } = useI18n("Port");
-  const api = useClientgateApi();
-  const keyWord = useAtomValue(keywordAtom);
+export const DealerTypePage = () => {
+  const { t } = useI18n("Base");
   const config = useConfiguration();
-  const showError = useSetAtom(showErrorAtom);
   const gridRef: any = useRef<DataGrid>(null);
-  const selectedItems = useSetAtom(selectedItemAtom);
+  const api = useClientgateApi();
+  const setSeletedItems = useSetAtom(selectedItemAtom);
+  const keyword = useAtomValue(keywordAtom);
+  const showError = useSetAtom(showErrorAtom);
 
-  //Call API
+  // call API
+
   const {
-    data: PortData,
+    data: dealerTypeData,
     isLoading,
     refetch,
-  } = useQuery(["Port", keyWord], () =>
-    api.Mst_Port_Search({
-      KeyWord: keyWord,
+  } = useQuery(["data", keyword], () =>
+    api.Mst_DealerType_Search({
+      KeyWord: keyword,
       FlagActive: FlagActiveEnum.All,
       Ft_PageIndex: 0,
       Ft_PageSize: config.MAX_PAGE_ITEMS,
     } as SearchParam)
   );
-  console.log("🚀 ~ PortData:", PortData);
+  console.log("🚀 ~ data:", dealerTypeData);
 
   useEffect(() => {
-    if (!!PortData && !PortData?.DataList) {
+    if (!!dealerTypeData && !dealerTypeData.isSuccess) {
       showError({
-        message: t(PortData.errorCode),
-        debugInfo: PortData.debugInfo,
-        errorInfo: PortData.errorInfo,
+        message: t(dealerTypeData.errorCode),
+        debugInfo: dealerTypeData.debugInfo,
+        errorInfo: dealerTypeData.errorInfo,
       });
     }
-  }, [PortData]);
+  }, [dealerTypeData]);
 
-  const { data: ProvinceCode } = useQuery(["ProvinceCode"], () =>
-    api.Mst_Province_Search({
-      KeyWord: "",
-      FlagActive: FlagActiveEnum.All,
-      Ft_PageIndex: 0,
-      Ft_PageSize: config.MAX_PAGE_ITEMS,
-    } as SearchParam)
-  );
-
-  //Headerpart
+  //HeaderPart
   const handleAddNew = () => {
     gridRef.current.instance.addRow();
   };
 
   const handleUploadFile = async (file: File, progressCallback?: Function) => {
-    const resp = await api.Mst_Port_Upload(file);
+    const resp = await api.Mst_DealerType_Upload(file);
     if (resp.isSuccess) {
       toast.success(t("UploadSuccessfully"));
       await refetch();
@@ -85,8 +77,8 @@ export const PortManagementPage = () => {
     }
   };
 
-  const onDownloadTemplate = async () => {
-    const resp = await api.Mst_Port_DownloadTemplate();
+  const handleDownloadTemplate = async () => {
+    const resp = await api.Mst_DealerType_ExportExcel_Template();
     if (resp.isSuccess) {
       toast.success(t("DownloadSuccessfully"));
       window.location.href = resp.Data;
@@ -100,11 +92,12 @@ export const PortManagementPage = () => {
   };
 
   //BaseGridView
+
   const columns: ColumnOptions[] = useMemo(
     () => [
       {
-        caption: "Mã cảng",
-        dataField: "PortCode",
+        caption: "Mã loại đại lý",
+        dataField: "DealerType",
         editorType: "dxTextBox",
         width: 200,
         visible: true,
@@ -114,56 +107,17 @@ export const PortManagementPage = () => {
         },
         headerFilter: {
           alowwSearch: true,
-          dataSource: uniqueFilterByDataField(PortData?.DataList, "PortCode"),
-        },
-        validationRule: [requiredType, ExcludeSpecialCharactersType],
-      },
-
-      {
-        caption: "Loại cảng",
-        dataField: "PortType",
-        editorType: "dxSelectBox",
-        width: 200,
-        visible: true,
-        editorOptions: {
-          dataSource: PortData?.DataList ?? [],
-          validationMessage: "always",
-          displayExpr: "PortType",
-          valueExpr: "PortType",
-          searchEnabled: true,
-        },
-        headerFilter: {
           dataSource: uniqueFilterByDataField(
-            PortData?.DataList,
-            "PortType",
-            t("( Empty )")
+            dealerTypeData?.DataList,
+            "DealerType"
           ),
         },
         validationRule: [requiredType, ExcludeSpecialCharactersType],
       },
-
       {
-        caption: "Tên cảng",
-        dataField: "PortName",
+        caption: "Tên loại đại lý",
+        dataField: "DealerTypeName",
         editorType: "dxTextBox",
-        width: 350,
-        visible: true,
-        editorOptions: {
-          placeholder: "Nhập",
-          validationMessage: "always",
-        },
-        headerFilter: {
-          alowwSearch: true,
-          dataSource: uniqueFilterByDataField(PortData?.DataList, "PortName"),
-        },
-        validationRule: [requiredType, ExcludeSpecialCharactersType],
-      },
-
-      {
-        caption: "Địa chỉ cảng",
-        dataField: "PortAddress",
-        editorType: "dxTextBox",
-        width: 300,
         visible: true,
         editorOptions: {
           placeholder: "Nhập",
@@ -172,55 +126,33 @@ export const PortManagementPage = () => {
         headerFilter: {
           alowwSearch: true,
           dataSource: uniqueFilterByDataField(
-            PortData?.DataList,
-            "PortAddress"
+            dealerTypeData?.DataList,
+            "DealerTypeName"
           ),
         },
         validationRule: [requiredType, ExcludeSpecialCharactersType],
       },
 
       {
-        caption: "Mã tỉnh",
-        dataField: "ProvinceCode",
-        editorType: "dxSelectBox",
-        width: 300,
-        visible: true,
-        editorOptions: {
-          dataSource: ProvinceCode?.DataList ?? [],
-          validationMessage: "always",
-          displayExpr: "ProvinceCode",
-          valueExpr: "ProvinceCode",
-          searchEnabled: true,
-        },
-        headerFilter: {
-          dataSource: uniqueFilterByDataField(
-            PortData?.DataList,
-            "ProvinceCode",
-            t("( Empty )")
-          ),
-        },
-        validationRule: [requiredType, ExcludeSpecialCharactersType],
-      },
-
-      {
-        caption: "Trạng thái",
         dataField: "FlagActive",
+        caption: t("FlagActive"),
         editorType: "dxSwitch",
         dataType: "boolean",
         visible: true,
         alignment: "center",
-        cellRender: (data: any) => {
+        width: 150,
+        cellRender: ({ data }: any) => {
           return <StatusButton isActive={data.FlagActive} />;
         },
-        HeaderFilter: {
-          dataSource: filterByFlagActive(PortData?.DataList, {
+        headerFilter: {
+          dataSource: filterByFlagActive(dealerTypeData?.DataList, {
             true: t("Active"),
-            false: t("InActive"),
+            false: t("Inactive"),
           }),
         },
       },
     ],
-    [PortData, ProvinceCode]
+    [dealerTypeData]
   );
 
   const handleGridReady = (grid: any) => {
@@ -228,11 +160,7 @@ export const PortManagementPage = () => {
   };
 
   const handleEditorPreparing = (e: EditorPreparingEvent<any, any>) => {
-    if (e.dataField === "PortCode") {
-      e.editorOptions.readOnly = !e.row?.isNewRow;
-    } else if (e.dataField === "PortType") {
-      e.editorOptions.readOnly = !e.row?.isNewRow;
-    } else if (e.dataField === "ProvinceCode") {
+    if (e.dataField === "DealerType") {
       e.editorOptions.readOnly = !e.row?.isNewRow;
     } else if (e.dataField === "FlagActive") {
       if (e.row?.isNewRow) {
@@ -242,11 +170,10 @@ export const PortManagementPage = () => {
   };
 
   const handleGridSelectionChanged = (rowKeys: string[]) => {
-    selectedItems(rowKeys);
+    setSeletedItems(rowKeys);
   };
-
   const handleDelete = async (key: string) => {
-    const resp = await api.Mst_Port_Delete(key);
+    const resp = await api.Mst_DealerType_Delete(key);
     if (resp.isSuccess) {
       toast.success("Delete Successfully");
       await refetch();
@@ -260,7 +187,7 @@ export const PortManagementPage = () => {
   };
 
   const handleCreate = async (data: any) => {
-    const res = await api.Mst_Port_Create({ ...data });
+    const res = await api.Mst_DealerType_Create({ ...data });
     if (res.isSuccess) {
       toast.success(t("CreateSuccessfully"));
       await refetch();
@@ -275,7 +202,7 @@ export const PortManagementPage = () => {
   };
 
   const handleUpdate = async (key: string, data: any) => {
-    const resp = await api.Mst_Port_Update(key, data);
+    const resp = await api.Mst_DealerType_Update(key, data);
     if (resp.isSuccess) {
       toast.success("Update Successfully");
       await refetch();
@@ -290,13 +217,13 @@ export const PortManagementPage = () => {
   };
 
   const handleSaveRow = async (e: any) => {
-    console.log("🚀 ~ e:", e);
     if (e.changes && e.changes.length > 0) {
       const { type } = e.changes[0];
       if (type === "remove") {
         const id = e.changes[0].key;
         e.promise = handleDelete(id);
       } else if (type === "insert") {
+        console.log("toggle");
         let newData = e.changes[0].data!;
         if (!Object.keys(newData).includes("FlagActive")) {
           newData = { ...newData, FlagActive: true };
@@ -310,7 +237,7 @@ export const PortManagementPage = () => {
   };
 
   const handleDeleteRows = async (rows: string[]) => {
-    const resp = await api.Mst_Port_DeleteMultiple(rows);
+    const resp = await api.Mst_DealerType_DeleteMultiple(rows);
     if (resp.isSuccess) {
       toast.success(t("DeleteSuccessfully"));
       await refetch();
@@ -325,29 +252,28 @@ export const PortManagementPage = () => {
   };
 
   return (
-    <AdminContentLayout>
-      <AdminContentLayout.Slot name={"Header"}>
+    <AdminContentLayout className={"dealer-type"}>
+      <AdminContentLayout.Slot name="Header">
         <PageHeaderLayout>
-          <PageHeaderLayout.Slot name={"Before"}>
-            <div className="font-bold dx-font-m">Quản lý cảng</div>
+          <PageHeaderLayout.Slot name="Before">
+            <div className="font-bold dx-font-m">Quản lý loại đại lý</div>
           </PageHeaderLayout.Slot>
-
-          <PageHeaderLayout.Slot name={"Center"}>
+          <PageHeaderLayout.Slot name="Center">
             <HeaderPart
               onAddNew={handleAddNew}
               onUploadFile={handleUploadFile}
-              onDownloadTemplate={onDownloadTemplate}
+              onDownloadTemplate={handleDownloadTemplate}
             />
           </PageHeaderLayout.Slot>
         </PageHeaderLayout>
       </AdminContentLayout.Slot>
-      <AdminContentLayout.Slot name={"Content"}>
+      <AdminContentLayout.Slot name="Content">
         <BaseGridView
-          keyExpr="PortCode"
-          storeKey={"port-columns"}
+          keyExpr="DealerType"
+          storeKey={"dealer-type-columns"}
           defaultPageSize={config.PAGE_SIZE_10}
           isLoading={isLoading}
-          dataSource={PortData?.DataList ?? []}
+          dataSource={dealerTypeData?.DataList ?? []}
           columns={columns}
           allowSelection={true}
           allowInlineEdit={true}

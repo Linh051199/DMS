@@ -8,6 +8,11 @@ import {
   PortTypeManagementPage,
   BasePage,
   DistrictPage,
+  ModelPage,
+  OrderTypePage,
+  AreaPage,
+  DealerTypePage,
+  TransporterCarPage,
 } from "@/pages";
 import { RouteItem } from "@/types";
 
@@ -87,5 +92,50 @@ export const adminRoutes: RouteItem[] = [
     permissionCode: "MNU_ADMIN_PORT_TYPE",
 
     getPageElement: () => <DistrictPage />,
+  },
+  {
+    key: "ModelManagement", // Key menu con
+    path: "admin/model", // Address trên browser
+    subMenuTitle: "Quản lý Model", // Title menu con
+    mainMenuKey: "admin", // Key của menu cha
+    permissionCode: "MNU_ADMIN_PORT_TYPE",
+
+    getPageElement: () => <ModelPage />,
+  },
+  {
+    key: "OrderTypeManagement", // Key menu con
+    path: "admin/orderType", // Address trên browser
+    subMenuTitle: "Quản lý loại đơn hàng", // Title menu con
+    mainMenuKey: "admin", // Key của menu cha
+    permissionCode: "MNU_ADMIN_PORT_TYPE",
+
+    getPageElement: () => <OrderTypePage />,
+  },
+  {
+    key: "AreaManagement", // Key menu con
+    path: "admin/area", // Address trên browser
+    subMenuTitle: "Quản lý khu vực", // Title menu con
+    mainMenuKey: "admin", // Key của menu cha
+    permissionCode: "MNU_ADMIN_AREA",
+
+    getPageElement: () => <AreaPage />,
+  },
+  {
+    key: "AreaManagement", // Key menu con
+    path: "admin/dealerType", // Address trên browser
+    subMenuTitle: "Quản lý loại đại lý", // Title menu con
+    mainMenuKey: "admin", // Key của menu cha
+    permissionCode: "MNU_ADMIN_AREA",
+
+    getPageElement: () => <DealerTypePage />,
+  },
+  {
+    key: "TrannsporterCarManagement", // Key menu con
+    path: "admin/transporterCar", // Address trên browser
+    subMenuTitle: "Quản lý xe vận chuyển của DVVT", // Title menu con
+    mainMenuKey: "admin", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
+
+    getPageElement: () => <TransporterCarPage />,
   },
 ];

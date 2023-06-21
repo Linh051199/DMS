@@ -230,6 +230,7 @@ export const ProvinceManagementPage = () => {
   };
 
   const handleSavingRow = async (e: any) => {
+    console.log("🚀 ~ e:", e)
     logger.debug("e:", e);
     // stop grid behaviour
     if (e.changes && e.changes.length > 0) {

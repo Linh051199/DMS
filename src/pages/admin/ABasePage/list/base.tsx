@@ -10,7 +10,7 @@ import { ColumnOptions } from "@/types";
 import { DataGrid } from "devextreme-react";
 import { useClientgateApi } from "@/packages/api";
 import { EditorPreparingEvent } from "devextreme/ui/data_grid";
-import { useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { keywordAtom, selectedItemAtom } from "../components/screen-atom";
 import { toast } from "react-toastify";
 import { showErrorAtom } from "@/packages/store";
@@ -21,6 +21,7 @@ import {
 } from "@/packages/common/Validation_Rules";
 import { StatusButton } from "@/packages/ui/status-button";
 import { filterByFlagActive, uniqueFilterByDataField } from "@/packages/common";
+import { FlagActiveEnum, SearchParam } from "@/packages/types";
 
 export const BasePage = () => {
   const { t } = useI18n("Base");
@@ -28,11 +29,20 @@ export const BasePage = () => {
   const gridRef: any = useRef<DataGrid>(null);
   const api = useClientgateApi();
   const setSeletedItems = useSetAtom(selectedItemAtom);
+  const keyword = useAtomValue(keywordAtom);
   const showError = useSetAtom(showErrorAtom);
 
   // call API
 
-  const { data, isLoading, refetch } = useQuery([]);
+  const { data, isLoading, refetch } = useQuery(["data", keyword], () =>
+    api.Mst_TransporterCar_Search({
+      KeyWord: keyword,
+      FlagActive: FlagActiveEnum.All,
+      Ft_PageIndex: 0,
+      Ft_PageSize: config.MAX_PAGE_ITEMS,
+    } as SearchParam)
+  );
+  console.log("🚀 ~ data:", data);
 
   useEffect(() => {
     // if (!!data && !data.isSuccess) {
@@ -220,14 +230,14 @@ export const BasePage = () => {
     //     }
     //     e.promise = handleCreate(newData);
     //   } else if (type === "update") {
-    //     e.promise = handleUpdate(e.changs[0].key, e.changes[0].data!);
+    //     e.promise = handleUpdate(e.changes[0].key, e.changes[0].data!);
     //   }
     // }
     // e.cancel = true;
   };
 
   const handleDeleteRows = async (rows: string[]) => {
-    // const resp = await api.
+    // const resp = await api.(rows)
     // if (resp.isSuccess) {
     //     toast.success(t("DeleteSuccessfully"));
     //     await refetch();
@@ -263,7 +273,7 @@ export const BasePage = () => {
           storeKey={"port-columns"}
           defaultPageSize={config.PAGE_SIZE_10}
           isLoading={isLoading}
-          dataSource={[]}
+          dataSource={data?.DataList ?? []}
           columns={columns}
           allowSelection={true}
           allowInlineEdit={true}

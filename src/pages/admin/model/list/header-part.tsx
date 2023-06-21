@@ -29,9 +29,9 @@ export const HeaderPart = ({
   };
 
   const handleExportExcel = async (selectedOnly: boolean) => {
-    const resp = await api.Mst_District_ExportExcel(selectedItems);
+    const resp = await api.Mst_CarModel_ExportByListCode(selectedItems);
     if (resp.isSuccess) {
-      toast.success("Download successfully");
+      toast.success("Download Successfully!");
       window.location.href = resp.Data;
     } else {
       showError({

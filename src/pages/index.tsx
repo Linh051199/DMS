@@ -10,3 +10,8 @@ export * from "./admin/port/list/port-management";
 export * from "./admin/port-type/list/port-type-management";
 export * from "./admin/ABasePage/list/base";
 export * from "./admin/district/list/district";
+export * from "./admin/model/list/model";
+export * from "./admin/order-type/list/order-type";
+export * from "./admin/area/list/area";
+export * from "./admin/dealer-type/list/dealer-type";
+export * from "./admin/transporter-car/list/transporter-car";

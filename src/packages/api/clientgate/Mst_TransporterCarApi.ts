@@ -48,7 +48,7 @@ export const useMst_TransporterCar = (apiBase: AxiosInstance) => {
     },
 
     Mst_TransporterCar_Update: async (
-      key: Object,
+      key: string[],
       data: Partial<Mst_TransporterCar>
     ): Promise<ApiResponse<Mst_TransporterCar>> => {
       console.log("Object.keys(data) ", Object.keys(data));

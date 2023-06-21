@@ -1,78 +1,66 @@
-import { useI18n } from "@/i18n/useI18n";
+import { AdminContentLayout } from "@/packages/layouts/admin-content-layout";
+import { PageHeaderLayout } from "@/packages/layouts/page-header-layout";
+import { HeaderPart } from "./header-part";
+import "./transporter-car.scss";
+import { BaseGridView } from "@/packages/ui/base-gridview";
+import { useConfiguration } from "@/packages/hooks";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useMemo, useRef } from "react";
+import { ColumnOptions } from "@/types";
+import { DataGrid } from "devextreme-react";
 import { useClientgateApi } from "@/packages/api";
-import { filterByFlagActive, uniqueFilterByDataField } from "@/packages/common";
+import { EditorPreparingEvent } from "devextreme/ui/data_grid";
+import { useAtomValue, useSetAtom } from "jotai";
+import { keywordAtom, selectedItemAtom } from "../components/screen-atom";
+import { toast } from "react-toastify";
+import { showErrorAtom } from "@/packages/store";
+import { useI18n } from "@/i18n/useI18n";
 import {
   ExcludeSpecialCharactersType,
   requiredType,
 } from "@/packages/common/Validation_Rules";
-import { useConfiguration } from "@/packages/hooks";
-import { AdminContentLayout } from "@/packages/layouts/admin-content-layout";
-import { PageHeaderLayout } from "@/packages/layouts/page-header-layout";
-import { showErrorAtom } from "@/packages/store";
-import { FlagActiveEnum, SearchParam } from "@/packages/types";
-import { BaseGridView } from "@/packages/ui/base-gridview";
 import { StatusButton } from "@/packages/ui/status-button";
-import { ColumnOptions } from "@/types";
-import { useQuery } from "@tanstack/react-query";
-import DataGrid, { HeaderFilter } from "devextreme-react/data-grid";
-import { EditorPreparingEvent } from "devextreme/ui/data_grid";
-import { useAtomValue, useSetAtom } from "jotai";
-import React, { useEffect, useMemo, useRef } from "react";
-import { toast } from "react-toastify";
-import { keywordAtom, selectedItemAtom } from "../components/screen-atom";
-import HeaderPart from "./header-part";
-import "./port-management.scss";
+import { filterByFlagActive, uniqueFilterByDataField } from "@/packages/common";
+import { FlagActiveEnum, SearchParam } from "@/packages/types";
 
-export const PortManagementPage = () => {
-  const { t } = useI18n("Port");
-  const api = useClientgateApi();
-  const keyWord = useAtomValue(keywordAtom);
+export const TransporterCarPage = () => {
+  const { t } = useI18n("TransporterCar");
   const config = useConfiguration();
-  const showError = useSetAtom(showErrorAtom);
   const gridRef: any = useRef<DataGrid>(null);
-  const selectedItems = useSetAtom(selectedItemAtom);
+  const api = useClientgateApi();
+  const setSeletedItems = useSetAtom(selectedItemAtom);
+  const keyword = useAtomValue(keywordAtom);
+  const showError = useSetAtom(showErrorAtom);
 
-  //Call API
-  const {
-    data: PortData,
-    isLoading,
-    refetch,
-  } = useQuery(["Port", keyWord], () =>
-    api.Mst_Port_Search({
-      KeyWord: keyWord,
+  // call API
+
+  const { data, isLoading, refetch } = useQuery(["data", keyword], () =>
+    api.Mst_TransporterCar_Search({
+      KeyWord: keyword,
       FlagActive: FlagActiveEnum.All,
       Ft_PageIndex: 0,
       Ft_PageSize: config.MAX_PAGE_ITEMS,
     } as SearchParam)
   );
-  console.log("🚀 ~ PortData:", PortData);
+  console.log("🚀 ~ data:", data);
 
   useEffect(() => {
-    if (!!PortData && !PortData?.DataList) {
+    if (!!data && !data.isSuccess) {
       showError({
-        message: t(PortData.errorCode),
-        debugInfo: PortData.debugInfo,
-        errorInfo: PortData.errorInfo,
+        message: t(data.errorCode),
+        debugInfo: data.debugInfo,
+        errorInfo: data.errorInfo,
       });
     }
-  }, [PortData]);
+  }, [data]);
 
-  const { data: ProvinceCode } = useQuery(["ProvinceCode"], () =>
-    api.Mst_Province_Search({
-      KeyWord: "",
-      FlagActive: FlagActiveEnum.All,
-      Ft_PageIndex: 0,
-      Ft_PageSize: config.MAX_PAGE_ITEMS,
-    } as SearchParam)
-  );
-
-  //Headerpart
+  //HeaderPart
   const handleAddNew = () => {
     gridRef.current.instance.addRow();
   };
 
   const handleUploadFile = async (file: File, progressCallback?: Function) => {
-    const resp = await api.Mst_Port_Upload(file);
+    const resp = await api.Mst_TransporterCar_Upload(file);
     if (resp.isSuccess) {
       toast.success(t("UploadSuccessfully"));
       await refetch();
@@ -85,8 +73,8 @@ export const PortManagementPage = () => {
     }
   };
 
-  const onDownloadTemplate = async () => {
-    const resp = await api.Mst_Port_DownloadTemplate();
+  const handleDownloadTemplate = async () => {
+    const resp = await api.Mst_TransporterCar_ExportExcel_Template();
     if (resp.isSuccess) {
       toast.success(t("DownloadSuccessfully"));
       window.location.href = resp.Data;
@@ -100,70 +88,13 @@ export const PortManagementPage = () => {
   };
 
   //BaseGridView
+
   const columns: ColumnOptions[] = useMemo(
     () => [
       {
-        caption: "Mã cảng",
-        dataField: "PortCode",
+        caption: "Mã DVVT",
+        dataField: "TransporterCode",
         editorType: "dxTextBox",
-        width: 200,
-        visible: true,
-        editorOptions: {
-          placeholder: "Nhập",
-          validationMessage: "always",
-        },
-        headerFilter: {
-          alowwSearch: true,
-          dataSource: uniqueFilterByDataField(PortData?.DataList, "PortCode"),
-        },
-        validationRule: [requiredType, ExcludeSpecialCharactersType],
-      },
-
-      {
-        caption: "Loại cảng",
-        dataField: "PortType",
-        editorType: "dxSelectBox",
-        width: 200,
-        visible: true,
-        editorOptions: {
-          dataSource: PortData?.DataList ?? [],
-          validationMessage: "always",
-          displayExpr: "PortType",
-          valueExpr: "PortType",
-          searchEnabled: true,
-        },
-        headerFilter: {
-          dataSource: uniqueFilterByDataField(
-            PortData?.DataList,
-            "PortType",
-            t("( Empty )")
-          ),
-        },
-        validationRule: [requiredType, ExcludeSpecialCharactersType],
-      },
-
-      {
-        caption: "Tên cảng",
-        dataField: "PortName",
-        editorType: "dxTextBox",
-        width: 350,
-        visible: true,
-        editorOptions: {
-          placeholder: "Nhập",
-          validationMessage: "always",
-        },
-        headerFilter: {
-          alowwSearch: true,
-          dataSource: uniqueFilterByDataField(PortData?.DataList, "PortName"),
-        },
-        validationRule: [requiredType, ExcludeSpecialCharactersType],
-      },
-
-      {
-        caption: "Địa chỉ cảng",
-        dataField: "PortAddress",
-        editorType: "dxTextBox",
-        width: 300,
         visible: true,
         editorOptions: {
           placeholder: "Nhập",
@@ -172,55 +103,48 @@ export const PortManagementPage = () => {
         headerFilter: {
           alowwSearch: true,
           dataSource: uniqueFilterByDataField(
-            PortData?.DataList,
-            "PortAddress"
+            data?.DataList,
+            "TransporterCode"
           ),
         },
         validationRule: [requiredType, ExcludeSpecialCharactersType],
       },
-
       {
-        caption: "Mã tỉnh",
-        dataField: "ProvinceCode",
-        editorType: "dxSelectBox",
-        width: 300,
+        caption: "Biển số xe",
+        dataField: "PlateNo",
+        editorType: "dxTextBox",
         visible: true,
         editorOptions: {
-          dataSource: ProvinceCode?.DataList ?? [],
+          placeholder: "Nhập",
           validationMessage: "always",
-          displayExpr: "ProvinceCode",
-          valueExpr: "ProvinceCode",
-          searchEnabled: true,
         },
         headerFilter: {
-          dataSource: uniqueFilterByDataField(
-            PortData?.DataList,
-            "ProvinceCode",
-            t("( Empty )")
-          ),
+          alowwSearch: true,
+          dataSource: uniqueFilterByDataField(data?.DataList, "PlateNo"),
         },
         validationRule: [requiredType, ExcludeSpecialCharactersType],
       },
 
       {
-        caption: "Trạng thái",
         dataField: "FlagActive",
+        caption: t("FlagActive"),
         editorType: "dxSwitch",
         dataType: "boolean",
         visible: true,
         alignment: "center",
-        cellRender: (data: any) => {
+        width: 150,
+        cellRender: ({ data }: any) => {
           return <StatusButton isActive={data.FlagActive} />;
         },
-        HeaderFilter: {
-          dataSource: filterByFlagActive(PortData?.DataList, {
+        headerFilter: {
+          dataSource: filterByFlagActive(data?.DataList, {
             true: t("Active"),
-            false: t("InActive"),
+            false: t("Inactive"),
           }),
         },
       },
     ],
-    [PortData, ProvinceCode]
+    [data]
   );
 
   const handleGridReady = (grid: any) => {
@@ -228,11 +152,7 @@ export const PortManagementPage = () => {
   };
 
   const handleEditorPreparing = (e: EditorPreparingEvent<any, any>) => {
-    if (e.dataField === "PortCode") {
-      e.editorOptions.readOnly = !e.row?.isNewRow;
-    } else if (e.dataField === "PortType") {
-      e.editorOptions.readOnly = !e.row?.isNewRow;
-    } else if (e.dataField === "ProvinceCode") {
+    if (e.dataField === "TransporterCode") {
       e.editorOptions.readOnly = !e.row?.isNewRow;
     } else if (e.dataField === "FlagActive") {
       if (e.row?.isNewRow) {
@@ -242,11 +162,10 @@ export const PortManagementPage = () => {
   };
 
   const handleGridSelectionChanged = (rowKeys: string[]) => {
-    selectedItems(rowKeys);
+    setSeletedItems(rowKeys);
   };
-
   const handleDelete = async (key: string) => {
-    const resp = await api.Mst_Port_Delete(key);
+    const resp = await api.Mst_TransporterCar_Delete(key);
     if (resp.isSuccess) {
       toast.success("Delete Successfully");
       await refetch();
@@ -260,7 +179,7 @@ export const PortManagementPage = () => {
   };
 
   const handleCreate = async (data: any) => {
-    const res = await api.Mst_Port_Create({ ...data });
+    const res = await api.Mst_TransporterCar_Create({ ...data });
     if (res.isSuccess) {
       toast.success(t("CreateSuccessfully"));
       await refetch();
@@ -274,8 +193,8 @@ export const PortManagementPage = () => {
     throw new Error(res.errorCode);
   };
 
-  const handleUpdate = async (key: string, data: any) => {
-    const resp = await api.Mst_Port_Update(key, data);
+  const handleUpdate = async (key: string[], data: any) => {
+    const resp = await api.Mst_TransporterCar_Update(key, data);
     if (resp.isSuccess) {
       toast.success("Update Successfully");
       await refetch();
@@ -297,6 +216,7 @@ export const PortManagementPage = () => {
         const id = e.changes[0].key;
         e.promise = handleDelete(id);
       } else if (type === "insert") {
+        console.log("toggle");
         let newData = e.changes[0].data!;
         if (!Object.keys(newData).includes("FlagActive")) {
           newData = { ...newData, FlagActive: true };
@@ -310,7 +230,7 @@ export const PortManagementPage = () => {
   };
 
   const handleDeleteRows = async (rows: string[]) => {
-    const resp = await api.Mst_Port_DeleteMultiple(rows);
+    const resp = await api.Mst_TransporterCar_DeleteMultiple(rows);
     if (resp.isSuccess) {
       toast.success(t("DeleteSuccessfully"));
       await refetch();
@@ -325,29 +245,30 @@ export const PortManagementPage = () => {
   };
 
   return (
-    <AdminContentLayout>
-      <AdminContentLayout.Slot name={"Header"}>
+    <AdminContentLayout className={"transporter-car"}>
+      <AdminContentLayout.Slot name="Header">
         <PageHeaderLayout>
-          <PageHeaderLayout.Slot name={"Before"}>
-            <div className="font-bold dx-font-m">Quản lý cảng</div>
+          <PageHeaderLayout.Slot name="Before">
+            <div className="font-bold dx-font-m">
+              Quản lý xe vận tải của DVVT
+            </div>
           </PageHeaderLayout.Slot>
-
-          <PageHeaderLayout.Slot name={"Center"}>
+          <PageHeaderLayout.Slot name="Center">
             <HeaderPart
               onAddNew={handleAddNew}
               onUploadFile={handleUploadFile}
-              onDownloadTemplate={onDownloadTemplate}
+              onDownloadTemplate={handleDownloadTemplate}
             />
           </PageHeaderLayout.Slot>
         </PageHeaderLayout>
       </AdminContentLayout.Slot>
-      <AdminContentLayout.Slot name={"Content"}>
+      <AdminContentLayout.Slot name="Content">
         <BaseGridView
-          keyExpr="PortCode"
-          storeKey={"port-columns"}
-          defaultPageSize={config.PAGE_SIZE_10}
+          keyExpr={["PlateNo", "TransporterCode"]}
+          storeKey={"transporter-car-columns"}
+          defaultPageSize={config.PAGE_SIZE}
           isLoading={isLoading}
-          dataSource={PortData?.DataList ?? []}
+          dataSource={data?.DataList ?? []}
           columns={columns}
           allowSelection={true}
           allowInlineEdit={true}
