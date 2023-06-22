@@ -35,7 +35,7 @@ export const BasePage = () => {
   // call API
 
   const { data, isLoading, refetch } = useQuery(["data", keyword], () =>
-    api.Mst_TransporterCar_Search({
+    api.Mst_CarInvoice_Search({
       KeyWord: keyword,
       FlagActive: FlagActiveEnum.All,
       Ft_PageIndex: 0,
@@ -256,7 +256,7 @@ export const BasePage = () => {
       <AdminContentLayout.Slot name="Header">
         <PageHeaderLayout>
           <PageHeaderLayout.Slot name="Before">
-            <div className="font-bold dx-font-m">Base</div>
+            <div className="font-bold dx-font-m">Master1</div>
           </PageHeaderLayout.Slot>
           <PageHeaderLayout.Slot name="Center">
             <HeaderPart

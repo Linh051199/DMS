@@ -79,7 +79,7 @@ export const useMst_Transporter = (apiBase: AxiosInstance) => {
     },
 
     Mst_Transporter_ExportByListCode: async (
-      keys: Partial<Mst_Transporter>[]
+      keys: string[]
     ): Promise<ApiResponse<any>> => {
       return await apiBase.post<Partial<Mst_Transporter>, ApiResponse<string>>(
         "/MstTransporter/ExportByListCode",
