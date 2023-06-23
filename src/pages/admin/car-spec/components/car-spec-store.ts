@@ -1,17 +1,21 @@
+import {
+  FlagActiveEnum,
+  Mst_CarSpec,
+  SearchMst_CarSpecParam,
+} from "@/packages/types";
 import { atom } from "jotai";
-import { FlagActiveEnum, Mst_Dealer, SearchDealerParam } from "@packages/types";
+
 export const selectedItemsAtom = atom<string[]>([]);
 
 export const viewingRowAtom = atom<number | undefined>(undefined);
-export const viewingItemAtom = atom<Mst_Dealer | undefined>(undefined);
 
-
+export const viewingItemAtom = atom<Mst_CarSpec | undefined>(undefined);
 
 export const viewingDataAtom = atom(
   (get) => {
     return {
       rowIndex: get(viewingRowAtom),
-      item: get(viewingRowAtom),
+      item: get(viewingItemAtom),
     };
   },
   (get, set, data) => {
@@ -26,14 +30,12 @@ export const viewingDataAtom = atom(
   }
 );
 
-export const searchConditionAtom = atom<SearchDealerParam>({
+export const searchConditionAtom = atom<SearchMst_CarSpecParam>({
   FlagActive: FlagActiveEnum.All,
   Ft_PageIndex: 0,
   Ft_PageSize: 9999,
   KeyWord: "",
-  DealerCode: "",
-  DealerName: "",
-  FlagAutoLXX: FlagActiveEnum.All,
-  FlagAutoMapVIN: FlagActiveEnum.All,
-  FlagAutoSOAppr: FlagActiveEnum.All,
+  SpecCode: "",
+  SpecDescription: "",
+  AssemblyStatus: "",
 });

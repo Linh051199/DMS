@@ -1,7 +1,7 @@
 import { AdminContentLayout } from "@/packages/layouts/admin-content-layout";
 import { PageHeaderLayout } from "@/packages/layouts/page-header-layout";
 import { HeaderPart } from "./header-part";
-import "./storage.scss";
+import "./car-cancel.scss";
 import { BaseGridView } from "@/packages/ui/base-gridview";
 import { useConfiguration } from "@/packages/hooks";
 import { useQuery } from "@tanstack/react-query";
@@ -23,8 +23,8 @@ import { StatusButton } from "@/packages/ui/status-button";
 import { filterByFlagActive, uniqueFilterByDataField } from "@/packages/common";
 import { FlagActiveEnum, SearchParam } from "@/packages/types";
 
-export const StoragePage = () => {
-  const { t } = useI18n("Base");
+export const CarCancelPage = () => {
+  const { t } = useI18n("Car");
   const config = useConfiguration();
   const gridRef: any = useRef<DataGrid>(null);
   const api = useClientgateApi();
@@ -34,8 +34,13 @@ export const StoragePage = () => {
 
   // call API
 
-  const { data, isLoading, refetch } = useQuery(["Storage", keyword], () =>
-    api.Mst_Storage_Search({
+
+  const {
+    data: carCancelData,
+    isLoading,
+    refetch,
+  } = useQuery(["carCancel", keyword], () =>
+    api.Mst_CarCancelType_Search({
       KeyWord: keyword,
       FlagActive: FlagActiveEnum.All,
       Ft_PageIndex: 0,
@@ -44,14 +49,14 @@ export const StoragePage = () => {
   );
 
   useEffect(() => {
-    if (!!data && !data.isSuccess) {
+    if (!!carCancelData && !carCancelData.DataList) {
       showError({
-        message: t(data.errorCode),
-        debugInfo: data.debugInfo,
-        errorInfo: data.errorInfo,
+        message: carCancelData.errorCode,
+        debugInfo: carCancelData.debugInfo,
+        errorInfo: carCancelData.errorInfo,
       });
     }
-  }, [data]);
+  }, [carCancelData]);
 
   //HeaderPart
   const handleAddNew = () => {
@@ -59,7 +64,7 @@ export const StoragePage = () => {
   };
 
   const handleUploadFile = async (file: File, progressCallback?: Function) => {
-    const resp = await api.Mst_Storage_ImportExcel(file);
+    const resp = await api.Mst_CarCancelType_ImportExcel(file);
     if (resp.isSuccess) {
       toast.success(t("UploadSuccessfully"));
       await refetch();
@@ -73,7 +78,7 @@ export const StoragePage = () => {
   };
 
   const handleDownloadTemplate = async () => {
-    const resp = await api.Mst_Storage_ExportTemplate();
+    const resp = await api.Mst_CarCancelType_ExportTemplate();
     if (resp.isSuccess) {
       toast.success(t("DownloadSuccessfully"));
       window.location.href = resp.Data;
@@ -91,10 +96,9 @@ export const StoragePage = () => {
   const columns: ColumnOptions[] = useMemo(
     () => [
       {
-        caption: "Mã kho",
-        dataField: "StorageCode",
+        caption: "Mã loại huỷ xe",
+        dataField: "CarCancelType",
         editorType: "dxTextBox",
-
         visible: true,
         editorOptions: {
           placeholder: "Nhập",
@@ -102,38 +106,17 @@ export const StoragePage = () => {
         },
         headerFilter: {
           alowwSearch: true,
-          dataSource: uniqueFilterByDataField(data?.DataList, "StorageCode"),
-        },
-        validationRule: [requiredType, ExcludeSpecialCharactersType],
-      },
-      {
-        caption: "Mã tỉnh",
-        dataField: "ProvinceCode",
-        editorType: "dxSelectBox",
-
-        visible: true,
-        editorOptions: {
-          dataSource: data?.DataList ?? [],
-          validationMessage: "always",
-          displayExpr: "ProvinceCode",
-          valueExpr: "ProvinceCode",
-          searchEnabled: true,
-        },
-        headerFilter: {
           dataSource: uniqueFilterByDataField(
-            data?.DataList,
-            "ProvinceCode",
-            t("( Empty )")
+            carCancelData?.DataList,
+            "CarCancelType"
           ),
         },
         validationRule: [requiredType, ExcludeSpecialCharactersType],
       },
-
       {
-        caption: "Tên kho",
-        dataField: "StorageName",
+        caption: "Tên loại huỷ xe",
+        dataField: "CarCancelTypeName",
         editorType: "dxTextBox",
-
         visible: true,
         editorOptions: {
           placeholder: "Nhập",
@@ -141,44 +124,33 @@ export const StoragePage = () => {
         },
         headerFilter: {
           alowwSearch: true,
-          dataSource: uniqueFilterByDataField(data?.DataList, "StorageName"),
-        },
-        validationRule: [requiredType, ExcludeSpecialCharactersType],
-      },
-
-      {
-        caption: "Địa chỉ",
-        dataField: "StorageAddress",
-        editorType: "dxTextBox",
-
-        visible: true,
-        editorOptions: {
-          placeholder: "Nhập",
-          validationMessage: "always",
-        },
-        headerFilter: {
-          alowwSearch: true,
-          dataSource: uniqueFilterByDataField(data?.DataList, "StorageAddress"),
+          dataSource: uniqueFilterByDataField(
+            carCancelData?.DataList,
+            "CarCancelTypeName"
+          ),
         },
         validationRule: [requiredType, ExcludeSpecialCharactersType],
       },
       {
-        caption: "Loại kho",
-        dataField: "StorageType",
-        editorType: "dxTextBox",
+        dataField: "FlagActive",
+        caption: t("FlagActive"),
+        editorType: "dxSwitch",
+        dataType: "boolean",
         visible: true,
-        editorOptions: {
-          placeholder: "Nhập",
-          validationMessage: "always",
+        alignment: "center",
+        width: 150,
+        cellRender: ({ data }: any) => {
+          return <StatusButton isActive={data.FlagActive} />;
         },
         headerFilter: {
-          alowwSearch: true,
-          dataSource: uniqueFilterByDataField(data?.DataList, "StorageType"),
+          dataSource: filterByFlagActive(carCancelData?.DataList, {
+            true: t("Active"),
+            false: t("Inactive"),
+          }),
         },
-        validationRule: [requiredType, ExcludeSpecialCharactersType],
       },
     ],
-    [data]
+    [carCancelData]
   );
 
   const handleGridReady = (grid: any) => {
@@ -186,10 +158,12 @@ export const StoragePage = () => {
   };
 
   const handleEditorPreparing = (e: EditorPreparingEvent<any, any>) => {
-    if (e.dataField === "StorageCode") {
+    if (e.dataField === "CarCancelType") {
       e.editorOptions.readOnly = !e.row?.isNewRow;
-    } else if (e.dataField === "ProvinceCode") {
-      e.editorOptions.readOnly = !e.row?.isNewRow;
+    } else if (e.dataField === "FlagActive") {
+      if (e.row?.isNewRow) {
+        e.editorOptions.value = true;
+      }
     }
   };
 
@@ -197,7 +171,7 @@ export const StoragePage = () => {
     setSeletedItems(rowKeys);
   };
   const handleDelete = async (key: string) => {
-    const resp = await api.Mst_Storage_Delete(key);
+    const resp = await api.Mst_CarCancelType_Delete(key);
     if (resp.isSuccess) {
       toast.success("Delete Successfully");
       await refetch();
@@ -211,7 +185,7 @@ export const StoragePage = () => {
   };
 
   const handleCreate = async (data: any) => {
-    const res = await api.Mst_Storage_Create({ ...data });
+    const res = await api.Mst_CarCancelType_Create({ ...data });
     if (res.isSuccess) {
       toast.success(t("CreateSuccessfully"));
       await refetch();
@@ -225,8 +199,8 @@ export const StoragePage = () => {
     throw new Error(res.errorCode);
   };
 
-  const handleUpdate = async (key: string[], data: any) => {
-    const resp = await api.Mst_Storage_Update(key, data);
+  const handleUpdate = async (key: string, data: any) => {
+    const resp = await api.Mst_CarCancelType_Update(key, data);
     if (resp.isSuccess) {
       toast.success("Update Successfully");
       await refetch();
@@ -261,7 +235,7 @@ export const StoragePage = () => {
   };
 
   const handleDeleteRows = async (rows: string[]) => {
-    const resp = await api.Mst_Storage_DeleteMultiple(rows);
+    const resp = await api.Mst_CarCancelType_DeleteMultiple(rows);
     if (resp.isSuccess) {
       toast.success(t("DeleteSuccessfully"));
       await refetch();
@@ -276,11 +250,11 @@ export const StoragePage = () => {
   };
 
   return (
-    <AdminContentLayout className={"storage"}>
+    <AdminContentLayout className={"car-cancel"}>
       <AdminContentLayout.Slot name="Header">
         <PageHeaderLayout>
           <PageHeaderLayout.Slot name="Before">
-            <div className="font-bold dx-font-m">Quản lý kho bãi</div>
+            <div className="font-bold dx-font-m">Quản lý PT huỷ xe</div>
           </PageHeaderLayout.Slot>
           <PageHeaderLayout.Slot name="Center">
             <HeaderPart
@@ -293,11 +267,11 @@ export const StoragePage = () => {
       </AdminContentLayout.Slot>
       <AdminContentLayout.Slot name="Content">
         <BaseGridView
-          keyExpr={["StorageCode"]}
-          storeKey={"storage-columns"}
+          keyExpr="CarCancelType"
+          storeKey={"car-cancel-columns"}
           defaultPageSize={config.PAGE_SIZE_10}
           isLoading={isLoading}
-          dataSource={data?.DataList ?? []}
+          dataSource={carCancelData?.DataList ?? []}
           columns={columns}
           allowSelection={true}
           allowInlineEdit={true}

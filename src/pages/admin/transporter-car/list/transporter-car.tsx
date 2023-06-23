@@ -34,15 +34,16 @@ export const TransporterCarPage = () => {
 
   // call API
 
-  const { data, isLoading, refetch } = useQuery(["data", keyword], () =>
-    api.Mst_TransporterCar_Search({
-      KeyWord: keyword,
-      FlagActive: FlagActiveEnum.All,
-      Ft_PageIndex: 0,
-      Ft_PageSize: config.MAX_PAGE_ITEMS,
-    } as SearchParam)
+  const { data, isLoading, refetch } = useQuery(
+    ["TransporterCar", keyword],
+    () =>
+      api.Mst_TransporterCar_Search({
+        KeyWord: keyword,
+        FlagActive: FlagActiveEnum.All,
+        Ft_PageIndex: 0,
+        Ft_PageSize: config.MAX_PAGE_ITEMS,
+      } as SearchParam)
   );
-  console.log("🚀 ~ data:", data);
 
   useEffect(() => {
     if (!!data && !data.isSuccess) {

@@ -51,7 +51,6 @@ export const CarOCNPage = () => {
     }
   }, [data]);
 
-  console.log("🚀 ~ data:", data);
   //HeaderPart
   const handleAddNew = () => {
     gridRef.current.instance.addRow();

@@ -1,7 +1,7 @@
 import { AdminContentLayout } from "@/packages/layouts/admin-content-layout";
 import { PageHeaderLayout } from "@/packages/layouts/page-header-layout";
 import { HeaderPart } from "./header-part";
-import "./storage.scss";
+import "./dealer-sales-group-type.scss";
 import { BaseGridView } from "@/packages/ui/base-gridview";
 import { useConfiguration } from "@/packages/hooks";
 import { useQuery } from "@tanstack/react-query";
@@ -23,7 +23,7 @@ import { StatusButton } from "@/packages/ui/status-button";
 import { filterByFlagActive, uniqueFilterByDataField } from "@/packages/common";
 import { FlagActiveEnum, SearchParam } from "@/packages/types";
 
-export const StoragePage = () => {
+export const DealerSalesGroupTypePage = () => {
   const { t } = useI18n("Base");
   const config = useConfiguration();
   const gridRef: any = useRef<DataGrid>(null);
@@ -34,14 +34,15 @@ export const StoragePage = () => {
 
   // call API
 
-  const { data, isLoading, refetch } = useQuery(["Storage", keyword], () =>
-    api.Mst_Storage_Search({
+  const { data, isLoading, refetch } = useQuery(["data", keyword], () =>
+    api.Mst_DealerSalesGroupType_Search({
       KeyWord: keyword,
       FlagActive: FlagActiveEnum.All,
       Ft_PageIndex: 0,
       Ft_PageSize: config.MAX_PAGE_ITEMS,
     } as SearchParam)
   );
+  console.log("Data: ", data);
 
   useEffect(() => {
     if (!!data && !data.isSuccess) {
@@ -59,31 +60,31 @@ export const StoragePage = () => {
   };
 
   const handleUploadFile = async (file: File, progressCallback?: Function) => {
-    const resp = await api.Mst_Storage_ImportExcel(file);
-    if (resp.isSuccess) {
-      toast.success(t("UploadSuccessfully"));
-      await refetch();
-    } else {
-      showError({
-        message: t(resp.errorCode),
-        debugInfo: resp.debugInfo,
-        errorInfo: resp.errorInfo,
-      });
-    }
+    // const resp = await api.(file);
+    // if (resp.isSuccess) {
+    //   toast.success(t("UploadSuccessfully"));
+    //   await refetch();
+    // } else {
+    //   showError({
+    //     message: t(resp.errorCode),
+    //     debugInfo: resp.debugInfo,
+    //     errorInfo: resp.errorInfo,
+    //   });
+    // }
   };
 
   const handleDownloadTemplate = async () => {
-    const resp = await api.Mst_Storage_ExportTemplate();
-    if (resp.isSuccess) {
-      toast.success(t("DownloadSuccessfully"));
-      window.location.href = resp.Data;
-    } else {
-      showError({
-        message: t(resp.errorCode),
-        debugInfo: resp.debugInfo,
-        errorInfo: resp.errorInfo,
-      });
-    }
+    // const resp = await api.();
+    // if (resp.isSuccess) {
+    //   toast.success(t("DownloadSuccessfully"));
+    //   window.location.href = resp.Data;
+    // } else {
+    //   showError({
+    //     message: t(resp.errorCode),
+    //     debugInfo: resp.debugInfo,
+    //     errorInfo: resp.errorInfo,
+    //   });
+    // }
   };
 
   //BaseGridView
@@ -91,49 +92,30 @@ export const StoragePage = () => {
   const columns: ColumnOptions[] = useMemo(
     () => [
       {
-        caption: "Mã kho",
-        dataField: "StorageCode",
-        editorType: "dxTextBox",
-
-        visible: true,
-        editorOptions: {
-          placeholder: "Nhập",
-          validationMessage: "always",
-        },
-        headerFilter: {
-          alowwSearch: true,
-          dataSource: uniqueFilterByDataField(data?.DataList, "StorageCode"),
-        },
-        validationRule: [requiredType, ExcludeSpecialCharactersType],
-      },
-      {
-        caption: "Mã tỉnh",
-        dataField: "ProvinceCode",
+        caption: "Mã nhóm loại hình bán lẻ",
+        dataField: "SalesGroupType",
         editorType: "dxSelectBox",
-
         visible: true,
         editorOptions: {
           dataSource: data?.DataList ?? [],
           validationMessage: "always",
-          displayExpr: "ProvinceCode",
-          valueExpr: "ProvinceCode",
+          displayExpr: "SalesGroupType",
+          valueExpr: "SalesGroupType",
           searchEnabled: true,
         },
         headerFilter: {
           dataSource: uniqueFilterByDataField(
             data?.DataList,
-            "ProvinceCode",
+            "SalesGroupType",
             t("( Empty )")
           ),
         },
         validationRule: [requiredType, ExcludeSpecialCharactersType],
       },
-
       {
-        caption: "Tên kho",
-        dataField: "StorageName",
+        caption: "Tên nhóm loại hình bán lẻ",
+        dataField: "SalesGroupTypeName",
         editorType: "dxTextBox",
-
         visible: true,
         editorOptions: {
           placeholder: "Nhập",
@@ -141,41 +123,30 @@ export const StoragePage = () => {
         },
         headerFilter: {
           alowwSearch: true,
-          dataSource: uniqueFilterByDataField(data?.DataList, "StorageName"),
-        },
-        validationRule: [requiredType, ExcludeSpecialCharactersType],
-      },
-
-      {
-        caption: "Địa chỉ",
-        dataField: "StorageAddress",
-        editorType: "dxTextBox",
-
-        visible: true,
-        editorOptions: {
-          placeholder: "Nhập",
-          validationMessage: "always",
-        },
-        headerFilter: {
-          alowwSearch: true,
-          dataSource: uniqueFilterByDataField(data?.DataList, "StorageAddress"),
+          dataSource: uniqueFilterByDataField(
+            data?.DataList,
+            "SalesGroupTypeName"
+          ),
         },
         validationRule: [requiredType, ExcludeSpecialCharactersType],
       },
       {
-        caption: "Loại kho",
-        dataField: "StorageType",
-        editorType: "dxTextBox",
+        dataField: "FlagActive",
+        caption: t("FlagActive"),
+        editorType: "dxSwitch",
+        dataType: "boolean",
         visible: true,
-        editorOptions: {
-          placeholder: "Nhập",
-          validationMessage: "always",
+        alignment: "center",
+        width: 150,
+        cellRender: ({ data }: any) => {
+          return <StatusButton isActive={data.FlagActive} />;
         },
         headerFilter: {
-          alowwSearch: true,
-          dataSource: uniqueFilterByDataField(data?.DataList, "StorageType"),
+          dataSource: filterByFlagActive(data?.DataList, {
+            true: t("Active"),
+            false: t("Inactive"),
+          }),
         },
-        validationRule: [requiredType, ExcludeSpecialCharactersType],
       },
     ],
     [data]
@@ -186,18 +157,24 @@ export const StoragePage = () => {
   };
 
   const handleEditorPreparing = (e: EditorPreparingEvent<any, any>) => {
-    if (e.dataField === "StorageCode") {
-      e.editorOptions.readOnly = !e.row?.isNewRow;
-    } else if (e.dataField === "ProvinceCode") {
-      e.editorOptions.readOnly = !e.row?.isNewRow;
-    }
+    // if (e.dataField === "PortCode") {
+    //     e.editorOptions.readOnly = !e.row?.isNewRow;
+    //   } else if (e.dataField === "PortType") {
+    //     e.editorOptions.readOnly = !e.row?.isNewRow;
+    //   } else if (e.dataField === "ProvinceCode") {
+    //     e.editorOptions.readOnly = !e.row?.isNewRow;
+    //   } else if (e.dataField === "FlagActive") {
+    //     if (e.row?.isNewRow) {
+    //       e.editorOptions.value = true;
+    //     }
+    //   }
   };
 
   const handleGridSelectionChanged = (rowKeys: string[]) => {
     setSeletedItems(rowKeys);
   };
   const handleDelete = async (key: string) => {
-    const resp = await api.Mst_Storage_Delete(key);
+    const resp = await api.Mst_DealerSalesGroupType_Delete(key);
     if (resp.isSuccess) {
       toast.success("Delete Successfully");
       await refetch();
@@ -211,7 +188,7 @@ export const StoragePage = () => {
   };
 
   const handleCreate = async (data: any) => {
-    const res = await api.Mst_Storage_Create({ ...data });
+    const res = await api.Mst_DealerSalesGroupType_Create({ ...data });
     if (res.isSuccess) {
       toast.success(t("CreateSuccessfully"));
       await refetch();
@@ -225,8 +202,8 @@ export const StoragePage = () => {
     throw new Error(res.errorCode);
   };
 
-  const handleUpdate = async (key: string[], data: any) => {
-    const resp = await api.Mst_Storage_Update(key, data);
+  const handleUpdate = async (key: string, data: any) => {
+    const resp = await api.Mst_DealerSalesGroupType_Update(key, data);
     if (resp.isSuccess) {
       toast.success("Update Successfully");
       await refetch();
@@ -261,7 +238,7 @@ export const StoragePage = () => {
   };
 
   const handleDeleteRows = async (rows: string[]) => {
-    const resp = await api.Mst_Storage_DeleteMultiple(rows);
+    const resp = await api.Mst_DealerSalesGroupType_DeleteMultiple(rows);
     if (resp.isSuccess) {
       toast.success(t("DeleteSuccessfully"));
       await refetch();
@@ -276,11 +253,13 @@ export const StoragePage = () => {
   };
 
   return (
-    <AdminContentLayout className={"storage"}>
+    <AdminContentLayout className={"dealer-sales-group-type"}>
       <AdminContentLayout.Slot name="Header">
         <PageHeaderLayout>
           <PageHeaderLayout.Slot name="Before">
-            <div className="font-bold dx-font-m">Quản lý kho bãi</div>
+            <div className="font-bold dx-font-m">
+              Quản lý nhóm loại hình bán lẻ{" "}
+            </div>
           </PageHeaderLayout.Slot>
           <PageHeaderLayout.Slot name="Center">
             <HeaderPart
@@ -293,8 +272,8 @@ export const StoragePage = () => {
       </AdminContentLayout.Slot>
       <AdminContentLayout.Slot name="Content">
         <BaseGridView
-          keyExpr={["StorageCode"]}
-          storeKey={"storage-columns"}
+          keyExpr="SalesGroupType"
+          storeKey={"sale-group-type-columns"}
           defaultPageSize={config.PAGE_SIZE_10}
           isLoading={isLoading}
           dataSource={data?.DataList ?? []}

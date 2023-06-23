@@ -38,7 +38,7 @@ export const DealerTypePage = () => {
     data: dealerTypeData,
     isLoading,
     refetch,
-  } = useQuery(["data", keyword], () =>
+  } = useQuery(["DelerType", keyword], () =>
     api.Mst_DealerType_Search({
       KeyWord: keyword,
       FlagActive: FlagActiveEnum.All,

@@ -44,7 +44,6 @@ export const TransporterDiverPage = () => {
         Ft_PageSize: config.MAX_PAGE_ITEMS,
       } as SearchParam)
   );
-  console.log("🚀 ~ data:", data);
 
   useEffect(() => {
     if (!!data && !data.isSuccess) {

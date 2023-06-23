@@ -412,7 +412,7 @@ export const useDealerGridColumns = ({data}: UseDealerGridColumnsProps) => {
       },
       caption: t("Dealer Address 01"),
       columnIndex: 1,
-      groupKey: "DELIVERY_INFORMATION",
+      groupKey: " DealerAddress01",     
       visible: true,
     },
     {

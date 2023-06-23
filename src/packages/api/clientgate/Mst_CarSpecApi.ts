@@ -117,7 +117,7 @@ export const useMst_CarSpecApi = (apiBase: AxiosInstance) => {
       );
     },
     Mst_CarSpec_ExportByListCode: async (
-      obj: string
+      obj: string[]
     ): Promise<ApiResponse<any>> => {
       return await apiBase.post<any, ApiResponse<Mst_CarSpec>>(
         "/MstCarSpec/ExportByListCode",

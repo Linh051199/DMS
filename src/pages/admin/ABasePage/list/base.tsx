@@ -35,23 +35,23 @@ export const BasePage = () => {
   // call API
 
   const { data, isLoading, refetch } = useQuery(["data", keyword], () =>
-    api.Mst_CarInvoice_Search({
+    api.Mst_DealerSalesGroupType_Search({
       KeyWord: keyword,
       FlagActive: FlagActiveEnum.All,
       Ft_PageIndex: 0,
       Ft_PageSize: config.MAX_PAGE_ITEMS,
     } as SearchParam)
   );
-  console.log("🚀 ~ data:", data);
+  console.log("Data: ", data);
 
   useEffect(() => {
-    // if (!!data && !data.isSuccess) {
-    //   showError({
-    //     message: t(data.errorCode),
-    //     debugInfo: data.debugInfo,
-    //     errorInfo: data.errorInfo,
-    //   });
-    // }
+    if (!!data && !data.isSuccess) {
+      showError({
+        message: t(data.errorCode),
+        debugInfo: data.debugInfo,
+        errorInfo: data.errorInfo,
+      });
+    }
   }, [data]);
 
   //HeaderPart
@@ -103,7 +103,7 @@ export const BasePage = () => {
       //       },
       //       headerFilter: {
       //         alowwSearch: true,
-      //         dataSource: uniqueFilterByDataField(PortData?.DataList, "PortCode"),
+      //         dataSource: uniqueFilterByDataField(data?.DataList, "PortCode"),
       //       },
       //       validationRule: [requiredType, ExcludeSpecialCharactersType],
       //   },
@@ -114,7 +114,7 @@ export const BasePage = () => {
       //       width: 200,
       //       visible: true,
       //       editorOptions: {
-      //         dataSource: PortData?.DataList ?? [],
+      //         dataSource: data?.DataList ?? [],
       //         validationMessage: "always",
       //         displayExpr: "PortType",
       //         valueExpr: "PortType",
@@ -122,7 +122,7 @@ export const BasePage = () => {
       //       },
       //       headerFilter: {
       //         dataSource: uniqueFilterByDataField(
-      //           PortData?.DataList,
+      //           data?.DataList,
       //           "PortType",
       //           t("( Empty )")
       //         ),

@@ -1,17 +1,21 @@
+import {
+  FlagActiveEnum,
+  Mst_Dealer,
+  SearchDealerParam,
+} from "@/packages/types";
 import { atom } from "jotai";
-import { FlagActiveEnum, Mst_Dealer, SearchDealerParam } from "@packages/types";
+
 export const selectedItemsAtom = atom<string[]>([]);
 
 export const viewingRowAtom = atom<number | undefined>(undefined);
+
 export const viewingItemAtom = atom<Mst_Dealer | undefined>(undefined);
-
-
 
 export const viewingDataAtom = atom(
   (get) => {
     return {
       rowIndex: get(viewingRowAtom),
-      item: get(viewingRowAtom),
+      item: get(viewingItemAtom),
     };
   },
   (get, set, data) => {

@@ -1,182 +1,71 @@
+import { useI18n } from "@/i18n/useI18n";
+import { useClientgateApi } from "@/packages/api";
+import { useConfiguration, useVisibilityControl } from "@/packages/hooks";
 import { AdminContentLayout } from "@/packages/layouts/admin-content-layout";
 import {
   ContentSearchPanelLayout,
   searchPanelVisibleAtom,
 } from "@/packages/layouts/content-searchpanel-layout";
-import { SearchPanelV2 } from "@/packages/ui/search-panel";
-import { IItemProps } from "devextreme-react/form";
-import { useRef, useState } from "react";
-import { HeaderPart, TransporterPopupView } from "../components";
+import { showErrorAtom } from "@/packages/store";
 import {
   FlagActiveEnum,
   Mst_Transporter,
+  SearchMst_CarSpecParam,
   Search_Mst_Transporter,
-} from "@packages/types";
-import { useConfiguration, useVisibilityControl } from "@/packages/hooks";
-import { DataGrid, LoadPanel } from "devextreme-react";
+} from "@/packages/types";
 import { GridViewPopup } from "@/packages/ui/base-gridview";
-import { IPopupOptions } from "devextreme-react/popup";
-import { useFormSettings } from "../components/use-form-settings";
+import { SearchPanelV2 } from "@/packages/ui/search-panel";
 import { useQuery } from "@tanstack/react-query";
-import { useClientgateApi } from "@/packages/api";
-import { useTransporterGridColumns } from "../components/use-columns";
-import { useI18n } from "@/i18n/useI18n";
-import { useSetAtom } from "jotai";
-import { selectedItemsAtom } from "../components/transporter-store";
-import { toast } from "react-toastify";
-import { showErrorAtom } from "@/packages/store";
+import { DataGrid, LoadPanel } from "devextreme-react";
+import { IItemProps } from "devextreme-react/form";
+import { IPopupOptions } from "devextreme-react/popup";
 import { EditorPreparingEvent } from "devextreme/ui/data_grid";
+import { useSetAtom } from "jotai";
+import { useRef, useState } from "react";
+import { toast } from "react-toastify";
+import {
+  BasePopupView,
+  HeaderPart,
+  selectedItemsAtom,
+  UseCarSpecGridColumns,
+  useFormSettings,
+} from "../components";
+import "./car-spec.scss";
 
-export const TransporterPage = () => {
-  const { t } = useI18n("transporter");
-  const config = useConfiguration();
+export const CarSpecPage = () => {
+  const { t } = useI18n("Base");
   let gridRef: any = useRef<DataGrid>(null);
+  const config = useConfiguration();
   const api = useClientgateApi();
-  const setSelectedItems = useSetAtom(selectedItemsAtom);
   const showError = useSetAtom(showErrorAtom);
+  const setSelectedItems = useSetAtom(selectedItemsAtom);
 
   const [searchCondition, setSearchCondition] = useState<
-    Partial<Search_Mst_Transporter>
+    Partial<SearchMst_CarSpecParam>
   >({
     FlagActive: FlagActiveEnum.All,
-    KeyWord: "",
     Ft_PageIndex: 0,
-    Ft_PageSize: config.MAX_PAGE_ITEMS,
-    TransporterCode: "",
-    TransporterName: "",
+    Ft_PageSize: 9999,
+    KeyWord: "",
+    SpecCode: "",
+    SpecDescription: "",
+    AssemblyStatus: "",
   });
 
+  //Call API
   const { data, isLoading, refetch } = useQuery(
-    ["transporter", JSON.stringify(searchCondition)],
+    ["carSpec", JSON.stringify(searchCondition)],
     () =>
-      api.Mst_Transporter__Search({
+      api.Mst_CarSpec_Search({
         ...searchCondition,
       })
   );
   console.log("🚀 ~ data:", data);
 
-  const columns = useTransporterGridColumns({ data: data?.DataList ?? [] });
-  console.log("🚀 ~ columns:", columns);
-
-  const handleSubmit = () => {
-    gridRef.current?.instance?.saveEditData();
-  };
-
-  const handleCancel = () => {
-    gridRef.current?.instance?.cancelEditData();
-  };
-
-  const handleDelete = async (id: string) => {
-    const resp = await api.Mst_Transporter_Delete(id);
-    if (resp.isSuccess) {
-      toast.success(t("Delete Successfully"));
-      await refetch();
-      return true;
-    }
-    showError({
-      message: t(resp.errorCode),
-      debugInfo: resp.debugInfo,
-      errorInfo: resp.errorInfo,
-    });
-    throw new Error(resp.errorCode);
-  };
-
-  const handleUpdate = async (id: string, data: Mst_Transporter) => {
-    const resp = await api.Mst_Transporter_Update(id, {
-      ...data,
-    });
-    if (resp.isSuccess) {
-      toast.success(t("Update Successfully"));
-      await refetch();
-      return true;
-    }
-    showError({
-      message: t(resp.errorCode),
-      debugInfo: resp.debugInfo,
-      errorInfo: resp.errorInfo,
-    });
-    throw new Error(resp.errorCode);
-  };
-
-  const handleCreate = async (data: Mst_Transporter & { __KEY__: string }) => {
-    const { __KEY__, ...rest } = data;
-    const resp = await api.Mst_Transporter_Create({
-      ...rest,
-    });
-    if (resp.isSuccess) {
-      toast.success(t("Create Successfully"));
-      await refetch();
-      return true;
-    }
-    showError({
-      message: t(resp.errorCode),
-      debugInfo: resp.debugInfo,
-      errorInfo: resp.errorInfo,
-    });
-    throw new Error(resp.errorCode);
-  };
-  //HeaderPart
-  const handleAddNew = () => {
-    gridRef?.current?.instance?.addRow();
-  };
-
-  //SearchPanelV2
-  const handleSearch = async (data: any) => {
-    setSearchCondition({
-      ...searchCondition,
-      ...data,
-    });
-  };
-
-  //LoadPanel
-  const loadingControl = useVisibilityControl({ defaultVisible: false });
-
-  //GridViewPopup
-  const popupSettings: IPopupOptions = {
-    showTitle: true,
-    title: "Thông tin DVVT",
-    className: "transporter-information-popup",
-    toolbarItems: [
-      {
-        toolbar: "bottom",
-        location: "after",
-        widget: "dxButton",
-        options: {
-          text: "LƯU",
-          stylingMode: "contained",
-          type: "default",
-          onClick: handleSubmit,
-        },
-      },
-      {
-        toolbar: "bottom",
-        location: "after",
-        widget: "dxButton",
-        options: {
-          text: "BỎ QUA",
-          type: "default",
-          onClick: handleCancel,
-        },
-      },
-    ],
-  };
-
-  const formSettings = useFormSettings({
-    columns,
-  });
-
   const searchConditions: IItemProps[] = [
     {
       caption: "Mã DVVT",
       dataField: "TransporterCode",
-      editorType: "dxTextBox",
-      editorOptions: {
-        placeholder: "Nhập",
-      },
-    },
-    {
-      caption: "Tên DVVT",
-      dataField: "TransporterName",
       editorType: "dxTextBox",
       editorOptions: {
         placeholder: "Nhập",
@@ -208,50 +97,164 @@ export const TransporterPage = () => {
     },
   ];
 
+  const loadingControl = useVisibilityControl({ defaultVisible: false });
+
+  const columns = UseCarSpecGridColumns({ data: data?.DataList ?? [] });
+
+  const formSettings = useFormSettings({
+    columns,
+  });
+
+  // Handle form
+  const handleEdit = (rowIndex: number) => {
+    gridRef.current?.instance?.editRow(rowIndex);
+  };
+
+  const handleSubmit = () => {
+    gridRef.current?.instance?.saveEditData();
+  };
+
+  const handleCancel = () => {
+    gridRef.current?.instance?.cancelEditData();
+  };
+
+  const handleDelete = async (id: string) => {
+    // const resp = await api.Mst_Transporter_Delete(id);
+    // if (resp.isSuccess) {
+    //   toast.success(t("Delete Successfully"));
+    //   await refetch();
+    //   return true;
+    // }
+    // showError({
+    //   message: t(resp.errorCode),
+    //   debugInfo: resp.debugInfo,
+    //   errorInfo: resp.errorInfo,
+    // });
+    // throw new Error(resp.errorCode);
+  };
+
+  const handleUpdate = async (id: string, data: Mst_Transporter) => {
+    // const resp = await api.Mst_Transporter_Update(id, {
+    //   ...data,
+    // });
+    // if (resp.isSuccess) {
+    //   toast.success(t("Update Successfully"));
+    //   await refetch();
+    //   return true;
+    // }
+    // showError({
+    //   message: t(resp.errorCode),
+    //   debugInfo: resp.debugInfo,
+    //   errorInfo: resp.errorInfo,
+    // });
+    // throw new Error(resp.errorCode);
+  };
+
+  const handleCreate = async (data: Mst_Transporter & { __KEY__: string }) => {
+    // const { __KEY__, ...rest } = data;
+    // const resp = await api.Mst_Transporter_Create({
+    //   ...rest,
+    // });
+    // if (resp.isSuccess) {
+    //   toast.success(t("Create Successfully"));
+    //   await refetch();
+    //   return true;
+    // }
+    // showError({
+    //   message: t(resp.errorCode),
+    //   debugInfo: resp.debugInfo,
+    //   errorInfo: resp.errorInfo,
+    // });
+    // throw new Error(resp.errorCode);
+  };
+
+  //Headerpart
+  const handleAddNew = () => {
+    gridRef?.current?.instance?.addRow();
+  };
+
+  //SearchPanelV2
+  const handleSearch = async (data: any) => {
+    setSearchCondition({
+      ...searchCondition,
+      ...data,
+    });
+  };
+
+  //GridViewPopup
+  const popupSettings: IPopupOptions = {
+    showTitle: true,
+    title: "Thông tin DVVT",
+    className: "transporter-information-popup",
+    toolbarItems: [
+      {
+        toolbar: "bottom",
+        location: "after",
+        widget: "dxButton",
+        options: {
+          text: "LƯU",
+          stylingMode: "contained",
+          type: "default",
+          onClick: handleSubmit,
+        },
+      },
+      {
+        toolbar: "bottom",
+        location: "after",
+        widget: "dxButton",
+        options: {
+          text: "BỎ QUA",
+          type: "default",
+          onClick: handleCancel,
+        },
+      },
+    ],
+  };
+
   const handleSelectionChanged = (rows: string[]) => {
     setSelectedItems(rows);
   };
 
   const handleSavingRow = async (e: any) => {
-    if (e.changes && e.changes.length > 0) {
-      const { type } = e.changes[0];
-      if (type === "remove") {
-        const id = e.changes[0].key;
-        e.promise = handleDelete(id);
-      } else if (type === "insert") {
-        const data = e.changes[0].data!;
-        e.promise = handleCreate(data);
-      } else if (type === "update") {
-        e.promise = handleUpdate(e.changes[0].key, e.changes[0].data!);
-      }
-    }
+    // if (e.changes && e.changes.length > 0) {
+    //   const { type } = e.changes[0];
+    //   if (type === "remove") {
+    //     const id = e.changes[0].key;
+    //     e.promise = handleDelete(id);
+    //   } else if (type === "insert") {
+    //     const data = e.changes[0].data!;
+    //     e.promise = handleCreate(data);
+    //   } else if (type === "update") {
+    //     e.promise = handleUpdate(e.changes[0].key, e.changes[0].data!);
+    //   }
+    // }
   };
 
   const handleEditorPreparing = (e: EditorPreparingEvent) => {
-    if (["TransporterCode"].includes(e.dataField!)) {
-      e.editorOptions.readOnly = !e.row?.isNewRow;
-    } else if (e.dataField === "FlagActive") {
-      e.editorOptions.value = true;
-    }
+    // if (["TransporterCode"].includes(e.dataField!)) {
+    //   e.editorOptions.readOnly = !e.row?.isNewRow;
+    // } else if (e.dataField === "FlagActive") {
+    //   e.editorOptions.value = true;
+    // }
   };
 
   const handleEditRowChanges = () => {};
 
   const handleDeleteRows = async (ids: string[]) => {
-    loadingControl.open();
-    const resp = await api.Mst_Transporter_DeleteMultiple(ids);
-    loadingControl.close();
-    if (resp.isSuccess) {
-      toast.success(t("Delete Successfully"));
-      await refetch();
-      return true;
-    }
-    showError({
-      message: t(resp.errorCode),
-      debugInfo: resp.debugInfo,
-      errorInfo: resp.errorInfo,
-    });
-    throw new Error(resp.errorCode);
+    // loadingControl.open();
+    // const resp = await api.Mst_Transporter_DeleteMultiple(ids);
+    // loadingControl.close();
+    // if (resp.isSuccess) {
+    //   toast.success(t("Delete Successfully"));
+    //   await refetch();
+    //   return true;
+    // }
+    // showError({
+    //   message: t(resp.errorCode),
+    //   debugInfo: resp.debugInfo,
+    //   errorInfo: resp.errorInfo,
+    // });
+    // throw new Error(resp.errorCode);
   };
 
   const handleOnEditRow = (e: any) => {
@@ -265,13 +268,8 @@ export const TransporterPage = () => {
     setSearchPanelVisibility((visible) => !visible);
   };
 
-  //TransporterPopupView
-  const handleEdit = (rowIndex: number) => {
-    gridRef.current?.instance?.editRow(rowIndex);
-  };
-
   return (
-    <AdminContentLayout clasName={"transporter"}>
+    <AdminContentLayout>
       <AdminContentLayout.Slot name={"Header"}>
         <HeaderPart onAddNew={handleAddNew} />
       </AdminContentLayout.Slot>
@@ -283,7 +281,7 @@ export const TransporterPage = () => {
                 conditionFields={searchConditions}
                 data={searchCondition}
                 onSearch={handleSearch}
-                storeKey={"transporter-search-panel"}
+                storeKey={"base-search-panel"}
               />
             </div>
           </ContentSearchPanelLayout.Slot>
@@ -296,6 +294,7 @@ export const TransporterPage = () => {
               showIndicator={true}
               showPane={true}
             />
+
             {!loadingControl.visible && (
               <>
                 <GridViewPopup
@@ -323,9 +322,9 @@ export const TransporterPage = () => {
                       },
                     },
                   ]}
-                  storeKey={"transporter-management-columns"}
+                  storeKey={"carSpec-management-columns"}
                 />
-                <TransporterPopupView
+                <BasePopupView
                   onEdit={handleEdit}
                   formSettings={formSettings}
                 />

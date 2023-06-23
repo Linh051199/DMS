@@ -34,7 +34,7 @@ export const CarInvoicePage = () => {
 
   // call API
 
-  const { data, isLoading, refetch } = useQuery(["data", keyword], () =>
+  const { data, isLoading, refetch } = useQuery(["CarInvoice", keyword], () =>
     api.Mst_CarInvoice_Search({
       KeyWord: keyword,
       FlagActive: FlagActiveEnum.All,
@@ -42,7 +42,6 @@ export const CarInvoicePage = () => {
       Ft_PageSize: config.MAX_PAGE_ITEMS,
     } as SearchParam)
   );
-  console.log("🚀 ~ data:", data);
 
   useEffect(() => {
     if (!!data && !data.isSuccess) {

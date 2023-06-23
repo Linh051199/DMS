@@ -32,6 +32,9 @@ export const DealerManagementPage = () => {
   let gridRef: any = useRef<DataGrid | null>(null);
   const config = useConfiguration();
   const showError = useSetAtom(showErrorAtom);
+  const setSelectedItems = useSetAtom(selectedItemsAtom);
+  const api = useClientgateApi();
+
   const [searchCondition, setSearchCondition] = useState<
     Partial<SearchDealerParam>
   >({
@@ -46,10 +49,6 @@ export const DealerManagementPage = () => {
     FlagAutoSOAppr: FlagActiveEnum.All,
   });
 
-  const setSelectedItems = useSetAtom(selectedItemsAtom);
-
-  const api = useClientgateApi();
-
   const { data, isLoading, refetch } = useQuery(
     ["dealer", JSON.stringify(searchCondition)],
     () =>
@@ -57,7 +56,6 @@ export const DealerManagementPage = () => {
         ...searchCondition,
       })
   );
-  console.log("🚀 ~ data:", data);
   const { data: provinceDs } = useQuery(["provinces"], () =>
     api.Mst_Province_Search({
       FlagActive: FlagActiveEnum.All,

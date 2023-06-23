@@ -37,6 +37,10 @@ export const useTransporterGridColumns = ({
       headerFilter: {
         dataSource: uniqueFilterByDataField(data, "TransporterCode"),
       },
+      editorOptions: {
+        validationMessageMode: "always",
+        placeholder: "Nhập vào",
+      },
     },
 
     {
@@ -49,6 +53,10 @@ export const useTransporterGridColumns = ({
       validationRules: [RequiredField(t("DealerTypeIsRequired"))],
       headerFilter: {
         dataSource: uniqueFilterByDataField(data, "TransporterName"),
+      },
+      editorOptions: {
+        validationMessageMode: "always",
+        placeholder: "Nhập vào",
       },
     },
 
@@ -63,6 +71,10 @@ export const useTransporterGridColumns = ({
       headerFilter: {
         dataSource: uniqueFilterByDataField(data, "TransportContractNo"),
       },
+      editorOptions: {
+        validationMessageMode: "always",
+        placeholder: "Nhập vào",
+      },
     },
 
     {
@@ -72,9 +84,12 @@ export const useTransporterGridColumns = ({
       columnIndex: 1,
       groupKey: "BASIC_INFORMATION",
       editorType: "dxTextBox",
-      validationRules: [RequiredField(t("DealerTypeIsRequired"))],
       headerFilter: {
         dataSource: uniqueFilterByDataField(data, "Address"),
+      },
+      editorOptions: {
+        validationMessageMode: "always",
+        placeholder: "Nhập vào",
       },
     },
 
@@ -85,9 +100,12 @@ export const useTransporterGridColumns = ({
       columnIndex: 1,
       groupKey: "BASIC_INFORMATION",
       editorType: "dxTextBox",
-      validationRules: [RequiredField(t("DealerTypeIsRequired"))],
       headerFilter: {
         dataSource: uniqueFilterByDataField(data, "PhoneNo"),
+      },
+      editorOptions: {
+        validationMessageMode: "always",
+        placeholder: "Nhập vào",
       },
     },
 
@@ -98,9 +116,12 @@ export const useTransporterGridColumns = ({
       columnIndex: 1,
       groupKey: "BASIC_INFORMATION",
       editorType: "dxTextBox",
-      validationRules: [RequiredField(t("DealerTypeIsRequired"))],
       headerFilter: {
         dataSource: uniqueFilterByDataField(data, "FaxNo"),
+      },
+      editorOptions: {
+        validationMessageMode: "always",
+        placeholder: "Nhập vào",
       },
     },
 
@@ -111,9 +132,12 @@ export const useTransporterGridColumns = ({
       columnIndex: 2,
       groupKey: "BASIC_INFORMATION",
       editorType: "dxTextBox",
-      validationRules: [RequiredField(t("DealerTypeIsRequired"))],
       headerFilter: {
         dataSource: uniqueFilterByDataField(data, "DirectorFullName"),
+      },
+      editorOptions: {
+        validationMessageMode: "always",
+        placeholder: "Nhập vào",
       },
     },
 
@@ -124,9 +148,12 @@ export const useTransporterGridColumns = ({
       columnIndex: 2,
       groupKey: "BASIC_INFORMATION",
       editorType: "dxTextBox",
-      validationRules: [RequiredField(t("DealerTypeIsRequired"))],
       headerFilter: {
         dataSource: uniqueFilterByDataField(data, "DirectorPhoneNo"),
+      },
+      editorOptions: {
+        validationMessageMode: "always",
+        placeholder: "Nhập vào",
       },
     },
 
@@ -137,9 +164,12 @@ export const useTransporterGridColumns = ({
       columnIndex: 2,
       groupKey: "BASIC_INFORMATION",
       editorType: "dxTextBox",
-      validationRules: [RequiredField(t("DealerTypeIsRequired"))],
       headerFilter: {
         dataSource: uniqueFilterByDataField(data, "ContactorFullName"),
+      },
+      editorOptions: {
+        validationMessageMode: "always",
+        placeholder: "Nhập vào",
       },
     },
 
@@ -150,9 +180,12 @@ export const useTransporterGridColumns = ({
       columnIndex: 2,
       groupKey: "BASIC_INFORMATION",
       editorType: "dxTextBox",
-      validationRules: [RequiredField(t("DealerTypeIsRequired"))],
       headerFilter: {
         dataSource: uniqueFilterByDataField(data, "ContactorPhoneNo"),
+      },
+      editorOptions: {
+        validationMessageMode: "always",
+        placeholder: "Nhập vào",
       },
     },
 
@@ -163,14 +196,17 @@ export const useTransporterGridColumns = ({
       columnIndex: 2,
       groupKey: "BASIC_INFORMATION",
       editorType: "dxTextBox",
-      validationRules: [RequiredField(t("DealerTypeIsRequired"))],
       headerFilter: {
         dataSource: uniqueFilterByDataField(data, "Remark"),
+      },
+      editorOptions: {
+        validationMessageMode: "always",
+        placeholder: "Nhập vào",
       },
     },
     {
       dataField: "FlagActive",
-      caption: t("Status"),
+      caption: "Trạng thái",
       editorType: "dxSwitch",
       columnIndex: 2,
       headerFilter: {
