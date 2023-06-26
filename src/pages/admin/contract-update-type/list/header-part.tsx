@@ -4,7 +4,7 @@ import { showErrorAtom } from "@/packages/store";
 import { HeaderForm } from "@/packages/ui/header-form/header-form";
 import { useAtomValue, useSetAtom } from "jotai";
 import { toast } from "react-toastify";
-import { selectedItemAtom, keywordAtom } from "../components/screen-atom";
+import { keywordAtom, selectedItemAtom } from "../components/screen-atom";
 
 interface IHeaderPartProps {
   onAddNew?: () => void;
@@ -14,31 +14,35 @@ interface IHeaderPartProps {
 
 export const HeaderPart = ({
   onAddNew,
-  onUploadFile,
   onDownloadTemplate,
+  onUploadFile,
 }: IHeaderPartProps) => {
   const { t } = useI18n("Common");
   const selectedItems = useAtomValue(selectedItemAtom);
-  const setKeyWords = useSetAtom(keywordAtom);
-  const showError = useSetAtom(showErrorAtom);
+  const setKeyWord = useSetAtom(keywordAtom);
   const api = useClientgateApi();
-
-  const handleSearch = (keyWord: string) => {
-    setKeyWords(keyWord);
-  };
+  const showError = useSetAtom(showErrorAtom);
 
   const handleExportExcel = async (selectedOnly: boolean) => {
-    // const resp = await api.Mst_Port_Export(selectedItems)
-    // if (resp.isSuccess) {
-    //   toast.success("Download Successfully!");
-    //   window.location.href = resp.Data;
-    // } else {
-    //   showError({
-    //     message: t(resp.errorCode),
-    //     debugInfo: resp.debugInfo,
-    //     errorInfo: resp.errorInfo,
-    //   });
-    // }
+    const resp =
+      await api.Mst_ContractUpdateType_ExportByListContractUpdateType(
+        selectedItems
+      );
+
+    if (resp.isSuccess) {
+      toast.success("Download Successfully!");
+      window.location.href = resp.Data;
+    } else {
+      showError({
+        message: t(resp.errorCode),
+        debugInfo: resp.debugInfo,
+        errorInfo: resp.errorInfo,
+      });
+    }
+  };
+
+  const handleSearch = (keyWord: string) => {
+    setKeyWord(keyWord);
   };
 
   return (

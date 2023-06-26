@@ -9,9 +9,8 @@ import {
 import { showErrorAtom } from "@/packages/store";
 import {
   FlagActiveEnum,
-  Mst_Transporter,
+  Mst_CarSpec,
   SearchMst_CarSpecParam,
-  Search_Mst_Transporter,
 } from "@/packages/types";
 import { GridViewPopup } from "@/packages/ui/base-gridview";
 import { SearchPanelV2 } from "@/packages/ui/search-panel";
@@ -62,15 +61,59 @@ export const CarSpecPage = () => {
   );
   console.log("🚀 ~ data:", data);
 
+  // const { data: dataAllActive } = useQuery(["carSpecModeCode"], () =>
+  //   api.Mst_CarSpec_GetAllActive()
+  // );
+  // console.log("🚀 ~ dataAllActive:", dataAllActive);
+
   const searchConditions: IItemProps[] = [
     {
-      caption: "Mã DVVT",
-      dataField: "TransporterCode",
+      caption: "Mã Spec",
+      dataField: "SpecCode",
       editorType: "dxTextBox",
       editorOptions: {
         placeholder: "Nhập",
       },
     },
+
+    {
+      caption: "Mô tả Spec",
+      dataField: "SpecDescription",
+      editorType: "dxTextBox",
+      editorOptions: {
+        placeholder: "Nhập",
+      },
+    },
+
+    {
+      caption: "Mô tả Spec",
+      dataField: "AssemblyStatus",
+      editorType: "dxSelectBox",
+      editorOptions: {
+        // dataSource: data?.DataList ?? [],
+        // validationMessageMode: "always",
+        // displayExpr: "AssemblyStatus",
+        // valueExpr: "AssemblyStatus",
+        searchEnabled: true,
+        valueExpr: "value",
+        displayExpr: "text",
+        items: [
+          {
+            value: "",
+            text: "Tất cả",
+          },
+          {
+            value: "CKD",
+            text: "CKD",
+          },
+          {
+            value: "CBU",
+            text: "CBU",
+          },
+        ],
+      },
+    },
+
     {
       caption: "Trạng thái",
       dataField: "FlagActive",
@@ -103,6 +146,7 @@ export const CarSpecPage = () => {
 
   const formSettings = useFormSettings({
     columns,
+    carSpecDs: data?.DataList,
   });
 
   // Handle form
@@ -119,53 +163,53 @@ export const CarSpecPage = () => {
   };
 
   const handleDelete = async (id: string) => {
-    // const resp = await api.Mst_Transporter_Delete(id);
-    // if (resp.isSuccess) {
-    //   toast.success(t("Delete Successfully"));
-    //   await refetch();
-    //   return true;
-    // }
-    // showError({
-    //   message: t(resp.errorCode),
-    //   debugInfo: resp.debugInfo,
-    //   errorInfo: resp.errorInfo,
-    // });
-    // throw new Error(resp.errorCode);
+    const resp = await api.Mst_CarSpec_Delete(id);
+    if (resp.isSuccess) {
+      toast.success(t("Delete Successfully"));
+      await refetch();
+      return true;
+    }
+    showError({
+      message: t(resp.errorCode),
+      debugInfo: resp.debugInfo,
+      errorInfo: resp.errorInfo,
+    });
+    throw new Error(resp.errorCode);
   };
 
-  const handleUpdate = async (id: string, data: Mst_Transporter) => {
-    // const resp = await api.Mst_Transporter_Update(id, {
-    //   ...data,
-    // });
-    // if (resp.isSuccess) {
-    //   toast.success(t("Update Successfully"));
-    //   await refetch();
-    //   return true;
-    // }
-    // showError({
-    //   message: t(resp.errorCode),
-    //   debugInfo: resp.debugInfo,
-    //   errorInfo: resp.errorInfo,
-    // });
-    // throw new Error(resp.errorCode);
+  const handleUpdate = async (id: string, data: Mst_CarSpec) => {
+    const resp = await api.Mst_CarSpec_Update(id, {
+      ...data,
+    });
+    if (resp.isSuccess) {
+      toast.success(t("Update Successfully"));
+      await refetch();
+      return true;
+    }
+    showError({
+      message: t(resp.errorCode),
+      debugInfo: resp.debugInfo,
+      errorInfo: resp.errorInfo,
+    });
+    throw new Error(resp.errorCode);
   };
 
-  const handleCreate = async (data: Mst_Transporter & { __KEY__: string }) => {
-    // const { __KEY__, ...rest } = data;
-    // const resp = await api.Mst_Transporter_Create({
-    //   ...rest,
-    // });
-    // if (resp.isSuccess) {
-    //   toast.success(t("Create Successfully"));
-    //   await refetch();
-    //   return true;
-    // }
-    // showError({
-    //   message: t(resp.errorCode),
-    //   debugInfo: resp.debugInfo,
-    //   errorInfo: resp.errorInfo,
-    // });
-    // throw new Error(resp.errorCode);
+  const handleCreate = async (data: Mst_CarSpec & { __KEY__: string }) => {
+    const { __KEY__, ...rest } = data;
+    const resp = await api.Mst_CarSpec_Create({
+      ...rest,
+    });
+    if (resp.isSuccess) {
+      toast.success(t("Create Successfully"));
+      await refetch();
+      return true;
+    }
+    showError({
+      message: t(resp.errorCode),
+      debugInfo: resp.debugInfo,
+      errorInfo: resp.errorInfo,
+    });
+    throw new Error(resp.errorCode);
   };
 
   //Headerpart
@@ -216,45 +260,54 @@ export const CarSpecPage = () => {
   };
 
   const handleSavingRow = async (e: any) => {
-    // if (e.changes && e.changes.length > 0) {
-    //   const { type } = e.changes[0];
-    //   if (type === "remove") {
-    //     const id = e.changes[0].key;
-    //     e.promise = handleDelete(id);
-    //   } else if (type === "insert") {
-    //     const data = e.changes[0].data!;
-    //     e.promise = handleCreate(data);
-    //   } else if (type === "update") {
-    //     e.promise = handleUpdate(e.changes[0].key, e.changes[0].data!);
-    //   }
-    // }
+    if (e.changes && e.changes.length > 0) {
+      const { type } = e.changes[0];
+      if (type === "remove") {
+        const id = e.changes[0].key;
+        e.promise = handleDelete(id);
+      } else if (type === "insert") {
+        const data = e.changes[0].data!;
+        e.promise = handleCreate(data);
+      } else if (type === "update") {
+        e.promise = handleUpdate(e.changes[0].key, e.changes[0].data!);
+      }
+    }
   };
 
   const handleEditorPreparing = (e: EditorPreparingEvent) => {
-    // if (["TransporterCode"].includes(e.dataField!)) {
-    //   e.editorOptions.readOnly = !e.row?.isNewRow;
-    // } else if (e.dataField === "FlagActive") {
-    //   e.editorOptions.value = true;
-    // }
+    if (
+      [
+        "ModelCode",
+        "SpecCode",
+        "RootSpec",
+        "StdOptCode",
+        "OCNCode",
+        "GradeCode",
+      ].includes(e.dataField!)
+    ) {
+      e.editorOptions.readOnly = !e.row?.isNewRow;
+    } else if (e.dataField === "FlagActive") {
+      e.editorOptions.value = true;
+    }
   };
 
   const handleEditRowChanges = () => {};
 
   const handleDeleteRows = async (ids: string[]) => {
-    // loadingControl.open();
-    // const resp = await api.Mst_Transporter_DeleteMultiple(ids);
-    // loadingControl.close();
-    // if (resp.isSuccess) {
-    //   toast.success(t("Delete Successfully"));
-    //   await refetch();
-    //   return true;
-    // }
-    // showError({
-    //   message: t(resp.errorCode),
-    //   debugInfo: resp.debugInfo,
-    //   errorInfo: resp.errorInfo,
-    // });
-    // throw new Error(resp.errorCode);
+    loadingControl.open();
+    const resp = await api.Mst_CarSpec_DeleteMultiple(ids);
+    loadingControl.close();
+    if (resp.isSuccess) {
+      toast.success(t("Delete Successfully"));
+      await refetch();
+      return true;
+    }
+    showError({
+      message: t(resp.errorCode),
+      debugInfo: resp.debugInfo,
+      errorInfo: resp.errorInfo,
+    });
+    throw new Error(resp.errorCode);
   };
 
   const handleOnEditRow = (e: any) => {
@@ -298,7 +351,7 @@ export const CarSpecPage = () => {
             {!loadingControl.visible && (
               <>
                 <GridViewPopup
-                  keyExpr={"TransporterCode"}
+                  keyExpr={["SpecCode"]}
                   isLoading={isLoading}
                   dataSource={data?.isSuccess ? data.DataList ?? [] : []}
                   columns={columns}

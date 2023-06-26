@@ -389,7 +389,7 @@ export const DealerManagementPageClone = () => {
                       },
                     },
                   ]}
-                  storeKey={"dealer-management-columns"}
+                  storeKey={"dealerClone-management-columns"}
                 />
                 <DealerPopupView
                   onEdit={handleEdit}

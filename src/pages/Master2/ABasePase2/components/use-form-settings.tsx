@@ -9,6 +9,7 @@ interface UseFormSettingsProps {
 export const useFormSettings = ({
   columns: inputColumns,
 }: UseFormSettingsProps) => {
+  console.log("🚀 ~ inputColumns:", inputColumns);
   const { t } = useI18n("Base");
 
   const columns = inputColumns.map((c) => {
@@ -58,13 +59,12 @@ export const useFormSettings = ({
     items: [
       {
         itemType: "group",
-        caption: t("BASIC_INFORMATION"),
+        caption: "Thông tin cơ bản",
         colCount: 2,
         cssClass: "collapsible form-group",
         items: zip(basicInformationFirstColumn, basicInformationSecondColumn),
       },
     ],
   };
-
   return formSettings;
 };

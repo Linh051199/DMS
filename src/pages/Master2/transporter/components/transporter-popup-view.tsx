@@ -13,33 +13,6 @@ export const TransporterPopupView = ({
   onEdit,
   formSettings,
 }: TransporterViewProps) => {
-  // const { t } = useI18n("Common");
-  // const [viewingItem, setViewingItem] = useAtom(viewingDataAtom);
-
-  // const handleEdit = () => {
-  //   let rowIndex = viewingItem?.rowIndex;
-  //   if (viewingItem) {
-  //     setViewingItem(undefined);
-  //   }
-  //   if (typeof rowIndex === "number") {
-  //     onEdit(rowIndex);
-  //   }
-  // };
-
-  // const handleCancel = () => {
-  //   setViewingItem(undefined);
-  // };
-
-  // return (
-  //   <PopupView
-  //     visible={!!viewingItem.item}
-  //     title={t("ViewTransporter")}
-  //     handleEdit={handleEdit}
-  //     handleCancel={handleCancel}
-  //     formSettings={formSettings}
-  //     data={viewingItem.item}
-  //   />
-  // );
   const { t } = useI18n("Common");
   const [viewingItem, setViewingItem] = useAtom(viewingDataAtom);
 

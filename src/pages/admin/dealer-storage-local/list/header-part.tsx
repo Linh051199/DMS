@@ -24,21 +24,24 @@ export const HeaderPart = ({
   const api = useClientgateApi();
 
   const handleSearch = (keyWord: string) => {
+    console.log("🚀 ~ keyWord:", keyWord);
     setKeyWords(keyWord);
   };
 
   const handleExportExcel = async (selectedOnly: boolean) => {
-    // const resp = await api.Mst_Port_Export(selectedItems)
-    // if (resp.isSuccess) {
-    //   toast.success("Download Successfully!");
-    //   window.location.href = resp.Data;
-    // } else {
-    //   showError({
-    //     message: t(resp.errorCode),
-    //     debugInfo: resp.debugInfo,
-    //     errorInfo: resp.errorInfo,
-    //   });
-    // }
+    const resp = await api.Dlr_StorageLocal_ExportByListStorageCode(
+      selectedItems
+    );
+    if (resp.isSuccess) {
+      toast.success("Download Successfully!");
+      window.location.href = resp.Data;
+    } else {
+      showError({
+        message: t(resp.errorCode),
+        debugInfo: resp.debugInfo,
+        errorInfo: resp.errorInfo,
+      });
+    }
   };
 
   return (

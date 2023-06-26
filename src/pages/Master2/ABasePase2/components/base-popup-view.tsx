@@ -27,7 +27,7 @@ export const BasePopupView = ({
   };
 
   const handleCancel = () => {
-    setViewingItem(undefined)
+    setViewingItem(undefined);
   };
 
   return (

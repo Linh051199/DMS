@@ -35,7 +35,7 @@ export const BasePage = () => {
   // call API
 
   const { data, isLoading, refetch } = useQuery(["data", keyword], () =>
-    api.Mst_DealerSalesGroupType_Search({
+    api.Dlr_StorageLocal_Search({
       KeyWord: keyword,
       FlagActive: FlagActiveEnum.All,
       Ft_PageIndex: 0,

@@ -28,17 +28,17 @@ export const HeaderPart = ({
   };
 
   const handleExportExcel = async (selectedOnly: boolean) => {
-    // const resp = await api.Mst_Port_Export(selectedItems)
-    // if (resp.isSuccess) {
-    //   toast.success("Download Successfully!");
-    //   window.location.href = resp.Data;
-    // } else {
-    //   showError({
-    //     message: t(resp.errorCode),
-    //     debugInfo: resp.debugInfo,
-    //     errorInfo: resp.errorInfo,
-    //   });
-    // }
+    const resp = await api.Mst_StorageGlobal_ExportByListStorageCodeAndModelCode(selectedItems)
+    if (resp.isSuccess) {
+      toast.success("Download Successfully!");
+      window.location.href = resp.Data;
+    } else {
+      showError({
+        message: t(resp.errorCode),
+        debugInfo: resp.debugInfo,
+        errorInfo: resp.errorInfo,
+      });
+    }
   };
 
   return (
