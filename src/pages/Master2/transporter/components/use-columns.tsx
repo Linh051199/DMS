@@ -1,12 +1,16 @@
 import { useI18n } from "@/i18n/useI18n";
 import { filterByFlagActive, uniqueFilterByDataField } from "@/packages/common";
-import { RequiredField } from "@/packages/common/Validation_Rules";
+import {
+  ExcludeSpecialCharactersType,
+  RequiredField,
+} from "@/packages/common/Validation_Rules";
 import { Mst_Transporter } from "@/packages/types";
 import { ColumnOptions } from "@/packages/ui/base-gridview";
 import { StatusButton } from "@/packages/ui/status-button";
 import { useSetAtom } from "jotai";
 import { nanoid } from "nanoid";
 import { viewingDataAtom } from "./transporter-store";
+import { LinkCell } from "@/packages/ui/link-cell";
 
 interface UseTransporterGridColumns {
   data: Mst_Transporter[];
@@ -32,14 +36,28 @@ export const useTransporterGridColumns = ({
       visible: true,
       columnIndex: 1,
       groupKey: "BASIC_INFORMATION",
-      editorType: "dxTextBox",
-      validationRules: [RequiredField(t("DealerTypeIsRequired"))],
-      headerFilter: {
-        dataSource: uniqueFilterByDataField(data, "TransporterCode"),
+
+      cellRender: ({ data, rowIndex, value }: any) => {
+        return (
+          <LinkCell
+            key={nanoid()}
+            onClick={() => viewRow(rowIndex, data)}
+            value={value}
+          />
+        );
       },
+      setCellValue: (newData: any, value: any) => {
+        newData.DealerCode = value;
+        newData.BUCode = `HTV.${value}`;
+        newData.BUPattern = `HTV.${value}%`;
+      },
+      validationRules: [
+        RequiredField(t("DealerCodeIsRequired")),
+        ExcludeSpecialCharactersType,
+      ],
       editorOptions: {
+        placeholder: t("Input"),
         validationMessageMode: "always",
-        placeholder: "Nhập vào",
       },
     },
 
