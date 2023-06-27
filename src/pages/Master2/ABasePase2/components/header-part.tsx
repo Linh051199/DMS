@@ -3,6 +3,7 @@ import { useClientgateApi } from "@/packages/api";
 import { PageHeaderNoSearchLayout } from "@/packages/layouts/page-header-layout-2/page-header-nosearch-layout";
 import { logger } from "@/packages/logger";
 import { showErrorAtom } from "@/packages/store";
+import { SearchMst_CarStdOptParam } from "@/packages/types";
 import { useExportExcel } from "@/packages/ui/export-excel/use-export-excel";
 import { useUploadFile } from "@/packages/ui/upload-file/use-upload-file";
 import { Button } from "devextreme-react";
@@ -17,18 +18,16 @@ import { selectedItemsAtom } from "./base-store";
 
 interface IHeaderPartProps {
   onAddNew: () => void;
+  searchCondition: Partial<SearchMst_CarStdOptParam>;
 }
 
+export const HeaderPart = ({ onAddNew, searchCondition }: IHeaderPartProps) => {
+  const { t } = useI18n("Base");
+  const selectedItems = useAtomValue(selectedItemsAtom);
+  const api = useClientgateApi();
+  const showError = useSetAtom(showErrorAtom);
 
-
-export const HeaderPart = ({ onAddNew }: IHeaderPartProps) => {
-
-  const {t} = useI18n('Base')
-  const selectedItems = useAtomValue(selectedItemsAtom)
-  const api = useClientgateApi()
-  const showError = useSetAtom(showErrorAtom)
-
-  const handleUploadFiles =async(file: File[]) => {
+  const handleUploadFiles = async (file: File[]) => {
     // const resp = await api.Mst_Dealer_Import(files[0]);
     // if (resp.isSuccess) {
     //   toast.success(t("UploadSuccessfully"));
@@ -39,9 +38,9 @@ export const HeaderPart = ({ onAddNew }: IHeaderPartProps) => {
     //     errorInfo: resp.errorInfo,
     //   });
     // }
-  }
+  };
 
-  const onDownloadTemplate = async() =>{
+  const onDownloadTemplate = async () => {
     // const resp = await api.Mst_Dealer_ExportTemplate();
     // if (resp.isSuccess) {
     //   toast.success(t("DownloadSuccessfully"));
@@ -53,10 +52,10 @@ export const HeaderPart = ({ onAddNew }: IHeaderPartProps) => {
     //     errorInfo: resp.errorInfo,
     //   });
     // }
-  }
+  };
 
-  const handleExportExcel =async(selectedOnly: boolean) => {
-    logger.debug("selectedOnly:", selectedOnly);
+  const handleExportExcel = async (selectedOnly: boolean) => {
+    // logger.debug("selectedOnly:", selectedOnly);
     // let resp = await match(selectedOnly)
     //   .with(true, async () => {
     //     return await api.Mst_Dealer_ExportByListDealerCode(selectedItems);
@@ -74,16 +73,16 @@ export const HeaderPart = ({ onAddNew }: IHeaderPartProps) => {
     //     errorInfo: resp.errorInfo,
     //   });
     // }
-  }
+  };
 
   const { uploadButton, uploadDialog } = useUploadFile({
     handleUploadFiles,
     onDownloadTemplate,
-    buttonClassName: 'w-full'
+    buttonClassName: "w-full",
   });
-  
+
   const { exportButton, exportDialog } = useExportExcel({
-    buttonClassName: 'w-full',
+    buttonClassName: "w-full",
     selectedItems,
     onExportExcel: handleExportExcel,
   });

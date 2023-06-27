@@ -2,9 +2,9 @@ import { useI18n } from "@/i18n/useI18n";
 import { PopupView } from "@/packages/ui/popup-view";
 import { FormOptions } from "@/types";
 import { useAtom } from "jotai";
-import { viewingDataAtom } from "./base-store";
+import { viewingDataAtom } from "./car-std-opt-store";
 
-interface IPopupViewComponent {
+export interface IPopupViewProps {
   onEdit: (rowIndex: number) => void;
   formSettings: FormOptions;
 }
@@ -12,8 +12,9 @@ interface IPopupViewComponent {
 export const PopupViewComponent = ({
   onEdit,
   formSettings,
-}: IPopupViewComponent) => {
-  const { t } = useI18n("Common");
+}: IPopupViewProps) => {
+  const { t } = useI18n("Mst_CarStdOpt");
+
   const [viewingItem, setViewingItem] = useAtom(viewingDataAtom);
 
   const handleEdit = () => {
@@ -21,7 +22,7 @@ export const PopupViewComponent = ({
     if (viewingItem) {
       setViewingItem(undefined);
     }
-    if (typeof rowIndex === "number") {
+    if (typeof rowIndex == "number") {
       onEdit(rowIndex);
     }
   };
@@ -29,11 +30,10 @@ export const PopupViewComponent = ({
   const handleCancel = () => {
     setViewingItem(undefined);
   };
-
   return (
     <PopupView
       visible={!!viewingItem.item}
-      title={t("ViewingBase")}
+      title={t("View Mst_CarStdOpt")}
       handleEdit={handleEdit}
       handleCancel={handleCancel}
       formSettings={formSettings}

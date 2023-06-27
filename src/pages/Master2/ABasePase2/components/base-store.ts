@@ -7,6 +7,11 @@ import { atom } from "jotai";
 
 export const selectedItemsAtom = atom<string[]>([]);
 
+export enum ViewMode {
+  ReadOnly = "readonly",
+  Edit = "edit",
+}
+
 export const viewingRowAtom = atom<number | undefined>(undefined);
 
 export const viewingItemAtom = atom<Mst_Dealer | undefined>(undefined);
@@ -29,15 +34,3 @@ export const viewingDataAtom = atom(
     }
   }
 );
-
-export const searchConditionAtom = atom<SearchDealerParam>({
-  FlagActive: FlagActiveEnum.All,
-  Ft_PageIndex: 0,
-  Ft_PageSize: 9999,
-  KeyWord: "",
-  DealerCode: "",
-  DealerName: "",
-  FlagAutoLXX: FlagActiveEnum.All,
-  FlagAutoMapVIN: FlagActiveEnum.All,
-  FlagAutoSOAppr: FlagActiveEnum.All,
-});

@@ -308,10 +308,20 @@ export const adminRoutes: RouteItem[] = [
 
     getPageElement: () => <Mst_QuotaPage />,
   },
+
+  {
+    key: "CarSpecManagement", // Key menu con
+    path: "admin/carSpec", // Address trên browser
+    subMenuTitle: "Quản lý đặc tả xe", // Title menu con
+    mainMenuKey: "admin", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
+
+    getPageElement: () => <CarSpecPage />,
+  },
   {
     key: "dealerManagement",
     path: "admin/dealerClone",
-    subMenuTitle: "Quản lý đại lý (Clone)",
+    subMenuTitle: "Quản lý đại lý ",
     mainMenuKey: "admin",
     permissionCode: "MNU_ADMIN_DEALER",
     getPageElement: () => <DealerManagementPageClone />,
@@ -325,15 +335,7 @@ export const adminRoutes: RouteItem[] = [
 
     getPageElement: () => <TransporterPage />,
   },
-  {
-    key: "CarSpecManagement", // Key menu con
-    path: "admin/carSpec", // Address trên browser
-    subMenuTitle: "Quản lý đặc tả xe", // Title menu con
-    mainMenuKey: "admin", // Key của menu cha
-    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
 
-    getPageElement: () => <CarSpecPage />,
-  },
   {
     key: "CarStdOptManagement", // Key menu con
     path: "admin/carStdOpt", // Address trên browser

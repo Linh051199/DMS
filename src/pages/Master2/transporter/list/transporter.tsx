@@ -34,6 +34,7 @@ export const TransporterPage = () => {
   const api = useClientgateApi();
   const setSelectedItems = useSetAtom(selectedItemsAtom);
   const showError = useSetAtom(showErrorAtom);
+  const loadingControl = useVisibilityControl({ defaultVisible: false }); //Load panel
 
   const [searchCondition, setSearchCondition] = useState<
     Partial<Search_Mst_Transporter>
@@ -56,10 +57,9 @@ export const TransporterPage = () => {
   console.log("🚀 ~ data:", data);
 
   const columns = useTransporterGridColumns({ data: data?.DataList ?? [] });
-  console.log("🚀 ~ columns:", columns);
 
   const handleSubmit = () => {
-    gridRef.current?.instance?.saveEditData();
+    gridRef.current.instance.saveEditData();
   };
 
   const handleCancel = () => {
@@ -117,7 +117,7 @@ export const TransporterPage = () => {
   };
   //HeaderPart
   const handleAddNew = () => {
-    gridRef?.current?.instance?.addRow();
+    gridRef.current.instance.addRow();
   };
 
   //SearchPanelV2
@@ -128,8 +128,6 @@ export const TransporterPage = () => {
     });
   };
 
-  //LoadPanel
-  const loadingControl = useVisibilityControl({ defaultVisible: false });
 
   //GridViewPopup
   const popupSettings: IPopupOptions = {
@@ -299,7 +297,7 @@ export const TransporterPage = () => {
             {!loadingControl.visible && (
               <>
                 <GridViewPopup
-                  keyExpr={"TransporterCode"}
+                  keyExpr={["TransporterCode"]}
                   isLoading={isLoading}
                   dataSource={data?.isSuccess ? data.DataList ?? [] : []}
                   columns={columns}

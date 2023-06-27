@@ -28,12 +28,3 @@ export const viewingDataAtom = atom(
     }
   }
 );
-
-export const searchConditionAtom = atom<Search_Mst_Transporter>({
-  FlagActive: FlagActiveEnum.All,
-  Ft_PageIndex: 0,
-  Ft_PageSize: 9999,
-  KeyWord: "",
-  TransporterCode: "",
-  TransporterName: "",
-});

@@ -3,6 +3,7 @@ import { filterByFlagActive, uniqueFilterByDataField } from "@/packages/common";
 import {
   ExcludeSpecialCharactersType,
   RequiredField,
+  requiredType,
 } from "@/packages/common/Validation_Rules";
 import { Mst_Transporter } from "@/packages/types";
 import { ColumnOptions } from "@/packages/ui/base-gridview";
@@ -11,6 +12,9 @@ import { useSetAtom } from "jotai";
 import { nanoid } from "nanoid";
 import { viewingDataAtom } from "./transporter-store";
 import { LinkCell } from "@/packages/ui/link-cell";
+import { useCallback } from "react";
+import CustomStore from "devextreme/data/custom_store";
+import { useClientgateApi } from "@/packages/api";
 
 interface UseTransporterGridColumns {
   data: Mst_Transporter[];
@@ -20,6 +24,7 @@ export const useTransporterGridColumns = ({
   data,
 }: UseTransporterGridColumns) => {
   const setViewingItem = useSetAtom(viewingDataAtom);
+  const api = useClientgateApi();
 
   const viewRow = (rowIndex: number, data: Mst_Transporter) => {
     setViewingItem({
@@ -28,16 +33,45 @@ export const useTransporterGridColumns = ({
     });
   };
 
+  // const lookupSpecDataSource = useCallback((options: any, key: string) => {
+  //   return {
+  //     store: new CustomStore({
+  //       key: "SpecCode",
+  //       loadMode: "raw",
+  //       load: () => {
+  //         if (!options.data?.[key]) {
+  //           return api.Mst_Transporter_GetAllActive().then((resp: any) => {
+  //             return resp.DataList ?? [];
+  //           });
+  //         }
+  //         return api
+  //           .Mst_CarSpec_GetByModelCode(options.data?.[key] ?? "*")
+  //           .then((resp) => {
+  //             return resp.DataList ?? [];
+  //           })
+  //           .catch(() => {
+  //             throw "Network error";
+  //           });
+  //       },
+  //     }),
+  //     filter: options.data?.[key]
+  //       ? ["ModelCode", "=", options.data?.[key]]
+  //       : null,
+  //     sort: "SpecName",
+  //   };
+  // }, []);
+
   const { t } = useI18n("Transporter");
   const columns: ColumnOptions[] = [
     {
-      dataField: "TransporterCode",
-      caption: "Mã DVVT",
-      visible: true,
-      columnIndex: 1,
       groupKey: "BASIC_INFORMATION",
-
+      dataField: "TransporterCode", // Mã chương trình
+      caption: t("QuotaCode"), // title hiển thị ở màn hình
+      editorType: "dxTextBox", // kiểu của column ( trong trường hợp này là input )
+      columnIndex: 1, // vị trí cột được hiển thị trong popup ở theo hàng dọc
+      validationRules: [requiredType,ExcludeSpecialCharactersType], // validate, không đc viết ký tự đặc biệt
       cellRender: ({ data, rowIndex, value }: any) => {
+        // customize lại cột
         return (
           <LinkCell
             key={nanoid()}
@@ -46,20 +80,33 @@ export const useTransporterGridColumns = ({
           />
         );
       },
-      setCellValue: (newData: any, value: any) => {
-        newData.DealerCode = value;
-        newData.BUCode = `HTV.${value}`;
-        newData.BUPattern = `HTV.${value}%`;
-      },
-      validationRules: [
-        RequiredField(t("DealerCodeIsRequired")),
-        ExcludeSpecialCharactersType,
-      ],
-      editorOptions: {
-        placeholder: t("Input"),
-        validationMessageMode: "always",
+      headerFilter: {
+        // hiển thị headerFilter dữ liệu của cột đó theo tiêu chuẩn nào đó
+        dataSource: uniqueFilterByDataField(data, "TransporterCode", t("( Empty )")),
       },
     },
+    // {
+    //   groupKey: "BASIC_INFORMATION",
+    //   dataField: "TransporterCode", // Mã chương trình
+    //   caption: "Mã DVVT", // title hiển thị ở màn hình
+    //   editorType: "dxTextBox", // kiểu của column ( trong trường hợp này là input )
+    //   columnIndex: 1, // vị trí cột được hiển thị trong popup ở theo hàng dọc
+    //   validationRules: [requiredType,ExcludeSpecialCharactersType], // validate, không đc viết ký tự đặc biệt
+    //   cellRender: ({ data, rowIndex, value }: any) => {
+    //     // customize lại cột
+    //     return (
+    //       <LinkCell
+    //         key={nanoid()}
+    //         onClick={() => viewRow(rowIndex, data)}
+    //         value={value}
+    //       />
+    //     );
+    //   },
+    //   headerFilter: {
+    //     // hiển thị headerFilter dữ liệu của cột đó theo tiêu chuẩn nào đó
+    //     dataSource: uniqueFilterByDataField(data, "TransporterCode", t("( Empty )")),
+    //   },
+    // },
 
     {
       dataField: "TransporterName",

@@ -55,6 +55,7 @@ export const Mst_QuotaPage = () => {
       });
     }
   );
+  console.log("🚀 ~ data:", data);
 
   const { data: listDealer } = useQuery(["Dealer"], () => {
     return api.Mst_Dealer_GetAllActive();

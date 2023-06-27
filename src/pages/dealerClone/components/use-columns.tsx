@@ -42,28 +42,50 @@ export const useDealerGridColumns = ({data}: UseDealerGridColumnsProps) => {
   const {t} = useI18n("Dealer")
   const columns: ColumnOptions[] = [
     {
-      dataField: "DealerCode",
-      caption: t("DealerCode"),
-      visible: true,
-      columnIndex: 1,
       groupKey: "BASIC_INFORMATION",
-      cellRender: ({data, rowIndex, value}: any) => {
-        return <LinkCell key={nanoid()} onClick={() => viewRow(rowIndex, data)} value={value}/>;
+      dataField: "DealerCode", // Mã chương trình
+      caption: t("DealerCode"), // title hiển thị ở màn hình
+      editorType: "dxTextBox", // kiểu của column ( trong trường hợp này là input )
+      columnIndex: 1, // vị trí cột được hiển thị trong popup ở theo hàng dọc
+      // validationRules: [requiredType,ExcludeSpecialCharactersType], // validate, không đc viết ký tự đặc biệt
+      cellRender: ({ data, rowIndex, value }: any) => {
+        // customize lại cột
+        return (
+          <LinkCell
+            key={nanoid()}
+            onClick={() => viewRow(rowIndex, data)}
+            value={value}
+          />
+        );
       },
-      setCellValue: (newData: any, value: any) => {
-        newData.DealerCode = value;
-        newData.BUCode = `HTV.${value}`;
-        newData.BUPattern = `HTV.${value}%`;
-      },
-      validationRules: [
-        RequiredField(t("DealerCodeIsRequired")),
-        ExcludeSpecialCharactersType
-      ],
-      editorOptions: {
-        placeholder: t("Input"),
-        validationMessageMode: "always",
+      headerFilter: {
+        // hiển thị headerFilter dữ liệu của cột đó theo tiêu chuẩn nào đó
+        dataSource: uniqueFilterByDataField(data, "DealerCode", t("( Empty )")),
       },
     },
+    // {
+    //   dataField: "DealerCode",
+    //   caption: t("DealerCode"),
+    //   visible: true,
+    //   columnIndex: 1,
+    //   groupKey: "BASIC_INFORMATION",
+    //   cellRender: ({data, rowIndex, value}: any) => {
+    //     return <LinkCell key={nanoid()} onClick={() => viewRow(rowIndex, data)} value={value}/>;
+    //   },
+    //   setCellValue: (newData: any, value: any) => {
+    //     newData.DealerCode = value;
+    //     newData.BUCode = `HTV.${value}`;
+    //     newData.BUPattern = `HTV.${value}%`;
+    //   },
+    //   validationRules: [
+    //     RequiredField(t("DealerCodeIsRequired")),
+    //     ExcludeSpecialCharactersType
+    //   ],
+    //   editorOptions: {
+    //     placeholder: t("Input"),
+    //     validationMessageMode: "always",
+    //   },
+    // },
     {
       dataField: "DealerType",
       caption: t("Dealer Type"),

@@ -174,7 +174,7 @@ export const AreaPage = () => {
   const handleEditorPreparing = (e: EditorPreparingEvent<any, any>) => {
     if (e.dataField === "AreaCode") {
       e.editorOptions.readOnly = !e.row?.isNewRow;
-    } else if (e.dataField === "AreaName") {
+    } else if (e.dataField === "AreaRootCode") {
       e.editorOptions.readOnly = !e.row?.isNewRow;
     } else if (e.dataField === "FlagActive") {
       if (e.row?.isNewRow) {
@@ -285,7 +285,7 @@ export const AreaPage = () => {
         <BaseGridView
           keyExpr={["AreaCode"]}
           storeKey={"area-management-columns"}
-          defaultPageSize={config.PAGE_SIZE_10}
+          defaultPageSize={config.PAGE_SIZE}
           isLoading={isLoading}
           dataSource={areaData?.DataList ?? []}
           columns={columns}

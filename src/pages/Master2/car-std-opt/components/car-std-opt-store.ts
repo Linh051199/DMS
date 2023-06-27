@@ -1,11 +1,12 @@
-import {
-  FlagActiveEnum,
-  Mst_CarStdOpt,
-  SearchMst_CarStdOptParam,
-} from "@/packages/types";
 import { atom } from "jotai";
+import { Mst_CarStdOpt } from "@/packages/types";
 
 export const selectedItemsAtom = atom<string[]>([]);
+
+export enum ViewMode {
+  ReadOnly = "readonly",
+  Edit = "edit",
+}
 
 export const viewingRowAtom = atom<number | undefined>(undefined);
 export const viewingItemAtom = atom<Mst_CarStdOpt | undefined>(undefined);
@@ -27,13 +28,3 @@ export const viewingDataAtom = atom(
     }
   }
 );
-
-export const searchConditionAtom = atom<SearchMst_CarStdOptParam>({
-  FlagActive: FlagActiveEnum.All,
-  Ft_PageIndex: 0,
-  Ft_PageSize: 9999,
-  KeyWord: "",
-  ModelCode: "",
-  StdOptCode: "",
-  StdOptDescription: "",
-});

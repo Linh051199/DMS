@@ -3,6 +3,7 @@ import { filterByFlagActive, uniqueFilterByDataField } from "@/packages/common";
 import {
   ExcludeSpecialCharactersType,
   RequiredField,
+  requiredType,
 } from "@/packages/common/Validation_Rules";
 import { Mst_CarSpec } from "@/packages/types";
 import { LinkCell } from "@/packages/ui/link-cell";
@@ -57,19 +58,41 @@ export const UseCarSpecGridColumns = ({ data }: IUseBaseGridColumnsProps) => {
     //     validationMessageMode: "always",
     //   },
     // },
-
     {
-      dataField: "ModelCode",
-      caption: "Mã Model",
-      visible: true,
-      columnIndex: 1,
       groupKey: "BASIC_INFORMATION",
-      editorType: "dxSelectBox",
-      validationRules: [RequiredField(t("DealerTypeIsRequired"))],
+      dataField: "ModelCode", // Mã chương trình
+      caption: "Mã Model", // title hiển thị ở màn hình
+      editorType: "dxSelectBox", // kiểu của column ( trong trường hợp này là input )
+      columnIndex: 1, // vị trí cột được hiển thị trong popup ở theo hàng dọc
+      // validationRules: [requiredType,ExcludeSpecialCharactersType], // validate, không đc viết ký tự đặc biệt
+      cellRender: ({ data, rowIndex, value }: any) => {
+        // customize lại cột
+        return (
+          <LinkCell
+            key={nanoid()}
+            onClick={() => viewRow(rowIndex, data)}
+            value={value}
+          />
+        );
+      },
       headerFilter: {
-        dataSource: uniqueFilterByDataField(data, "ModelCode"),
+        // hiển thị headerFilter dữ liệu của cột đó theo tiêu chuẩn nào đó
+        dataSource: uniqueFilterByDataField(data, "ModelCode", t("( Empty )")),
       },
     },
+
+    // {
+    //   dataField: "ModelCode",
+    //   caption: "Mã Model",
+    //   visible: true,
+    //   columnIndex: 1,
+    //   groupKey: "BASIC_INFORMATION",
+    //   editorType: "dxSelectBox",
+    //   validationRules: [RequiredField(t("DealerTypeIsRequired"))],
+    //   headerFilter: {
+    //     dataSource: uniqueFilterByDataField(data, "ModelCode"),
+    //   },
+    // },
     {
       dataField: "SpecCode",
       caption: "Mã spec",

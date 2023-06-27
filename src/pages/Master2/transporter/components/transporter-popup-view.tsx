@@ -33,7 +33,7 @@ export const TransporterPopupView = ({
   return (
     <PopupView
       visible={!!viewingItem.item}
-      title={t("ViewDealer")}
+      title={t("View Mst_Quota")}
       handleEdit={handleEdit}
       handleCancel={handleCancel}
       formSettings={formSettings}

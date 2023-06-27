@@ -61,10 +61,19 @@ export const CarSpecPage = () => {
   );
   console.log("🚀 ~ data:", data);
 
-  // const { data: dataAllActive } = useQuery(["carSpecModeCode"], () =>
-  //   api.Mst_CarSpec_GetAllActive()
-  // );
-  // console.log("🚀 ~ dataAllActive:", dataAllActive);
+  const { data: dataAllActive } = useQuery(["carSpecModeCode"], () =>
+    api.Mst_CarSpec_GetAllActive()
+  );
+  console.log("🚀 ~ dataAllActive:", dataAllActive);
+
+  const { data: dataCarOCN } = useQuery(["carSpecModeCodeActive"], () =>
+    api.Mst_CarOCN_GetAllActive()
+  );
+
+  const { data: dataCarModel } = useQuery(["modelCode"], () =>
+    api.Mst_CarModel_GetAllActive()
+  );
+  console.log("🚀 ~ dataCarModel:", dataCarModel);
 
   const searchConditions: IItemProps[] = [
     {
@@ -147,6 +156,9 @@ export const CarSpecPage = () => {
   const formSettings = useFormSettings({
     columns,
     carSpecDs: data?.DataList,
+    dataAllActiveDS: dataAllActive?.DataList,
+    dataCarOCNDs: dataCarOCN?.DataList,
+    dataCarModelDs: dataCarModel?.DataList,
   });
 
   // Handle form

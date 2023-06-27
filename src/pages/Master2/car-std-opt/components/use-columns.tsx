@@ -1,25 +1,26 @@
 import { useI18n } from "@/i18n/useI18n";
-import { filterByFlagActive, uniqueFilterByDataField } from "@/packages/common";
+import { useClientgateApi } from "@/packages/api";
+import { uniqueFilterByDataField } from "@/packages/common";
 import {
   ExcludeSpecialCharactersType,
   RequiredField,
+  requiredType,
 } from "@/packages/common/Validation_Rules";
 import { Mst_CarStdOpt } from "@/packages/types";
 import { LinkCell } from "@/packages/ui/link-cell";
-import { StatusButton } from "@/packages/ui/status-button";
 import { ColumnOptions } from "@/types";
 import { useSetAtom } from "jotai";
 import { nanoid } from "nanoid";
-import { viewingDataAtom } from "./base-store";
+import { viewingDataAtom } from "./car-std-opt-store";
 
-interface IuseColumn {
+interface IUseColumnProps {
   data: Mst_CarStdOpt[];
 }
 
-export const useColumn = ({ data }: IuseColumn) => {
-  const { t } = useI18n("Base");
-
+export const useColumn = ({ data }: IUseColumnProps) => {
+  const { t } = useI18n("Mst_CarStdOpt");
   const setViewingItem = useSetAtom(viewingDataAtom);
+
   const viewRow = (rowIndex: number, data: Mst_CarStdOpt) => {
     setViewingItem({
       rowIndex,

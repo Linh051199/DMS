@@ -368,7 +368,7 @@ export const DealerManagementPageClone = () => {
                   isLoading={isLoading}
                   dataSource={data?.isSuccess ? data.DataList ?? [] : []}
                   columns={columns}
-                  keyExpr={"DealerCode"}
+                  keyExpr={["DealerCode"]}
                   popupSettings={popupSettings}
                   formSettings={formSettings}
                   onReady={(ref) => (gridRef = ref)}

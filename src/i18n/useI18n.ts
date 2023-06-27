@@ -10,6 +10,7 @@ interface Locale {
 }
 export const useI18n = (cat: string) => {
   const [data] = useAtom(localeAtom);
+  // console.log("🚀 ~ data:", data)
 
   const cache = useRef<Locale[]>([]);
 

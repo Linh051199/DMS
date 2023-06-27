@@ -15,6 +15,7 @@ export const PopupViewComponent = ({
 }: PopupViewProps) => {
   const { t } = useI18n("Common");
   const [viewingItem, setViewingItem] = useAtom(viewingDataAtom);
+  console.log("🚀 ~ viewingItem:", viewingItem);
 
   const handleEdit = () => {
     let rowIndex = viewingItem?.rowIndex;

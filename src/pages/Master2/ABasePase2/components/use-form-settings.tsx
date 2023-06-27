@@ -13,33 +13,20 @@ export const useFormSettings = ({
   const { t } = useI18n("Base");
 
   const columns = inputColumns.map((c) => {
-    // if (c.dataField === "DealerType") {
-    //     return {
-    //       ...c,
-    //       visible: true,
-    //       editorOptions: {
-    //         displayExpr: (item: any) =>
-    //           item ? `${item.DealerType} - ${item.DealerTypeName}` : "",
-    //         valueExpr: "DealerType",
-    //         searchEnabled: true,
-    //         validationMessageMode: "always",
-    //         items: dealerTypeDs ?? [],
-    //       },
-    //     };
-    //   } else if (c.dataField === "ProvinceCode") {
-    //     return {
-    //       ...c,
-    //       visible: true,
-    //       editorOptions: {
-    //         displayExpr: (item: any) =>
-    //           item ? `${item.ProvinceCode} - ${item.ProvinceName}` : "",
-    //         valueExpr: "ProvinceCode",
-    //         searchEnabled: true,
-    //         validationMessageMode: "always",
-    //         items: provinceDs ?? [],
-    //       },
-    //     };
-    //   }
+    //   if (c.dataField === "ModelCode") {
+    //   return {
+    //     ...c,
+    //     visible: true,
+    //     editorOptions: {
+    //       displayExpr: "ModelCode",
+    //       valueExpr: "ModelCode",
+    //       searchEnabled: true,
+    //       validationMessageMode: "always",
+    //       dataSource: ModelCodeDs ?? [],
+    //     },
+    //   };
+    // }
+
     return {
       ...c,
       visible: true,

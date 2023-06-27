@@ -1,16 +1,22 @@
 import { useI18n } from "@/i18n/useI18n";
 import { zip } from "@/packages/common";
-import { Mst_CarSpec } from "@/packages/types";
+import { Mst_CarModel, Mst_CarOCN, Mst_CarSpec } from "@/packages/types";
 import { ColumnOptions, FormOptions } from "@/types";
 
 interface UseFormSettingsProps {
   columns: ColumnOptions[];
   carSpecDs?: Mst_CarSpec[];
+  dataAllActiveDS?:Mst_CarSpec[]
+  dataCarOCNDs?: Mst_CarOCN[]
+  dataCarModelDs?: Mst_CarModel[]
 }
 
 export const useFormSettings = ({
   columns: inputColumns,
   carSpecDs,
+  dataAllActiveDS,
+  dataCarOCNDs,
+  dataCarModelDs
 }: UseFormSettingsProps) => {
   const { t } = useI18n("Base");
 
@@ -24,7 +30,7 @@ export const useFormSettings = ({
           valueExpr: "ModelCode",
           searchEnabled: true,
           validationMessageMode: "always",
-          items: carSpecDs ?? [],
+          items: dataCarModelDs ?? [],
         },
       };
     } else if (c.dataField === "RootSpec") {
@@ -36,7 +42,7 @@ export const useFormSettings = ({
           valueExpr: "RootSpec",
           searchEnabled: true,
           validationMessageMode: "always",
-          items: carSpecDs ?? [],
+          items: dataAllActiveDS ?? [],
         },
       };
     } else if (c.dataField === "StdOptCode") {
@@ -48,7 +54,7 @@ export const useFormSettings = ({
           valueExpr: "StdOptCode",
           searchEnabled: true,
           validationMessageMode: "always",
-          items: carSpecDs ?? [],
+          items: dataAllActiveDS ?? [],
         },
       };
     } else if (c.dataField === "OCNCode") {
@@ -60,7 +66,7 @@ export const useFormSettings = ({
           valueExpr: "OCNCode",
           searchEnabled: true,
           validationMessageMode: "always",
-          items: carSpecDs ?? [],
+          items: dataCarOCNDs ?? [],
         },
       };
     } else if (c.dataField === "AssemblyStatus") {
