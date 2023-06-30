@@ -34,13 +34,15 @@ export const StorageGlobalPage = () => {
 
   // call API
 
-  const { data, isLoading, refetch } = useQuery(["data", keyword], () =>
-    api.Mst_StorageGlobal_Search({
-      KeyWord: keyword,
-      FlagActive: FlagActiveEnum.All,
-      Ft_PageIndex: 0,
-      Ft_PageSize: config.MAX_PAGE_ITEMS,
-    } as SearchParam)
+  const { data, isLoading, refetch } = useQuery(
+    ["Mst_StorageGlobal", keyword],
+    () =>
+      api.Mst_StorageGlobal_Search({
+        KeyWord: keyword,
+        FlagActive: FlagActiveEnum.All,
+        Ft_PageIndex: 0,
+        Ft_PageSize: config.MAX_PAGE_ITEMS,
+      } as SearchParam)
   );
   console.log("Data: ", data);
 

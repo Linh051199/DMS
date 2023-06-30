@@ -1,16 +1,7 @@
-import {
-  FlagActiveEnum,
-  Mst_Dealer,
-  SearchDealerParam,
-} from "@/packages/types";
+import { Mst_Dealer } from "@/packages/types";
 import { atom } from "jotai";
 
 export const selectedItemsAtom = atom<string[]>([]);
-
-export enum ViewMode {
-  ReadOnly = "readonly",
-  Edit = "edit",
-}
 
 export const viewingRowAtom = atom<number | undefined>(undefined);
 

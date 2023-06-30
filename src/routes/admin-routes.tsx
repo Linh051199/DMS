@@ -32,6 +32,17 @@ import {
   InsuranceTypePage,
   StorageGlobalPage,
   DealerStorageGlobalPage,
+  CarColorPage,
+  BankPage,
+  BankDealerPage,
+  BankAccountPage,
+  RateApprOrderModelMaxPage,
+  InvoiceIDPage,
+  InsuranceCompanyPage,
+  PointRegisPage,
+  DealerCAPage,
+  CabinCertificatePage,
+  AmplitudeApprOrdPage,
 } from "@/pages";
 import { RouteItem } from "@/types";
 
@@ -44,15 +55,6 @@ export const adminRoutes: RouteItem[] = [
     permissionCode: "MNU_ADMIN",
     getPageElement: () => <AdminPage />,
   },
-
-  // {
-  //   key: "dealerManagement",
-  //   path: "admin/dealer",
-  //   subMenuTitle: "dealerManagement",
-  //   mainMenuKey: "admin",
-  //   permissionCode: "MNU_ADMIN_DEALER",
-  //   getPageElement: () => <DealerManagementPage />,
-  // },
 
   {
     key: "PortTypeManagement", // Key menu con
@@ -101,14 +103,24 @@ export const adminRoutes: RouteItem[] = [
 
     getPageElement: () => <DealerSalesGroupTypePage />,
   },
-  // {
-  //   key: "provinceManagement", // Key menu con
-  //   path: "admin/province", // Address trên browser
-  //   subMenuTitle: "provinceManagement", // Title menu con
-  //   mainMenuKey: "admin", // Key của menu cha
-  //   permissionCode: "MNU_ADMIN_PROVINCE",
-  //   getPageElement: () => <ProvinceManagementPage />,
-  // },
+
+  {
+    key: "DealerCAManagement", // Key menu con
+    path: "admin/dealerCA", // Address trên browser
+    subMenuTitle: "Quản lý chữ ký điện tử", // Title menu con
+    mainMenuKey: "admin", // Key của menu cha
+    permissionCode: "MNU_ADMIN_AREA",
+
+    getPageElement: () => <DealerCAPage />,
+  },
+  {
+    key: "provinceManagement", // Key menu con
+    path: "admin/province", // Address trên browser
+    subMenuTitle: "provinceManagement", // Title menu con
+    mainMenuKey: "admin", // Key của menu cha
+    permissionCode: "MNU_ADMIN_PROVINCE",
+    getPageElement: () => <ProvinceManagementPage />,
+  },
   {
     key: "provinceManagement", // Key menu con
     path: "admin/provinceClone", // Address trên browser
@@ -231,6 +243,16 @@ export const adminRoutes: RouteItem[] = [
 
     getPageElement: () => <CarInvoicePage />,
   },
+
+  {
+    key: "PointRegisManagement", // Key menu con
+    path: "admin/pointRegis", // Address trên browser
+    subMenuTitle: "Quản lý địa điểm nhận xe của đại lý", // Title menu con
+    mainMenuKey: "admin", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_CARINVOICE",
+
+    getPageElement: () => <PointRegisPage />,
+  },
   {
     key: "StorageManagement", // Key menu con
     path: "admin/storage", // Address trên browser
@@ -277,6 +299,15 @@ export const adminRoutes: RouteItem[] = [
 
     getPageElement: () => <CustomerBasePage />,
   },
+  {
+    key: "InsuranceCompanyManagement", // Key menu con
+    path: "admin/insuranceCompany", // Address trên browser
+    subMenuTitle: "Quản lý công ty bảo hiểm", // Title menu con
+    mainMenuKey: "admin", // Key của menu cha
+    permissionCode: "MNU_ADMIN_PLANT",
+
+    getPageElement: () => <InsuranceCompanyPage />,
+  },
 
   {
     key: "InsuranceTypeManagement", // Key menu con
@@ -286,6 +317,26 @@ export const adminRoutes: RouteItem[] = [
     permissionCode: "MNU_ADMIN_PLANT",
 
     getPageElement: () => <InsuranceTypePage />,
+  },
+
+  {
+    key: "CabinCertificateManagement", // Key menu con
+    path: "admin/cabinCertificate", // Address trên browser
+    subMenuTitle: "Quản lý giấy chứng nhận thùng", // Title menu con
+    mainMenuKey: "admin", // Key của menu cha
+    permissionCode: "MNU_ADMIN_PLANT",
+
+    getPageElement: () => <CabinCertificatePage />,
+  },
+
+  {
+    key: "AmplitudeApprOrdManagement", // Key menu con
+    path: "admin/amplitudeApprOrdPage", // Address trên browser
+    subMenuTitle: "Quản lý tỉ lệ đặt hàng kế hoạch", // Title menu con
+    mainMenuKey: "admin", // Key của menu cha
+    permissionCode: "MNU_ADMIN_PLANT",
+
+    getPageElement: () => <AmplitudeApprOrdPage />,
   },
 
   // -------------------------------------------------------------------------------------------------------------------
@@ -300,6 +351,15 @@ export const adminRoutes: RouteItem[] = [
   },
 
   {
+    key: "dealerManagement",
+    path: "admin/dealer",
+    subMenuTitle: "dealerManagement",
+    mainMenuKey: "admin",
+    permissionCode: "MNU_ADMIN_DEALER",
+    getPageElement: () => <DealerManagementPage />,
+  },
+
+  {
     key: "QuotaManagement", // Key menu con
     path: "admin/quota", // Address trên browser
     subMenuTitle: "Quản lý Quota", // Title menu con
@@ -307,6 +367,16 @@ export const adminRoutes: RouteItem[] = [
     permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
 
     getPageElement: () => <Mst_QuotaPage />,
+  },
+
+  {
+    key: "CarStdOptManagement", // Key menu con
+    path: "admin/carStdOpt", // Address trên browser
+    subMenuTitle: "Quản lý tuỳ chọn cơ bản", // Title menu con
+    mainMenuKey: "admin", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
+
+    getPageElement: () => <CarStdOptPage />,
   },
 
   {
@@ -318,14 +388,63 @@ export const adminRoutes: RouteItem[] = [
 
     getPageElement: () => <CarSpecPage />,
   },
+
   {
-    key: "dealerManagement",
-    path: "admin/dealerClone",
-    subMenuTitle: "Quản lý đại lý ",
-    mainMenuKey: "admin",
-    permissionCode: "MNU_ADMIN_DEALER",
-    getPageElement: () => <DealerManagementPageClone />,
+    key: "CarColorManagement", // Key menu con
+    path: "admin/carColor", // Address trên browser
+    subMenuTitle: "Quản lý màu sắc xe", // Title menu con
+    mainMenuKey: "admin", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
+
+    getPageElement: () => <CarColorPage />,
   },
+
+  {
+    key: "RateApprOrderModelMaxPageManagement", // Key menu con
+    path: "admin/rateApprOrderModelMax", // Address trên browser
+    subMenuTitle: "Thiết lập tỉ lệ duyệt đơn hàng tối đa theo Model", // Title menu con
+    mainMenuKey: "admin", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
+
+    getPageElement: () => <RateApprOrderModelMaxPage />,
+  },
+  {
+    key: "BankManagement", // Key menu con
+    path: "admin/bank", // Address trên browser
+    subMenuTitle: "Quản lý ngân hàng", // Title menu con
+    mainMenuKey: "admin", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
+
+    getPageElement: () => <BankPage />,
+  },
+
+  {
+    key: "BankDealerManagement", // Key menu con
+    path: "admin/bankDealer", // Address trên browser
+    subMenuTitle: "Quản lý ngân hàng đại lý", // Title menu con
+    mainMenuKey: "admin", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
+
+    getPageElement: () => <BankDealerPage />,
+  },
+
+  {
+    key: "BankAccountManagement", // Key menu con
+    path: "admin/bankAccount", // Address trên browser
+    subMenuTitle: "Quản lý tài khoản ngân hàng", // Title menu con
+    mainMenuKey: "admin", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
+
+    getPageElement: () => <BankAccountPage />,
+  },
+  // {
+  //   key: "dealerManagement",
+  //   path: "admin/dealerClone",
+  //   subMenuTitle: "Quản lý đại lý ",
+  //   mainMenuKey: "admin",
+  //   permissionCode: "MNU_ADMIN_DEALER",
+  //   getPageElement: () => <DealerManagementPageClone />,
+  // },
   {
     key: "TrannsporterManagement", // Key menu con
     path: "admin/transporter", // Address trên browser
@@ -337,12 +456,12 @@ export const adminRoutes: RouteItem[] = [
   },
 
   {
-    key: "CarStdOptManagement", // Key menu con
-    path: "admin/carStdOpt", // Address trên browser
-    subMenuTitle: "Quản lý tuỳ chọn cơ bản", // Title menu con
+    key: "InvpiceIDManagement", // Key menu con
+    path: "admin/invoiceID", // Address trên browser
+    subMenuTitle: "Quản lý thiết lập hoá đơn TCG", // Title menu con
     mainMenuKey: "admin", // Key của menu cha
     permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
 
-    getPageElement: () => <CarStdOptPage />,
+    getPageElement: () => <InvoiceIDPage />,
   },
 ];

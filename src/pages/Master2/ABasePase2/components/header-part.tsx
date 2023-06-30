@@ -14,7 +14,7 @@ import {
 import { useAtomValue, useSetAtom } from "jotai";
 import { toast } from "react-toastify";
 import { match } from "ts-pattern";
-import { selectedItemsAtom } from "./base-store";
+import { selectedItemsAtom } from "./store";
 
 interface IHeaderPartProps {
   onAddNew: () => void;
@@ -27,7 +27,7 @@ export const HeaderPart = ({ onAddNew, searchCondition }: IHeaderPartProps) => {
   const api = useClientgateApi();
   const showError = useSetAtom(showErrorAtom);
 
-  const handleUploadFiles = async (file: File[]) => {
+  const handleUploadFiles = async (files: File[]) => {
     // const resp = await api.Mst_Dealer_Import(files[0]);
     // if (resp.isSuccess) {
     //   toast.success(t("UploadSuccessfully"));

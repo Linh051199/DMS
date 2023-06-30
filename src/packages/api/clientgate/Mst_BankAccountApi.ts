@@ -114,10 +114,7 @@ export const useMst_BankAccount = (apiBase: AxiosInstance) => {
 
     // ------------------EXPORT NHIỀU BẢN GHI KHI TICK CHỌN COLUMNS----------------
     Mst_BankAccount_ExportByListBankCode: async (
-      selectedCodes: {
-        AccountNo: string;
-        BankCode: string;
-      }[]
+      selectedCodes: string[]
     ): Promise<ApiResponse<any>> => {
       let data = selectedCodes.reduce(
         (accumulator: any, currentValue: any) => {

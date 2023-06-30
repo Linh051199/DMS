@@ -1,5 +1,8 @@
 import { ColumnOptions } from "@packages/ui/base-gridview";
-import { ExcludeSpecialCharactersType, requiredType } from "@packages/common/Validation_Rules";
+import {
+  ExcludeSpecialCharactersType,
+  requiredType,
+} from "@packages/common/Validation_Rules";
 import { filterByFlagActive, uniqueFilterByDataField } from "@packages/common";
 import { StatusButton } from "@packages/ui/status-button";
 import { useI18n } from "@/i18n/useI18n";
@@ -61,7 +64,7 @@ export const useColumn = ({ data }: UseDealerGridColumnsProps) => {
       caption: t("QuotaCode"), // title hiển thị ở màn hình
       editorType: "dxTextBox", // kiểu của column ( trong trường hợp này là input )
       columnIndex: 1, // vị trí cột được hiển thị trong popup ở theo hàng dọc
-      validationRules: [requiredType,ExcludeSpecialCharactersType], // validate, không đc viết ký tự đặc biệt
+      validationRules: [requiredType, ExcludeSpecialCharactersType], // validate, không đc viết ký tự đặc biệt
       cellRender: ({ data, rowIndex, value }: any) => {
         // customize lại cột
         return (
@@ -84,7 +87,7 @@ export const useColumn = ({ data }: UseDealerGridColumnsProps) => {
       editorType: "dxTextBox",
       editorOptions: {},
       columnIndex: 1,
-      validationRules: [requiredType,ExcludeSpecialCharactersType],
+      validationRules: [requiredType, ExcludeSpecialCharactersType],
       headerFilter: {
         dataSource: uniqueFilterByDataField(data, "QuotaName", t("( Empty )")),
       },
@@ -93,7 +96,7 @@ export const useColumn = ({ data }: UseDealerGridColumnsProps) => {
       groupKey: "INFORMATION",
       dataField: "DealerCode", // Mã đại lý
       caption: t("DealerCode"),
-      editorType: "dxTextBox",
+      editorType: "dxSelectBox",
       validationRules: [requiredType],
       columnIndex: 1,
       // login cái hàm này là dùng đếm các phần tử trùng nhau mà data trả về sau khi call api với dữ liệu trường trong tên (param) truyền vào

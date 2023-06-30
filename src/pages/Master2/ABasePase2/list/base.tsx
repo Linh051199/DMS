@@ -21,10 +21,14 @@ import { showErrorAtom } from "@/packages/store";
 import { useI18n } from "@/i18n/useI18n";
 import { toast } from "react-toastify";
 import { EditorPreparingEvent } from "devextreme/ui/data_grid";
-import { searchPanelVisibleAtom } from "@/packages/layouts/content-searchpanel-layout";
+import {
+  ContentSearchPanelLayout,
+  searchPanelVisibleAtom,
+} from "@/packages/layouts/content-searchpanel-layout";
 import { GridViewPopup } from "@/packages/ui/base-gridview";
-import { IItemProps } from "devextreme-react/data-grid";
 import { IPopupOptions } from "devextreme-react/popup";
+import { IItemProps } from "devextreme-react/form";
+import { SearchPanelV2 } from "@/packages/ui/search-panel";
 
 export const BasePage2 = () => {
   const { t } = useI18n("base");
@@ -76,18 +80,18 @@ export const BasePage2 = () => {
 
   // delete row
   const handleDelete = async (id: Partial<Mst_CarStdOpt>) => {
-    const resp = await api.Mst_CarStdOpt_Delete(id);
-    if (resp.isSuccess) {
-      toast.success(t("Delete Successfully"));
-      await refetch();
-      return true;
-    }
-    showError({
-      message: t(resp.errorCode),
-      debugInfo: resp.debugInfo,
-      errorInfo: resp.errorInfo,
-    });
-    throw new Error(resp.errorCode);
+    // const resp = await api.Mst_CarStdOpt_Delete(id);
+    // if (resp.isSuccess) {
+    //   toast.success(t("Delete Successfully"));
+    //   await refetch();
+    //   return true;
+    // }
+    // showError({
+    //   message: t(resp.errorCode),
+    //   debugInfo: resp.debugInfo,
+    //   errorInfo: resp.errorInfo,
+    // });
+    // throw new Error(resp.errorCode);
   };
 
   // create row
@@ -277,50 +281,64 @@ export const BasePage2 = () => {
         <HeaderPart onAddNew={handleAddNew} searchCondition={searchCondition} />
       </AdminContentLayout.Slot>
       <AdminContentLayout.Slot name={"Content"}>
-        <LoadPanel
-          container={".dx-viewprt"}
-          shadingColor="0,0,0,0.4"
-          position={"center"}
-          visible={loadingControl.visible}
-          showIndicator={true}
-          showPane={true}
-        />
-        {!loadingControl.visible && (
-          <>
-            <GridViewPopup
-              keyExpr={["StdOptCode", "ModelCode", "GradeCode"]}
-              storeKey={"Base_Column"}
-              isLoading={isLoading}
-              dataSource={data?.isSuccess ? data.DataList ?? [] : []}
-              columns={columns}
-              popupSettings={popupSettings}
-              formSettings={formSettings}
-              allowSelection={true}
-              onReady={(ref) => (gridRef = ref)}
-              onSelectionChanged={handleSelectionChanged}
-              onEditorPreparing={handleEditorPreparing}
-              onEditRow={handleEditRow}
-              onDeleteRows={handleDeleteRows}
-              onEditRowChanges={handleEditRowChanges}
-              onSaveRow={handleSaveRow}
-              toolbarItems={[
-                // Button search and action
-                {
-                  location: "Before",
-                  widget: "dxButton",
-                  options: {
-                    icon: "search",
-                    onClick: handleToggleSearchPanel,
-                  },
-                },
-              ]}
+        <ContentSearchPanelLayout>
+          <ContentSearchPanelLayout.Slot name={"SearchPanel"}>
+            <div className="w-[200px]">
+              <SearchPanelV2
+                conditionFields={fromItems}
+                data={searchCondition}
+                storeKey="Mst_CarStdOpt"
+                onSearch={handleSearch}
+              />
+            </div>
+          </ContentSearchPanelLayout.Slot>
+          <ContentSearchPanelLayout.Slot name={"ContentPanel"}>
+            <LoadPanel
+              container={".dx-viewprt"}
+              shadingColor="0,0,0,0.4"
+              position={"center"}
+              visible={loadingControl.visible}
+              showIndicator={true}
+              showPane={true}
             />
-            <PopupViewComponent
-              onEdit={handleEdit}
-              formSettings={formSettings}
-            />
-          </>
-        )}
+            {!loadingControl.visible && (
+              <>
+                <GridViewPopup
+                  keyExpr={["StdOptCode", "ModelCode", "GradeCode"]}
+                  storeKey={"Mst_CarStdOpt_Column"}
+                  isLoading={isLoading}
+                  dataSource={data?.isSuccess ? data.DataList ?? [] : []}
+                  columns={columns}
+                  popupSettings={popupSettings}
+                  formSettings={formSettings}
+                  allowSelection={true}
+                  onReady={(ref) => (gridRef = ref)}
+                  onSelectionChanged={handleSelectionChanged}
+                  onEditorPreparing={handleEditorPreparing}
+                  onEditRow={handleEditRow}
+                  onDeleteRows={handleDeleteRows}
+                  onEditRowChanges={handleEditRowChanges}
+                  onSaveRow={handleSaveRow}
+                  toolbarItems={[
+                    // Button search and action
+                    {
+                      location: "Before",
+                      widget: "dxButton",
+                      options: {
+                        icon: "search",
+                        onClick: handleToggleSearchPanel,
+                      },
+                    },
+                  ]}
+                />
+                <PopupViewComponent
+                  onEdit={handleEdit}
+                  formSettings={formSettings}
+                />
+              </>
+            )}
+          </ContentSearchPanelLayout.Slot>
+        </ContentSearchPanelLayout>
       </AdminContentLayout.Slot>
     </AdminContentLayout>
   );

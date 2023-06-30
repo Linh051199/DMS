@@ -287,7 +287,7 @@ export const DistrictPage = () => {
       </AdminContentLayout.Slot>
       <AdminContentLayout.Slot name="Content">
         <BaseGridView
-          keyExpr="DistrictCode"
+          keyExpr={["DistrictCode",'ProvinceCode']}
           storeKey={"district-columns"}
           defaultPageSize={config.PAGE_SIZE}
           isLoading={isLoading}

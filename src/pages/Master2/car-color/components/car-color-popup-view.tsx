@@ -2,7 +2,7 @@ import { useI18n } from "@/i18n/useI18n";
 import { PopupView } from "@/packages/ui/popup-view";
 import { FormOptions } from "@/types";
 import { useAtom } from "jotai";
-import { viewingDataAtom } from "./base-store";
+import { viewingDataAtom } from "./car-color-store";
 
 interface IPopupViewComponent {
   onEdit: (rowIndex: number) => void;

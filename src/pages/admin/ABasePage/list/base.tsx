@@ -2,11 +2,11 @@ import { AdminContentLayout } from "@/packages/layouts/admin-content-layout";
 import { PageHeaderLayout } from "@/packages/layouts/page-header-layout";
 import { HeaderPart } from "./header-part";
 import "./base.scss";
-import { BaseGridView } from "@/packages/ui/base-gridview";
+import { BaseGridView ,ColumnOptions} from "@/packages/ui/base-gridview";
+
 import { useConfiguration } from "@/packages/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef } from "react";
-import { ColumnOptions } from "@/types";
 import { DataGrid } from "devextreme-react";
 import { useClientgateApi } from "@/packages/api";
 import { EditorPreparingEvent } from "devextreme/ui/data_grid";
@@ -35,7 +35,7 @@ export const BasePage = () => {
   // call API
 
   const { data, isLoading, refetch } = useQuery(["data", keyword], () =>
-    api.Dlr_StorageLocal_Search({
+    api.Mst_MngRateTonKhoBanHang_Search({
       KeyWord: keyword,
       FlagActive: FlagActiveEnum.All,
       Ft_PageIndex: 0,
@@ -223,7 +223,6 @@ export const BasePage = () => {
     //     const id = e.changes[0].key;
     //     e.promise = handleDelete(id);
     //   } else if (type === "insert") {
-    //     console.log("toggle");
     //     let newData = e.changes[0].data!;
     //     if (!Object.keys(newData).includes("FlagActive")) {
     //       newData = { ...newData, FlagActive: true };
@@ -271,7 +270,7 @@ export const BasePage = () => {
         <BaseGridView
           keyExpr="BaseCode"
           storeKey={"port-columns"}
-          defaultPageSize={config.PAGE_SIZE_10}
+          defaultPageSize={config.PAGE_SIZE}
           isLoading={isLoading}
           dataSource={data?.DataList ?? []}
           columns={columns}

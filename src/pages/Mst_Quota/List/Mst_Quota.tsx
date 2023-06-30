@@ -69,7 +69,7 @@ export const Mst_QuotaPage = () => {
     return api.Mst_CarModel_GetAllActive();
   });
 
-  // re-render api search
+  // re-render api search 
   const handleSearch = async (data: any) => {
     setSearchCondition({
       ...searchCondition,
@@ -345,7 +345,7 @@ export const Mst_QuotaPage = () => {
       dataField: "DealerCode",
       editorType: "dxSelectBox",
       editorOptions: {
-        dataSource: listDealer,
+        dataSource: listDealer?.DataList,
         displayExpr: "DealerCode",
         valueExpr: "DealerCode",
         placeholder: t("Input"),

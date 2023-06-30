@@ -9,7 +9,6 @@ interface UseFormSettingsProps {
 export const useFormSettings = ({
   columns: inputColumns,
 }: UseFormSettingsProps) => {
-  console.log("🚀 ~ inputColumns:", inputColumns);
   const { t } = useI18n("Base");
 
   const columns = inputColumns.map((c) => {
@@ -34,10 +33,10 @@ export const useFormSettings = ({
   });
 
   const basicInformationFirstColumn = columns.filter(
-    (c) => c.groupKey === "BASIC_INFORMATION" && c.columnIndex === 1
+    (c) => c.groupKey === "INFORMATION" && c.columnIndex === 1
   );
   const basicInformationSecondColumn = columns.filter(
-    (c) => c.groupKey === "BASIC_INFORMATION" && c.columnIndex === 2
+    (c) => c.groupKey === "INFORMATION" && c.columnIndex === 2
   );
 
   const formSettings: FormOptions = {

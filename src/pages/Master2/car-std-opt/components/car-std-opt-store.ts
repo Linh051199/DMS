@@ -3,11 +3,6 @@ import { Mst_CarStdOpt } from "@/packages/types";
 
 export const selectedItemsAtom = atom<string[]>([]);
 
-export enum ViewMode {
-  ReadOnly = "readonly",
-  Edit = "edit",
-}
-
 export const viewingRowAtom = atom<number | undefined>(undefined);
 export const viewingItemAtom = atom<Mst_CarStdOpt | undefined>(undefined);
 

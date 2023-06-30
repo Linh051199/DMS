@@ -10,7 +10,7 @@ import { StatusButton } from "@/packages/ui/status-button";
 import { ColumnOptions } from "@/types";
 import { useSetAtom } from "jotai";
 import { nanoid } from "nanoid";
-import { viewingDataAtom } from "./base-store";
+import { viewingDataAtom } from "./store";
 
 interface IuseColumn {
   data: Mst_CarStdOpt[];
@@ -77,32 +77,24 @@ export const useColumn = ({ data }: IuseColumn) => {
         dataSource: uniqueFilterByDataField(data, "ModelCode"),
       },
     },
-
     {
       groupKey: "INFORMATION",
-      caption: "Mã Grande",
-      dataField: "GradeCode",
-      editorType: "dxTextBox",
-      columnIndex: 2,
-      editorOptions: {
-        placeholder: "Nhập",
-      },
-      headerFilter: {
-        dataSource: uniqueFilterByDataField(data, "GradeCode"),
-      },
-    },
 
-    {
-      groupKey: "INFORMATION",
-      caption: "Mô tả Grande",
-      dataField: "GradeDescription",
-      editorType: "dxTextBox",
-      columnIndex: 2,
-      editorOptions: {
-        placeholder: "Nhập",
-      },
       headerFilter: {
-        dataSource: uniqueFilterByDataField(data, "GradeDescription"),
+        dataSource: filterByFlagActive(data, {
+          true: t("Active"),
+          false: t("Inactive"),
+        }),
+      },
+      dataField: "FlagActive",
+      caption: t("FlagActive"),
+      editorType: "dxSwitch",
+      columnIndex: 2,
+      visible: true,
+      alignment: "center",
+      width: 120,
+      cellRender: ({ data }: any) => {
+        return <StatusButton isActive={data.FlagActive} />;
       },
     },
   ];

@@ -2,6 +2,7 @@ import { useI18n } from "@/i18n/useI18n";
 import { useClientgateApi } from "@/packages/api";
 import { PageHeaderNoSearchLayout } from "@/packages/layouts/page-header-layout-2/page-header-nosearch-layout";
 import { showErrorAtom } from "@/packages/store";
+import { Search_Mst_Transporter } from "@/packages/types";
 import { useExportExcel } from "@/packages/ui/export-excel/use-export-excel";
 import { useUploadFile } from "@/packages/ui/upload-file/use-upload-file";
 import Button from "devextreme-react/button";
@@ -15,6 +16,7 @@ import { selectedItemsAtom } from "./transporter-store";
 
 interface IHeaderPartProps {
   onAddNew: () => void;
+  searchCondition: Partial<Search_Mst_Transporter>;
 }
 
 export const HeaderPart = ({ onAddNew }: IHeaderPartProps) => {

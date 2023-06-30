@@ -44,6 +44,7 @@ export const ProvinceManagement = () => {
       Ft_PageSize: config.PAGE_SIZE,
     } as SearchParam)
   );
+  console.log("🚀 ~ data:", data);
 
   useEffect(() => {
     if (!!data && !data.isSuccess) {
@@ -58,13 +59,14 @@ export const ProvinceManagement = () => {
   const { data: areasData, isLoading: isLoadingArea } = useQuery(
     ["areas"],
     () =>
-      api.Mst_Province_Search({
+      api.Mst_Area_Search({
         KeyWord: keyword,
         FlagActive: FlagActiveEnum.All,
         Ft_PageIndex: 0,
         Ft_PageSize: config.PAGE_SIZE,
       } as SearchParam)
   );
+  console.log("🚀 ~ areasData:", areasData);
 
   const onDelete = async (key: string) => {
     const resp = await api.Mst_Province_Delete(key);

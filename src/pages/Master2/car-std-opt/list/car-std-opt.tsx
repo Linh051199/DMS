@@ -65,7 +65,6 @@ export const CarStdOptPage = () => {
   const { data: modelCodeDs } = useQuery(["modelCode"], () =>
     api.Mst_CarModel_GetAllActive()
   );
-  console.log("🚀 ~ modalCodeDs:", modelCodeDs);
 
   //Handle
   // re-render API search
@@ -275,7 +274,7 @@ export const CarStdOptPage = () => {
   const formSettings = useFormSettings({
     columns,
     CarStdOptDs: data?.DataList,
-    ModelCodeDs: modelCodeDs?.DataList
+    ModelCodeDs: modelCodeDs?.DataList,
   });
 
   return (

@@ -49,6 +49,7 @@ export const ProvinceManagementPage = () => {
       } as SearchParam),
     {}
   );
+  console.log("🚀 ~ data:", data);
   useEffect(() => {
     if (!!data && !data.isSuccess) {
       showError({
@@ -69,6 +70,7 @@ export const ProvinceManagementPage = () => {
         Ft_PageSize: config.MAX_PAGE_ITEMS,
       } as SearchParam)
   );
+  console.log("🚀 ~ areasData:", areasData);
 
   const onCreate = async (data: Partial<ProvinceDto>) => {
     logger.debug("onCreate", data);
@@ -230,7 +232,7 @@ export const ProvinceManagementPage = () => {
   };
 
   const handleSavingRow = async (e: any) => {
-    console.log("🚀 ~ e:", e)
+    console.log("🚀 ~ e:", e);
     logger.debug("e:", e);
     // stop grid behaviour
     if (e.changes && e.changes.length > 0) {

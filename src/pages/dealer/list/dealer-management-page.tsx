@@ -56,6 +56,7 @@ export const DealerManagementPage = () => {
         ...searchCondition,
       })
   );
+  console.log("🚀 ~ data:", data);
   const { data: provinceDs } = useQuery(["provinces"], () =>
     api.Mst_Province_Search({
       FlagActive: FlagActiveEnum.All,

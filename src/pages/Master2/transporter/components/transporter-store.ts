@@ -14,7 +14,7 @@ export const viewingDataAtom = atom(
   (get) => {
     return {
       rowIndex: get(viewingRowAtom),
-      item: get(viewingRowAtom),
+      item: get(viewingItemAtom),
     };
   },
   (get, set, data) => {

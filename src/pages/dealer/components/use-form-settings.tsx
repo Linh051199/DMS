@@ -1,13 +1,14 @@
 import { useI18n } from "@/i18n/useI18n";
+import { ProvinceDto } from "@/packages/api/clientgate/Mst_ProvinceApi";
 import { ColumnOptions } from "@/packages/ui/base-gridview";
 import { FormOptions } from "@/types";
 import { zip } from "@packages/common";
-import { Mst_DealerType, Province } from "@packages/types";
+import { Mst_DealerType } from "@packages/types";
 
 interface UseFormSettingsProps {
   columns: ColumnOptions[];
   dealerTypeDs?: Mst_DealerType[];
-  provinceDs?: Province[];
+  provinceDs?: ProvinceDto[];
 }
 
 export const useFormSettings = ({

@@ -34,13 +34,15 @@ export const DealerSalesTypePage = () => {
 
   // call API
 
-  const { data, isLoading, refetch } = useQuery(["data", keyword], () =>
-    api.Mst_DealerSalesType_Search({
-      KeyWord: keyword,
-      FlagActive: FlagActiveEnum.All,
-      Ft_PageIndex: 0,
-      Ft_PageSize: config.MAX_PAGE_ITEMS,
-    } as SearchParam)
+  const { data, isLoading, refetch } = useQuery(
+    ["Mst_DealerSalesType", keyword],
+    () =>
+      api.Mst_DealerSalesType_Search({
+        KeyWord: keyword,
+        FlagActive: FlagActiveEnum.All,
+        Ft_PageIndex: 0,
+        Ft_PageSize: config.MAX_PAGE_ITEMS,
+      } as SearchParam)
   );
   console.log("Data: ", data);
 
@@ -324,7 +326,7 @@ export const DealerSalesTypePage = () => {
       </AdminContentLayout.Slot>
       <AdminContentLayout.Slot name="Content">
         <BaseGridView
-          keyExpr={["SalesGroupType", "SalesType"]}
+          keyExpr='{["SalesGroupType", "SalesType"]}'
           storeKey={"dealer-sales-type-columns"}
           defaultPageSize={config.PAGE_SIZE}
           isLoading={isLoading}

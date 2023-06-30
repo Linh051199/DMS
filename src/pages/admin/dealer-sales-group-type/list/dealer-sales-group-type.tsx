@@ -34,15 +34,28 @@ export const DealerSalesGroupTypePage = () => {
 
   // call API
 
-  const { data, isLoading, refetch } = useQuery(["data", keyword], () =>
-    api.Mst_DealerSalesGroupType_Search({
-      KeyWord: keyword,
-      FlagActive: FlagActiveEnum.All,
-      Ft_PageIndex: 0,
-      Ft_PageSize: config.MAX_PAGE_ITEMS,
-    } as SearchParam)
+  const { data, isLoading, refetch } = useQuery(
+    ["Mst_DealerSalesGroupType", keyword],
+    () =>
+      api.Mst_DealerSalesGroupType_Search({
+        KeyWord: keyword,
+        FlagActive: FlagActiveEnum.All,
+        Ft_PageIndex: 0,
+        Ft_PageSize: config.MAX_PAGE_ITEMS,
+      } as SearchParam)
   );
   console.log("Data: ", data);
+
+  const { data: listSaleType } = useQuery(
+    ["Mst_DealerSalesType", keyword],
+    () =>
+      api.Mst_DealerSalesType_Search({
+        KeyWord: keyword,
+        FlagActive: FlagActiveEnum.All,
+        Ft_PageIndex: 0,
+        Ft_PageSize: config.MAX_PAGE_ITEMS,
+      } as SearchParam)
+  );
 
   useEffect(() => {
     if (!!data && !data.isSuccess) {
@@ -60,31 +73,31 @@ export const DealerSalesGroupTypePage = () => {
   };
 
   const handleUploadFile = async (file: File, progressCallback?: Function) => {
-    // const resp = await api.(file);
-    // if (resp.isSuccess) {
-    //   toast.success(t("UploadSuccessfully"));
-    //   await refetch();
-    // } else {
-    //   showError({
-    //     message: t(resp.errorCode),
-    //     debugInfo: resp.debugInfo,
-    //     errorInfo: resp.errorInfo,
-    //   });
-    // }
+    const resp = await api.Mst_DealerSalesGroupType_ImportExcel(file);
+    if (resp.isSuccess) {
+      toast.success(t("UploadSuccessfully"));
+      await refetch();
+    } else {
+      showError({
+        message: t(resp.errorCode),
+        debugInfo: resp.debugInfo,
+        errorInfo: resp.errorInfo,
+      });
+    }
   };
 
   const handleDownloadTemplate = async () => {
-    // const resp = await api.();
-    // if (resp.isSuccess) {
-    //   toast.success(t("DownloadSuccessfully"));
-    //   window.location.href = resp.Data;
-    // } else {
-    //   showError({
-    //     message: t(resp.errorCode),
-    //     debugInfo: resp.debugInfo,
-    //     errorInfo: resp.errorInfo,
-    //   });
-    // }
+    const resp = await api.Mst_DealerSalesGroupType_ExportTemplate();
+    if (resp.isSuccess) {
+      toast.success(t("DownloadSuccessfully"));
+      window.location.href = resp.Data;
+    } else {
+      showError({
+        message: t(resp.errorCode),
+        debugInfo: resp.debugInfo,
+        errorInfo: resp.errorInfo,
+      });
+    }
   };
 
   //BaseGridView
@@ -97,7 +110,7 @@ export const DealerSalesGroupTypePage = () => {
         editorType: "dxSelectBox",
         visible: true,
         editorOptions: {
-          dataSource: data?.DataList ?? [],
+          dataSource: listSaleType?.DataList ?? [],
           validationMessage: "always",
           displayExpr: "SalesGroupType",
           valueExpr: "SalesGroupType",
@@ -157,17 +170,13 @@ export const DealerSalesGroupTypePage = () => {
   };
 
   const handleEditorPreparing = (e: EditorPreparingEvent<any, any>) => {
-    // if (e.dataField === "PortCode") {
-    //     e.editorOptions.readOnly = !e.row?.isNewRow;
-    //   } else if (e.dataField === "PortType") {
-    //     e.editorOptions.readOnly = !e.row?.isNewRow;
-    //   } else if (e.dataField === "ProvinceCode") {
-    //     e.editorOptions.readOnly = !e.row?.isNewRow;
-    //   } else if (e.dataField === "FlagActive") {
-    //     if (e.row?.isNewRow) {
-    //       e.editorOptions.value = true;
-    //     }
-    //   }
+    if (e.dataField === "SalesGroupType") {
+      e.editorOptions.readOnly = !e.row?.isNewRow;
+    } else if (e.dataField === "FlagActive") {
+      if (e.row?.isNewRow) {
+        e.editorOptions.value = true;
+      }
+    }
   };
 
   const handleGridSelectionChanged = (rowKeys: string[]) => {
