@@ -1,10 +1,10 @@
 import {
   ApiResponse,
-  Province,
+  Mst_Province,
   SearchParam,
 } from "@/packages/types";
 import { AxiosInstance } from "axios";
-export interface ProvinceDto extends Omit<Province, 'FlagActive'> {
+export interface ProvinceDto extends Omit<Mst_Province, 'FlagActive'> {
   FlagActive: boolean | string
 }
 
@@ -12,8 +12,8 @@ export const useMst_Province_api = (apiBase: AxiosInstance) => {
   return {
     Mst_Province_Search: async (
       params: SearchParam
-    ): Promise<ApiResponse<Province>> => {
-      return await apiBase.post<SearchParam, ApiResponse<Province>>(
+    ): Promise<ApiResponse<Mst_Province>> => {
+      return await apiBase.post<SearchParam, ApiResponse<Mst_Province>>(
         "/MstProvince/Search",
         {
           ...params,
@@ -22,8 +22,8 @@ export const useMst_Province_api = (apiBase: AxiosInstance) => {
     },
     Mst_Province_Create: async (
       province: Partial<ProvinceDto>
-    ): Promise<ApiResponse<Province>> => {
-      return await apiBase.post<Partial<Province>, ApiResponse<Province>>(
+    ): Promise<ApiResponse<Mst_Province>> => {
+      return await apiBase.post<Partial<Mst_Province>, ApiResponse<Mst_Province>>(
         "/MstProvince/Create",
         {
           strJson: JSON.stringify(province),
@@ -32,13 +32,13 @@ export const useMst_Province_api = (apiBase: AxiosInstance) => {
     },
 
     Mst_Province_GetAllActive: async () => {
-      return await apiBase.post<Partial<Province>, ApiResponse<Province>>(
+      return await apiBase.post<Partial<Mst_Province>, ApiResponse<Mst_Province>>(
         "/MstProvince/GetAllActive"
       );
     },
 
     Mst_Province_Delete: async (provinceCode: string) => {
-      return await apiBase.post<SearchParam, ApiResponse<Province>>(
+      return await apiBase.post<SearchParam, ApiResponse<Mst_Province>>(
         "/MstProvince/Delete",
         {
           ProvinceCode: provinceCode,
@@ -46,7 +46,7 @@ export const useMst_Province_api = (apiBase: AxiosInstance) => {
       );
     },
     Mst_Province_DeleteMultiple: async (provinceCodes: string[]) => {
-      return await apiBase.post<SearchParam, ApiResponse<Province>>(
+      return await apiBase.post<SearchParam, ApiResponse<Mst_Province>>(
         "/MstProvince/DeleteMultiple",
         {
           strJson: JSON.stringify(
@@ -61,8 +61,8 @@ export const useMst_Province_api = (apiBase: AxiosInstance) => {
     Mst_Province_Update: async (
       key: string,
       province: Partial<ProvinceDto>
-    ): Promise<ApiResponse<Province>> => {
-      return await apiBase.post<Partial<Province>, ApiResponse<Province>>(
+    ): Promise<ApiResponse<Mst_Province>> => {
+      return await apiBase.post<Partial<Mst_Province>, ApiResponse<Mst_Province>>(
         "/MstProvince/Update",
         {
           strJson: JSON.stringify({
@@ -88,8 +88,8 @@ export const useMst_Province_api = (apiBase: AxiosInstance) => {
         }
       );
     },
-    Mst_Provice_ExportTemplate: async (): Promise<ApiResponse<any>> => {
-      return await apiBase.post<Partial<Province>, ApiResponse<string>>(
+    Mst_Province_ExportTemplate: async (): Promise<ApiResponse<any>> => {
+      return await apiBase.post<Partial<Mst_Province>, ApiResponse<string>>(
         "/MstProvince/ExportTemplate",
         {}
       );
@@ -99,14 +99,14 @@ export const useMst_Province_api = (apiBase: AxiosInstance) => {
       keyword?: string
     ): Promise<ApiResponse<any>> => {
       if (keys.length > 0) {
-        return await apiBase.post<Partial<Province>, ApiResponse<string>>(
+        return await apiBase.post<Partial<Mst_Province>, ApiResponse<string>>(
           "/MstProvince/ExportByListProvinceCode",
           {
             ListProvinceCode: keys.join(","),
           }
         );
       } else {
-        return await apiBase.post<Partial<Province>, ApiResponse<string>>(
+        return await apiBase.post<Partial<Mst_Province>, ApiResponse<string>>(
           "/MstProvince/Export",
           {
             KeyWord: keyword,

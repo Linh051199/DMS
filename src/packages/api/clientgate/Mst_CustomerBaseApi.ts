@@ -1,10 +1,6 @@
 import { ApiResponse, Mst_CustomerBase, SearchParam } from "@packages/types";
 import { AxiosInstance } from "axios";
 
-export interface Mst_CustomerBaseDto extends Omit<Mst_CustomerBase, 'FlagActive'> {
-  FlagActive: boolean | string
-}
-
 export const useMst_CustomerBase = (apiBase: AxiosInstance) => {
   return {
     Mst_CustomerBase_Search: async (

@@ -17,10 +17,17 @@ export const useMst_InsuranceType = (apiBase: AxiosInstance) => {
     Mst_InsuranceType_Delete: async (
       key: Object
     ): Promise<ApiResponse<Mst_InsuranceType>> => {
+      console.log("key", {
+        InsCompanyCode: key.InsCompanyCode,
+        InsTypeCode: key.InsTypeCode,
+        EffectiveDate: key.EffectiveDate,
+      });
       return await apiBase.post<string, ApiResponse<Mst_InsuranceType>>(
         "/MstInsuranceType/Delete",
         {
-          ...key,
+          InsCompanyCode: key.InsCompanyCode,
+          InsTypeCode: key.InsTypeCode,
+          EffectiveDate: key.EffectiveDate,
         }
       );
     },
@@ -58,15 +65,26 @@ export const useMst_InsuranceType = (apiBase: AxiosInstance) => {
           Partial<Mst_InsuranceType>,
           ApiResponse<string>
         >("/MstInsuranceType/ExportByListCode", {
-          ListInsCompanyCode: keys
-            .map((item: Partial<Mst_InsuranceType>) => item.InsCompanyCode)
-            .join(","),
-          ListInsTypeCode: keys
-            .map((item: Partial<Mst_InsuranceType>) => item.InsTypeCode)
-            .join(","),
-          ListEffectiveDate: keys
-            .map((item: Partial<Mst_InsuranceType>) => item.EffectiveDate)
-            .join(","),
+          // ListInsCompanyCode: keys
+          //   .map((item: Partial<Mst_InsuranceType>) => item.InsCompanyCode)
+          //   .join(","),
+          // ListInsTypeCode: keys
+          //   .map((item: Partial<Mst_InsuranceType>) => item.InsTypeCode)
+          //   .join(","),
+          // ListEffectiveDate: keys
+          //   .map((item: Partial<Mst_InsuranceType>) => item.EffectiveDate)
+          //   .join(","),
+          ListInsCompanyCodeAndInsTypeCodeAndEffectiveDate: [
+            keys
+              .map((item) =>
+                [
+                  item.InsCompanyCode,
+                  item.InsTypeCode,
+                  item.EffectiveDate,
+                ].join(",")
+              )
+              .join(";"),
+          ].join(","),
         });
       }
 
@@ -89,14 +107,13 @@ export const useMst_InsuranceType = (apiBase: AxiosInstance) => {
     },
 
     Mst_InsuranceType__DeleteMultiple: async (data: Object[]) => {
+      console.log("===data", data, {
+        strJson: JSON.stringify(data),
+      });
       return await apiBase.post<SearchParam, ApiResponse<Mst_InsuranceType>>(
         "/MstInsuranceType/DeleteMultiple",
         {
-          strJson: JSON.stringify(
-            data.map((item) => ({
-              item,
-            }))
-          ),
+          strJson: JSON.stringify(data),
         }
       );
     },

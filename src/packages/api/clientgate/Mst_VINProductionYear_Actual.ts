@@ -50,6 +50,7 @@ export const useMst_VINProductionYear_Actual = (apiBase: AxiosInstance) => {
           ...data,
           ...key,
         }),
+        // ColsUpd: "FlagActive",
         ColsUpd: Object.keys(data).join(","),
       });
     },
@@ -59,20 +60,16 @@ export const useMst_VINProductionYear_Actual = (apiBase: AxiosInstance) => {
       keyword?: string
     ): Promise<ApiResponse<any>> => {
       if (keys.length > 0) {
+        const result = keys
+          .map((item) => {
+            return `${item.AssemblyStatus},${item.VINCharacters}`;
+          })
+          .join(";");
         return await apiBase.post<
           Partial<Mst_VINProductionYear_Actual>,
           ApiResponse<string>
         >("/MstVINProductionYearActual/ExportByListCode", {
-          ListAssemblyStatus: keys
-            .map((item: Partial<Mst_VINProductionYear_Actual>) => {
-              return item.AssemblyStatus;
-            })
-            .join(","),
-          ListVINCharacters: keys
-            .map((item: Partial<Mst_VINProductionYear_Actual>) => {
-              return item.VINCharacters;
-            })
-            .join(","),
+          ListAssemblyStatusAndVINCharacters: result,
         });
       } else {
         return await apiBase.post<

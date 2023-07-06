@@ -11,6 +11,7 @@ import {
   SearchTCGCarPriceParam,
 } from "@/packages/types";
 import { AxiosInstance } from "axios";
+import { formatDate } from "@/packages/common/date_utils";
 
 export const useMst_TCGCarPriceApi = (apiBase: AxiosInstance) => {
   const convertDate = (param: Date) => {
@@ -29,6 +30,7 @@ export const useMst_TCGCarPriceApi = (apiBase: AxiosInstance) => {
         ApiResponse<Mst_TCGCarPrice>
       >("/MstTCGCarPrice/Search", {
         ...params,
+        EffectiveDate: formatDate(params.EffectiveDate as Date),
       });
     },
 
@@ -92,20 +94,24 @@ export const useMst_TCGCarPriceApi = (apiBase: AxiosInstance) => {
       );
     },
 
-    Mst_TCGCarPrice_Delete: async (key: DeleteTCGCarPriceParam) => {
+    Mst_TCGCarPrice_Delete: async (SOType: any) => {
       return await apiBase.post<SearchParam, ApiResponse<Mst_TCGCarPrice>>(
         "/MstTCGCarPrice/Delete",
-        {
-          ...key,
-        }
+        { ...SOType }
       );
     },
 
-    Mst_TCGCarPrice_DeleteMultiple: async (listCarCancelType: any[]) => {
+    Mst_TCGCarPrice_DeleteMultiple: async (key: any[]) => {
       return await apiBase.post<SearchParam, ApiResponse<Mst_TCGCarPrice>>(
         "/MstTCGCarPrice/DeleteMultiple",
         {
-          strJson: JSON.stringify(listCarCancelType),
+          strJson: JSON.stringify(
+            key.map(({ SpecCode, SOType, EffectiveDate }) => ({
+              SpecCode,
+              SOType,
+              EffectiveDate,
+            }))
+          ),
         }
       );
     },
@@ -133,36 +139,68 @@ export const useMst_TCGCarPriceApi = (apiBase: AxiosInstance) => {
       );
     },
 
-    Mst_TCGCarPrice_ExportExcel: async (
-      keyword?: string
-    ): Promise<ApiResponse<any>> => {
+    // Mst_TCGCarPrice_ExportExcel: async (
+    //   keyword?: string
+    // ): Promise<ApiResponse<any>> => {
+    //   {
+    //     return await apiBase.post<
+    //       Partial<Mst_TCGCarPrice>,
+    //       ApiResponse<string>
+    //     >("/MstTCGCarPrice/Export", {
+    //       KeyWord: keyword,
+    //       FlagActive: "",
+    //     });
+    //   }
+    // },
+
+    Mst_TCGCarPrice_ExportExcel: async (data: Partial<Mst_TCGCarPrice>): Promise<ApiResponse<any>> => {
       {
-        return await apiBase.post<
-          Partial<Mst_TCGCarPrice>,
-          ApiResponse<string>
-        >("/MstTCGCarPrice/Export", {
-          KeyWord: keyword,
-          FlagActive: "",
-        });
+        return await apiBase.post<Partial<Mst_TCGCarPrice>, ApiResponse<string>>(
+          "/MstTCGCarPrice/Export",
+          {
+            SOType: data.SOType,
+            SpecCode: data.SpecCode,
+            EffectiveDate: data.EffectiveDate
+          }
+        );
       }
     },
+
+    // Mst_TCGCarPrice_ExportByListCode: async (
+    //   selectedCodes: any
+    // ): Promise<ApiResponse<any>> => {
+    //   return await apiBase.post<any, ApiResponse<DeleteTCGCarPriceParam>>(
+    //     "/MstTCGCarPrice/ExportByListCode",
+    //     {
+    //       ListSOType: selectedCodes
+    //         .map((item: Partial<Mst_TCGCarPrice>) => item.SOType)
+    //         .join(","),
+    //       ListSpecCode: selectedCodes
+    //         .map((item: Partial<Mst_TCGCarPrice>) => item.SpecCode)
+    //         .join(","),
+    //       ListEffectiveDate: selectedCodes
+    //         .map((item: Partial<Mst_TCGCarPrice>) => item.EffectiveDate)
+    //         .join(","),
+    //     }
+    //   );
+    // },
+
     Mst_TCGCarPrice_ExportByListCode: async (
-      selectedCodes: any
+      keys: string[]
     ): Promise<ApiResponse<any>> => {
-      return await apiBase.post<any, ApiResponse<DeleteTCGCarPriceParam>>(
-        "/MstTCGCarPrice/ExportByListCode",
-        {
-          ListSOType: selectedCodes
-            .map((item: Partial<Mst_TCGCarPrice>) => item.SOType)
-            .join(","),
-          ListSpecCode: selectedCodes
-            .map((item: Partial<Mst_TCGCarPrice>) => item.SpecCode)
-            .join(","),
-          ListEffectiveDate: selectedCodes
-            .map((item: Partial<Mst_TCGCarPrice>) => item.EffectiveDate)
-            .join(","),
-        }
-      );
+      const result = keys.reduce((prev: any, cur: any, index: any) => {
+        return (prev += `${cur.SOType},${cur.SpecCode},${cur.EffectiveDate}${
+          index !== keys.length - 1 ? ";" : ""
+        }`);
+      }, "");
+      {
+        return await apiBase.post<Partial<Mst_TCGCarPrice>, ApiResponse<string>>(
+          "/MstCarPrice/ExportByListCode",
+          {
+            ListSOTypeAndSpecCodeAndEffectiveDate: result
+          }
+        );
+      }
     },
   };
 };

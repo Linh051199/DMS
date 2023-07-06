@@ -23,6 +23,8 @@ export const useMst_UnitPriceAVN   = (apiBase: AxiosInstance) => {
         "/MstUnitPriceAVN/Delete",
         {
           AVNCode: key.AVNCode,
+          EffDateTime: key.EffDateTime,
+
         }
       );
     },
@@ -35,6 +37,7 @@ export const useMst_UnitPriceAVN   = (apiBase: AxiosInstance) => {
             data.map((item: any) => {
               return {
                 AVNCode: item.AVNCode,
+                EffDateTime: item.EffDateTime,
               };
             })
           ),
@@ -66,31 +69,31 @@ export const useMst_UnitPriceAVN   = (apiBase: AxiosInstance) => {
       });
     },
 
-    Mst_UnitPriceAVN_ExportExcel: async (
-      keys: any[],
-      keyword?: string
-    ): Promise<ApiResponse<any>> => {
-      if (keys.length > 0) {
-        return await apiBase.post<
-          Partial<Mst_UnitPriceAVN>,
-          ApiResponse<string>
-        >("/MstUnitPriceAVN/ExportByListAVNCode", {
-          ListAVNCode: keys
-            .map((item: Mst_UnitPriceAVN) => {
-              return item.AVNCode;
-            })
-            .join(","),
-        });
-      }
+    // Mst_UnitPriceAVN_ExportExcel: async (
+    //   keys: any[],
+    //   keyword?: string
+    // ): Promise<ApiResponse<any>> => {
+    //   if (keys.length > 0) {
+    //     return await apiBase.post<
+    //       Partial<Mst_UnitPriceAVN>,
+    //       ApiResponse<string>
+    //     >("/MstUnitPriceAVN/ExportByListAVNCode", {
+    //       ListAVNCodeAndEffDateTime: keys
+    //         .map((item: Mst_UnitPriceAVN) => {
+    //           return item.AVNCode,item.EffDateTime;
+    //         })
+    //         .join(","),
+    //     });
+    //   }
 
-      return await apiBase.post<Partial<Mst_UnitPriceAVN>, ApiResponse<string>>(
-        "/MstUnitPriceAVN/Export",
-        {
-          KeyWord: keyword,
-          FlagActive: "",
-        }
-      );
-    },
+    //   return await apiBase.post<Partial<Mst_UnitPriceAVN>, ApiResponse<string>>(
+    //     "/MstUnitPriceAVN/Export",
+    //     {
+    //       KeyWord: keyword,
+    //       FlagActive: "",
+    //     }
+    //   );
+    // },
 
     Mst_UnitPriceAVN_Template: async (): Promise<ApiResponse<any>> => {
       return await apiBase.post<Partial<Mst_UnitPriceAVN>, ApiResponse<string>>(
@@ -111,6 +114,31 @@ export const useMst_UnitPriceAVN   = (apiBase: AxiosInstance) => {
           },
         }
       );
+    },
+    Mst_UnitPriceAVN_Export: async (
+      keyword?: string
+    ): Promise<ApiResponse<any>> => {
+      {
+        return await apiBase.post<
+          Partial<Mst_UnitPriceAVN>,
+          ApiResponse<string>
+        >("/MstUnitPriceAVN/Export", {
+          KeyWord: keyword,
+          FlagActive: "",
+        });
+      }
+    },
+    Mst_UnitPriceAVN_ExportByListCode: async (
+      object: any
+    ): Promise<ApiResponse<any>> => {
+      {
+        return await apiBase.post<
+          Partial<Mst_UnitPriceAVN>,
+          ApiResponse<string>
+        >("/MstUnitPriceAVN/ExportByListCode", {
+          ListAVNCodeAndEffDateTime: object,
+        });
+      }
     },
   };
 

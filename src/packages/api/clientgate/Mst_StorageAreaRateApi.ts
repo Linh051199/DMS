@@ -49,27 +49,27 @@ export const useMst_StorageAreaRate = (apiBase: AxiosInstance) => {
       });
     },
 
-    Mst_StorageAreaRate_ExportExcel: async (
-      keys: string[],
-      keyword?: string
-    ): Promise<ApiResponse<any>> => {
-      if (keys.length > 0) {
-        return await apiBase.post<
-          Partial<Mst_StorageAreaRate>,
-          ApiResponse<string>
-        >("/MstStorageAreaRate/ExportByListCode", {
-          ListCustomerBaseCode: keys.join(","),
-        });
-      } else {
-        return await apiBase.post<
-          Partial<Mst_StorageAreaRate>,
-          ApiResponse<string>
-        >("/MstStorageAreaRate/Export", {
-          KeyWord: keyword,
-          FlagActive: "",
-        });
-      }
-    },
+    // Mst_StorageAreaRate_ExportExcel: async (
+    //   keys: string[],
+    //   keyword?: string
+    // ): Promise<ApiResponse<any>> => {
+    //   if (keys.length > 0) {
+    //     return await apiBase.post<
+    //       Partial<Mst_StorageAreaRate>,
+    //       ApiResponse<string>
+    //     >("/MstStorageAreaRate/ExportByListCode", {
+    //       ListCustomerBaseCode: keys.join(","),
+    //     });
+    //   } else {
+    //     return await apiBase.post<
+    //       Partial<Mst_StorageAreaRate>,
+    //       ApiResponse<string>
+    //     >("/MstStorageAreaRate/Export", {
+    //       KeyWord: keyword,
+    //       FlagActive: "",
+    //     });
+    //   }
+    // },
 
     Mst_StorageAreaRate_ExportExcel_Template: async (): Promise<
       ApiResponse<any>
@@ -104,6 +104,31 @@ export const useMst_StorageAreaRate = (apiBase: AxiosInstance) => {
           },
         }
       );
+    },
+    Mst_StorageAreaRate_Export: async (
+      keyword?: string
+    ): Promise<ApiResponse<any>> => {
+      {
+        return await apiBase.post<
+          Partial<Mst_StorageAreaRate>,
+          ApiResponse<string>
+        >("/MstStorageAreaRate/Export", {
+          KeyWord: keyword,
+          FlagActive: "",
+        });
+      }
+    },
+    Mst_StorageAreaRate_ExportByListCode: async (
+      object: any
+    ): Promise<ApiResponse<any>> => {
+      {
+        return await apiBase.post<
+          Partial<Mst_StorageAreaRate>,
+          ApiResponse<string>
+        >("/MstStorageAreaRate/ExportByListCode", {
+          ListStorageCodeAndModelCodeAndSpecCodeAndColorExtCode: object,
+        });
+      }
     },
   };
 };

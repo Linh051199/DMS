@@ -117,7 +117,7 @@ export const useMst_CarSpecApi = (apiBase: AxiosInstance) => {
       );
     },
     Mst_CarSpec_ExportByListCode: async (
-      obj: string[]
+      obj: string
     ): Promise<ApiResponse<any>> => {
       return await apiBase.post<any, ApiResponse<Mst_CarSpec>>(
         "/MstCarSpec/ExportByListCode",
@@ -130,7 +130,7 @@ export const useMst_CarSpecApi = (apiBase: AxiosInstance) => {
       const form = new FormData();
       form.append("file", file); // file is the file you want to upload
 
-      const resp = await apiBase.post<File, ApiResponse<any>>(
+      return await apiBase.post<File, ApiResponse<any>>(
         "/MstCarSpec/Import",
         form,
         {
@@ -139,10 +139,6 @@ export const useMst_CarSpecApi = (apiBase: AxiosInstance) => {
           },
         }
       );
-      return {
-        ...resp,
-        isSuccess: resp.Data._strErrCode === "0",
-      };
     },
     Mst_CarSpec_ExportTemplate: async (): Promise<ApiResponse<any>> => {
       return await apiBase.post<Partial<Mst_CarSpec>, ApiResponse<string>>(

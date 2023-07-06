@@ -29,11 +29,13 @@ export const useMst_District = (apiBase: AxiosInstance) => {
       });
     },
 
-    Mst_District_Delete: async (DistrictCode: string) => {
+    Mst_District_Delete: async (key: any) => {
+      console.log(33, key)
       return await apiBase.post<SearchParam, ApiResponse<Mst_District>>(
         "/MstDistrict/Delete",
         {
-          DistrictCode: DistrictCode,
+          DistrictCode: key.DistrictCode,
+          ProvinceCode: key.ProvinceCode
         }
       );
     },
@@ -50,7 +52,7 @@ export const useMst_District = (apiBase: AxiosInstance) => {
       );
     },
     Mst_District_Update: async (
-      key: string,
+      key: string | any,
       port: Partial<Mst_District>
     ): Promise<ApiResponse<Mst_District>> => {
       return await apiBase.post<
@@ -58,10 +60,11 @@ export const useMst_District = (apiBase: AxiosInstance) => {
         ApiResponse<Mst_District>
       >("/MstDistrict/Update", {
         strJson: JSON.stringify({
-          PortCode: key,
+          DistrictCode: key.DistrictCode,
+          ProvinceCode: key.ProvinceCode,
           ...port,
         }),
-        ColsUpd: Object.keys(port),
+        ColsUpd: "DistrictName,FlagActive",
       });
     },
     Mst_District_Upload: async (file: File): Promise<ApiResponse<any>> => {
@@ -84,24 +87,23 @@ export const useMst_District = (apiBase: AxiosInstance) => {
       );
     },
     Mst_District_ExportExcel: async (
-      keys: string[],
+      keys: any[],
       keyword?: string
     ): Promise<ApiResponse<any>> => {
       console.log("keys ", keys);
       if (keys.length > 0) {
+        let result = '';
+        for (let i = 0; i < keys.length; i++) {
+          const districtCode = keys[i].DistrictCode;
+          const provinceCode = keys[i].ProvinceCode;
+          result += `${districtCode},${provinceCode};`;
+        }
+        result = result.slice(0, -1);
+        console.log(result);
         return await apiBase.post<Partial<Mst_District>, ApiResponse<string>>(
-          "/MstDistrict/ExportByListDistrictCode",
+          "/MstDistrict/ExportByListDistrictCodeAndProvinceCode",
           {
-            ListDistrictCode: keys
-              .map((item: any) => {
-                return item.DistrictCode;
-              })
-              .join(","),
-            ListProvinceCode: keys
-              .map((item: any) => {
-                return item.ProvinceCode;
-              })
-              .join(","),
+            result
           }
         );
       } else {

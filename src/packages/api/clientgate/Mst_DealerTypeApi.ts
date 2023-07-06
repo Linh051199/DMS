@@ -71,11 +71,11 @@ export const useMst_DealerType = (apiBase: AxiosInstance) => {
       keyword?: string
     ): Promise<ApiResponse<any>> => {
       if (keys.length > 0) {
+        const listDealerTypeExport = keys.map((item) => item).join(",");
         return await apiBase.post<Partial<Mst_DealerType>, ApiResponse<string>>(
-          "/MstDealerType/Export",
+          "/MstDealerType/ExportByListDealerType",
           {
-            KeyWord: keyword,
-            FlagActive: "",
+            ListDealerType: listDealerTypeExport,
           }
         );
       }

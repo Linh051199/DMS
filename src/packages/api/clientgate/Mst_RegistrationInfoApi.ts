@@ -58,20 +58,16 @@ export const useMst_RegistrationInfo = (apiBase: AxiosInstance) => {
       keyword?: string
     ): Promise<ApiResponse<any>> => {
       if (keys.length > 0) {
+        const result = keys
+          .map((item) => {
+            return `${item.RegistYear},${item.ProvinceCode}`;
+          })
+          .join(";");
         return await apiBase.post<
           Partial<Mst_RegistrationInfo>,
           ApiResponse<string>
         >("/MstRegistrationInfo/ExportByListCode", {
-          ListRegistYear: keys
-            .map((item: Partial<Mst_RegistrationInfo>) => {
-              return item.RegistYear;
-            })
-            .join(","),
-          ListProvinceCode: keys
-            .map((item: Partial<Mst_RegistrationInfo>) => {
-              return item.ProvinceCode;
-            })
-            .join(","),
+          ListRegistYearAndProvinceCode: result,
         });
       } else {
         return await apiBase.post<

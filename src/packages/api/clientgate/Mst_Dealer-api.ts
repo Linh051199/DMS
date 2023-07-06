@@ -1,4 +1,11 @@
-import {ApiResponse, DeleteDealerParam, FlagActiveEnum, Mst_Dealer, SearchDealerParam,} from "@/packages/types";
+import {
+  ApiResponse,
+  DeleteDealerParam,
+  FlagActiveEnum,
+  Mst_Dealer,
+  Mst_Dealer_Address,
+  SearchDealerParam,
+} from "@/packages/types";
 import {AxiosInstance} from "axios";
 
 export const useDealerApi = (apiBase: AxiosInstance) => {
@@ -172,5 +179,10 @@ export const useDealerApi = (apiBase: AxiosInstance) => {
         }
       );
     },
+    Mst_Dealer_DealerAddressGetByDealerCode: async (DealerCode: string): Promise<ApiResponse<Mst_Dealer_Address>> => {
+      return await apiBase.post<{DealerCode: string}, ApiResponse<Mst_Dealer_Address>>("/MstDealer/DealerAddressGetByDealerCode", {
+        DealerCode: DealerCode,
+      })
+    }
   };
 };

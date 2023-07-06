@@ -70,18 +70,8 @@ export const use_MstCabinCertificate = (apiBase: AxiosInstance) => {
     },
 
     Mst_CabinCertificate_ExportExcel: async (
-      keys: string[],
       keyword?: string
     ): Promise<ApiResponse<any>> => {
-      if (keys.length > 0) {
-        return await apiBase.post<
-          Partial<Mst_CabinCertificate>,
-          ApiResponse<string>
-        >("/MstCabinCertificate/ExportByListCabinCertificateNo", {
-          ListCabinCertificateNo: keys.join(","),
-        });
-      }
-
       return await apiBase.post<
         Partial<Mst_CabinCertificate>,
         ApiResponse<string>
@@ -90,6 +80,18 @@ export const use_MstCabinCertificate = (apiBase: AxiosInstance) => {
         FlagActive: "",
       });
     },
+    Mst_CabinCertificate_ExportByListCabinCertificateNo: async (
+      selectedItems: any[],
+    ): Promise<ApiResponse<any>> => {
+        return await apiBase.post<
+          Partial<Mst_CabinCertificate>,
+          ApiResponse<string>
+        >("/MstCabinCertificate/ExportByListCabinCertificateNo", {
+          ListCabinCertificateNo: selectedItems.join(","),
+        });
+    },
+
+
 
     Mst_CabinCertificate_ExportExcel_Template: async (): Promise<
       ApiResponse<any>

@@ -55,8 +55,15 @@ export interface RptSaleBaoCaoTongHopGetRecord {
   VS073: string,
 }
 
+export interface ListDealerCodeRecord{
+  AreaCode: string,
+  AreaName: string,
+  Lst_DealerCode: [],
+}
+
 interface RptSaleBaoCaoTongHopGetData {
   Lst_Rpt_Sale_BaoCaoTongHopGet: RptSaleBaoCaoTongHopGetRecord[];
+  ListDealerCode: ListDealerCodeRecord[];
 }
 export const useRptSaleBaoCaoTongHopGet = (apiBase: AxiosInstance) => {
   apiBase.defaults.headers["DealerCode"] = "HTV";
@@ -70,6 +77,7 @@ export const useRptSaleBaoCaoTongHopGet = (apiBase: AxiosInstance) => {
         ApiResponse<RptSaleBaoCaoTongHopGetData>
       >("/RptSaleBaoCaoTongHopGet/SearchHQ", {
         ...params,
+        // TDateReport:"2023-02-01"
       });
     },
     RptSaleBaoCaoTongHopGet_ExportSearchHQ: async (

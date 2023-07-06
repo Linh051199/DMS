@@ -46,7 +46,7 @@ export const useMst_CarStdOptApi = (apiBase: AxiosInstance) => {
             ...code,
             ...values,
           }),
-          ColsUpd: Object.keys(values),
+          ColsUpd: Object.keys(values).join(","),
         },
         {
           headers: {
@@ -80,10 +80,15 @@ export const useMst_CarStdOptApi = (apiBase: AxiosInstance) => {
     Mst_CarStdOpt_ExportByListCode: async (
       obj: any
     ): Promise<ApiResponse<any>> => {
+      const result = obj
+        .map((item: Mst_CarStdOpt) => {
+          return `${item.ModelCode},${item.StdOptCode},${item.GradeCode}`;
+        })
+        .join(";");
       return await apiBase.post<any, ApiResponse<Mst_CarStdOpt>>(
         "/MstCarStdOpt/ExportByListCode",
         {
-          ListModelCodeAndStdOptCodeAndGradeCode: obj,
+          ListModelCodeAndStdOptCodeAndGradeCode: result,
         }
       );
     },
@@ -91,7 +96,7 @@ export const useMst_CarStdOptApi = (apiBase: AxiosInstance) => {
       const form = new FormData();
       form.append("file", file); // file is the file you want to upload
 
-      const resp = await apiBase.post<File, ApiResponse<any>>(
+      return await apiBase.post<File, ApiResponse<any>>(
         "/MstCarStdOpt/Import",
         form,
         {
@@ -100,10 +105,6 @@ export const useMst_CarStdOptApi = (apiBase: AxiosInstance) => {
           },
         }
       );
-      return {
-        ...resp,
-        isSuccess: resp.Data._strErrCode === "0",
-      };
     },
     Mst_CarStdOpt_ExportTemplate: async (): Promise<ApiResponse<any>> => {
       return await apiBase.post<Partial<Mst_CarStdOpt>, ApiResponse<string>>(

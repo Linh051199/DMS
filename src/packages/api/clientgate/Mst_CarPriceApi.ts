@@ -1,16 +1,18 @@
-import { ApiResponse, Mst_CarPrice, SearchParam } from "@/packages/types";
+import { formatDate } from "@/packages/common/date_utils";
+import { ApiResponse, Mst_CarPrice, SearchCarPriceParam, SearchParam} from "@/packages/types";
 import { AxiosInstance } from "axios";
 
 export const useMst_CarPrice = (apiBase: AxiosInstance) => {
   return {
     Mst_CarPrice_Search: async (
-      params: Partial<SearchParam>
+      params: Partial<SearchCarPriceParam>
     ): Promise<ApiResponse<Mst_CarPrice>> => {
       return await apiBase.post<
         Partial<SearchParam>,
         ApiResponse<Mst_CarPrice>
       >("/MstCarPrice/Search", {
         ...params,
+        EffectiveDate: formatDate(params.EffectiveDate as Date),
       });
     },
 
@@ -85,37 +87,6 @@ export const useMst_CarPrice = (apiBase: AxiosInstance) => {
       );
     },
 
-    // Mst_CarPrice_DeleteMultiple: async (
-    //   keys: string[]
-    // ): Promise<ApiResponse<any>> => {
-    //   let result = keys.reduce(
-    //     (accumulator: any, currentValue: any) => {
-    //       accumulator.ListSOType.push(currentValue.SOType);
-    //       accumulator.ListSpecCode.push(currentValue.SpecCode);
-    //       accumulator.ListEffectiveDate.push(currentValue.EffectiveDate);
-    //       return accumulator;
-    //     },
-    //     {
-    //       ListSOType: [],
-    //       ListSpecCode: [],
-    //       ListEffectiveDate: [],
-    //     }
-    //   );
-    //   result.ListSOType = result.ListSOType.join(",");
-    //   result.ListSpecCode = result.ListSpecCode.join(",");
-    //   result.ListEffectiveDate = result.ListEffectiveDate.join(",");
-    //   {
-    //     return await apiBase.post<Partial<Mst_CarPrice>, ApiResponse<string>>(
-    //       "/MstCarPrice/DeleteMultiple",
-    //       {
-    //         ListSOType: result.ListSOType,
-    //         ListSpecCode: result.ListSpecCode,
-    //         ListEffectiveDate:result.ListEffectiveDate,
-    //       }
-    //     );
-    //   }
-    // },
-
     Mst_CarPrice_Import: async (file: File): Promise<ApiResponse<any>> => {
       const form = new FormData();
       form.append("file", file); // file is the file you want to upload
@@ -138,16 +109,19 @@ export const useMst_CarPrice = (apiBase: AxiosInstance) => {
       );
     },
 
-    Mst_CarPrice_Export: async (): Promise<ApiResponse<any>> => {
+    Mst_CarPrice_Export: async (data: Partial<Mst_CarPrice>): Promise<ApiResponse<any>> => {
       {
         return await apiBase.post<Partial<Mst_CarPrice>, ApiResponse<string>>(
           "/MstCarPrice/Export",
           {
-            FlagActive: "1",
+            SOType: data.SOType,
+            SpecCode: data.SpecCode,
+            EffectiveDate: data.EffectiveDate
           }
         );
       }
     },
+
 
     Mst_CarPrice_ExportByListSOTypeAndSpecCodeAndEffectiveDate: async (
       keys: string[]

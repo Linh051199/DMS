@@ -25,7 +25,7 @@ export const useMst_BankAccount = (apiBase: AxiosInstance) => {
       return await apiBase.post<
         Partial<Mst_BankAccount>,
         ApiResponse<Mst_BankAccount>
-      >("/MstBankAccount/GetAllActive");
+      >("/MstBank/GetAllActive");
     },
 
     Mst_Bank_GetAllActiveInBankCode: async (): Promise<
@@ -114,7 +114,10 @@ export const useMst_BankAccount = (apiBase: AxiosInstance) => {
 
     // ------------------EXPORT NHIỀU BẢN GHI KHI TICK CHỌN COLUMNS----------------
     Mst_BankAccount_ExportByListBankCode: async (
-      selectedCodes: string[]
+      selectedCodes: {
+        AccountNo: string;
+        BankCode: string;
+      }[]
     ): Promise<ApiResponse<any>> => {
       let data = selectedCodes.reduce(
         (accumulator: any, currentValue: any) => {

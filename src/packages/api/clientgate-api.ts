@@ -42,6 +42,8 @@ import { useMst_TransporterCar } from "./clientgate/Mst_TransporterCarApi";
 import { useMst_TransporterDriverApi } from "./clientgate/Mst_TransporterDriverApi";
 import { useMst_UnitPriceGPS } from "./clientgate/Mst_UnitPriceGPSApi";
 import { useRpt_PrincipleContractApi } from "./clientgate/Rpt_PrincipleContractApi";
+import { useCarDeliveryOrder, useCarCarService } from "./clientgate/business";
+
 // import { useMst_CostTypeApi } from "./clientgate/Mst_CostTypeApi";
 import { FlagActiveConvertor } from "@packages/api/interceptors/flag-active-convertor";
 import { useAuto_MapVIN_DistributionSumRate } from "./clientgate/Auto_Map_VINDistributionSumRateApi";
@@ -106,7 +108,7 @@ import { useRpt_SPLSPSupportRetail } from "./clientgate/Rpt_SPLSPSupportRetailAp
 import { useRptSalesCtmCare01 } from "./clientgate/Rpt_SalesCtmCare01Api";
 import { useRpt_ShareHTCStock03 } from "./clientgate/Rpt_ShareHTCStock03Api";
 import { useRptStaticGrpDealerInSock02 } from "./clientgate/Rpt_StatisticGrpDealerInStock02Api";
-import { useRptStatisticHTCBackOrderSpecCode01 } from "./clientgate/Rpt_StatisticHTCBackOrderSpecCode01Api";
+import { useRpt_StatisticHTCBackOrderSpecCode01Pivot } from "./clientgate/Rpt_StatisticHTCBackOrderSpecCode01PivotApi";
 import { useRptStatisticHTCStockOutOnWay } from "./clientgate/Rpt_StatisticHTCStockOutOnWayApi";
 import { useSys_user } from "./clientgate/Sys_UserApi";
 import { useRpt_PmtGuaranteeBankMarketSum01 } from "./clientgate/Rpt_PmtGuaranteeBankMarketSum01Api";
@@ -116,6 +118,45 @@ import { useRptUpdSalesManByDelear } from "./clientgate/Rpt_UpdSalesManByDelearA
 import { useRptSalesReportApi } from "./clientgate/Rpt_SalesReportApi";
 import { useRptSaleBaoCaoTongHopGet } from "./clientgate/Rpt_SaleBaoCaoTongHopGetApi";
 import { useRpt_TonHoSoNganHang } from "./clientgate/Rpt_TonHoSoNganHangApi";
+import { useRpt_StatisticHTCStock01 } from "./clientgate/Rpt_StatisticHTCStock01Api";
+import { useRpt_StockInHTC } from "./clientgate/Rpt_StockInHTCApi";
+import { useRpt_DebitReport02New } from "./clientgate/Rpt_DebitReport02NewApi";
+import { useRpt_StatisticGrpDealer01 } from "./clientgate/Rpt_StatisticGrpDealer01Api";
+import { useRpt_StatisticHTCBackOrderDealer01 } from "./clientgate/Rpt_StatisticHTCBackOrderDealer01Api";
+import { useRpt_StatisticHTCBackOrderSpecCode01 } from "./clientgate/Rpt_StatisticHTCBackOrderSpecCode01Api";
+import { useRpt_GuaranteeDebit01 } from "./clientgate/Rpt_GuaranteeDebit01Api";
+import { useRpt_SalesDelivery01 } from "./clientgate/Rpt_SalesDelivery01Api";
+import { useRpt_NXTQuyenDoiNo } from "./clientgate/Rpt_NXTQuyenDoiNoApi";
+import { useRpt_SalesPeriod01 } from "./clientgate/Rpt_SalesPeriod01Api";
+import { useRpt_NhapXuatTonTrongKy } from "./clientgate/Rpt_NhapXuatTonTrongKyApi";
+import { useRpt_XuatHoSo } from "./clientgate/Rpt_XuatHoSoApi";
+import { useRpt_RevenueHTCInvoice } from "./clientgate/Rpt_RevenueHTCInvoiceApi";
+import { useRpt_PivotRevenueBySpec } from "./clientgate/Rpt_PivotRevenueBySpecApi";
+import { useRpt_CarColorChangeHistory } from "./clientgate/Rpt_CarColorChangeHistoryApi";
+import { useRpt_PmtPaymentDtl_ByDealer } from "./clientgate/Rpt_PmtPaymentDtlByDealerApi";
+import { useRpt_WOOrderAndSchedule01 } from "./clientgate/Rpt_WOOrderAndSchedule01Api";
+import { useRpt_StatisticPIInStock } from "./clientgate/Rpt_StatisticPIInStockApi";
+import { useRpt_CarDeliveryOutButNotDutyComplete } from "./clientgate/Rpt_CarDeliveryOutButNotDutyCompleteApi";
+import { useRpt_PenaltyPmtDelay } from "./clientgate/Rpt_PenaltyPmtDelayApi";
+import { useRpt_BaoCaoXeThieuBBBG } from "./clientgate/Rpt_BaoCaoXeThieuBBBGApi";
+import { useRpt_Statistic_DMS40CarDeliveryOrder } from "./clientgate/Rpt_Statistic_DMS40CarDeliveryOrderApi";
+import { useRpt_ReportCarDocReq } from "./clientgate/Rpt_ReportCarDocReqApi";
+import { useRpt_BCSupportDealerSales } from "./clientgate/Rpt_BCSupportDealerSalesApi";
+import { useRpt_MapVIN } from "./clientgate/Rpt_MapVINApi";
+import { useRpt_CarAllocationByArea } from "./clientgate/Rpt_CarAllocationByAreaApi";
+import { use_RptTheoDoiKiemTraDatHang } from "./clientgate/Rpt_TheoDoiKiemTraDatHangApi";
+import { useRpt_DuBaoDatHang5THTMV } from "./clientgate/Rpt_DuBaoDatHang5THTMVApi";
+import { useRpt_SalesExpectedTarget } from "./clientgate/Rpt_SalesExpectedTargetApi";
+import { useRpt_DuKienDongTienTT_ChiTiet } from "./clientgate/Rpt_DuKienDongTienTT_ChiTietApi";
+import { useRpt_Master } from "./clientgate/Rpt_MasterApi";
+import { useRpt_BLDenHanThanhToan } from "./clientgate/Rpt_BLDenHanThanhToanApi";
+import { useRpt_SMCertificate } from "./clientgate/Rpt_SMCertificateApi";
+import { useRpt_StockAndSalesDealer } from "./clientgate/Rpt_StockAndSalesDealerApi";
+import { useMst_Part } from "./clientgate/Mst_PartApi";
+import { useMst_MaintainTaskItemApi } from "./clientgate/Mst_MaintainTaskItemApi";
+import { useRpt_PivotRetailContractApi } from "./clientgate/Rpt_PivotRetailContractApi";
+import { useMst_InvoiceIDHTCApi } from "./clientgate/Mst_InvoiceIDHTCApi";
+
 // report end
 
 /**
@@ -233,11 +274,7 @@ export const createClientGateApiBase = (
           data.Data._strErrCode === "0" ? undefined : data.Data._excResult,
         errorCode: data.Data._strErrCode,
       };
-      if (
-        result.isSuccess &&
-        !!data.Data._objResult &&
-        !!data.Data._objResult.DataList
-      ) {
+      if (!!data.Data._objResult && !!data.Data._objResult.DataList) {
         result.DataList = data.Data._objResult.DataList.map((item: any) => {
           // if `item` has `FlagActive` property
           if (Object.keys(item).includes("FlagActive")) {
@@ -253,16 +290,23 @@ export const createClientGateApiBase = (
         result.PageIndex = data.Data._objResult.PageIndex;
         result.PageSize = data.Data._objResult.PageSize;
       } else {
-        if (typeof data.Data?._objResult !== "string") {
-          result.Data = data.Data?._objResult?.map((item: any) => {
-            // if `item` has `FlagActive` property
-            if (Object.keys(item).includes("FlagActive")) {
-              item.FlagActive = item.FlagActive === "1";
-            }
-            return {
-              ...item,
-            };
-          });
+        if (
+          data.Data?._objResult &&
+          typeof data.Data?._objResult !== "string"
+        ) {
+          if (data.Data?._objResult.Data) {
+            result.Data = data.Data._objResult.Data;
+          } else {
+            result.Data = data.Data?._objResult.map((item: any) => {
+              // if `item` has `FlagActive` property
+              if (Object.keys(item).includes("FlagActive")) {
+                item.FlagActive = item.FlagActive === "1";
+              }
+              return {
+                ...item,
+              };
+            });
+          }
         } else {
           result.Data = data.Data?._objResult;
         }
@@ -297,6 +341,8 @@ export const createClientGateApi = (
     networkId,
     orgId
   );
+  const useCarDeliveryOrderApi = useCarDeliveryOrder(apiBase);
+  const useCarCarApi = useCarCarService(apiBase);
   const getCurrentUserApis = useGetForCurrentUser(reportApiBase);
   const provinceApis = useMst_Province_api(apiBase);
   const dealerApis = useDealerApi(apiBase);
@@ -357,7 +403,11 @@ export const createClientGateApi = (
     useAuto_MapVIN_DistributionSumRate(apiBase);
   const useMstMngRateTonKhoBanHang = useMst_MngRateTonKhoBanHang(apiBase);
   const useMstWarrantyExpires = useMst_WarrantyExpires(apiBase);
-  const useMstBankAccount = useMst_BankAccount(apiBase);
+  const useMstSalesManType = useMst_SalesManTypeApi(apiBase); // ThangPV
+  const useMstTCGCarSalePrice = useMst_TCGCarSalePrice(apiBase); // ThangPV
+  const useMstBankAccount = useMst_BankAccount(apiBase); // ThangPV
+  const useMstInvoiceIDHTC = useMst_InvoiceIDHTCApi(apiBase); // ThangPV
+
   const useMstCarPrice = useMst_CarPrice(apiBase);
   const useMstBankDealer = useMst_BankDealer(apiBase);
   const useMstDepartment = useMst_Department(apiBase);
@@ -365,8 +415,6 @@ export const createClientGateApi = (
   const useMstInventoryCost = useMst_InventoryCost(apiBase);
   const useMstSalesManTypeCertificate = useMst_SalesManTypeCertificate(apiBase);
   const useTCGCarPrice = useMst_TCGCarPriceApi(apiBase);
-  const useMstTCGCarSalePrice = useMst_TCGCarSalePrice(apiBase);
-  const useMstSalesManType = useMst_SalesManTypeApi(apiBase);
   const useMstPosition = useMst_Position(apiBase);
   const useMstCarColorApi = useMst_CarColorApi(apiBase);
   const useMstBankApi = useMst_BankApi(apiBase);
@@ -374,6 +422,7 @@ export const createClientGateApi = (
   const useMstQuota = useMst_Quota(apiBase);
   const useRptPayment01 = useRptPayment01Api(reportApiBase);
   const mstInvoiceIDApi = useMst_InvoiceIDApi(apiBase);
+  const mstPart = useMst_Part(apiBase);
   // report start
   const rptStatisticDealerStock21 = useRptStatisticDealerStock21(reportApiBase);
 
@@ -395,17 +444,21 @@ export const createClientGateApi = (
 
   const RptStatisticDealerStockForSaleMstData =
     useRptStatistic_DealerStock_ForSale_Mst(reportApiBase);
-  const rptStatisticHTCBackOrderSpecCode01 =
-    useRptStatisticHTCBackOrderSpecCode01(reportApiBase);
+  const rptStatisticHTCBackOrderSpecCode01Pivot =
+    useRpt_StatisticHTCBackOrderSpecCode01Pivot(reportApiBase);
   const rptStatisticHTCStockOutOnWay =
     useRptStatisticHTCStockOutOnWay(reportApiBase);
 
   // DongNV
+  const mstMaintainTaskItem = useMst_MaintainTaskItemApi(apiBase);
   const rptStaticGrpDealerInSock02 =
     useRptStaticGrpDealerInSock02(reportApiBase);
   const rptMasterdata = useRptMasterData(reportApiBase);
   const useRptCarDeliveryOrderExpectData =
     useRpt_CarDeliveryOrderExpectData(reportApiBase);
+  const rptDuBaoDatHang5THTMV = useRpt_DuBaoDatHang5THTMV(reportApiBase);
+  const rptSaleExpectedTarget = useRpt_SalesExpectedTarget(reportApiBase);
+  // DongNV end
 
   const rptStatisticHTCStockOut01 = useRptStatisticHTCStockOut01(reportApiBase); // ThangPV
   const rptStatisticGrpDealer03 = useRptStatisticGrpDealer03(reportApiBase); // ThangPV
@@ -417,19 +470,58 @@ export const createClientGateApi = (
     useRpt_PmtGuaranteeBankMarketSum01(reportApiBase); // ThangPV
   const useRptPmtPaymentLoanBankMarketSum01 =
     useRpt_PmtPaymentLoanBankMarketSum01(reportApiBase); // ThangPV
+  const rpt_PmtPaymentDtl_ByDealer =
+    useRpt_PmtPaymentDtl_ByDealer(reportApiBase); // ThangPV
+  const rpt_CarDeliveryOutButNotDutyComplete =
+    useRpt_CarDeliveryOutButNotDutyComplete(reportApiBase); // ThangPV
+  const rpt_ReportCarDocReq = useRpt_ReportCarDocReq(reportApiBase); // ThangPV
+  const rpt_MapVIN = useRpt_MapVIN(reportApiBase); // ThangPV
+  const rptTheoDoiKiemTraDatHang = use_RptTheoDoiKiemTraDatHang(reportApiBase); // ThangPV
+  const rptDuKienDongTienTT_ChiTietData =
+    useRpt_DuKienDongTienTT_ChiTiet(reportApiBase); // ThangPV
+  const rpt_SMCertificate = useRpt_SMCertificate(reportApiBase); // ThangPV
   // report end
   const useRptShareHTCStock03 = useRpt_ShareHTCStock03(reportApiBase);
   const useRptPivotDlrCtmVisit = useRpt_PivotDlrCtmVisit(reportApiBase);
   const rptBaoCaoMoi = useRptBaoCaoMoi(reportApiBase);
   const useRptPivotDlrTestDriver = useRpt_PivotDlrTestDriver(reportApiBase);
   const rptSalesCtmCare01 = useRptSalesCtmCare01(reportApiBase);
-  const rptUpdSalesManByDelear =useRptUpdSalesManByDelear(reportApiBase)
-  const rptSalesReportApi =useRptSalesReportApi(reportApiBase)
+  const rptUpdSalesManByDelear = useRptUpdSalesManByDelear(reportApiBase);
+  const rptSalesReportApi = useRptSalesReportApi(reportApiBase);
   const rptSaleBaoCaoTongHopGet = useRptSaleBaoCaoTongHopGet(reportApiBase);
   const rptTonHoSoNganHang = useRpt_TonHoSoNganHang(reportApiBase);
+  const rpt_StatisticHTCStock01 = useRpt_StatisticHTCStock01(reportApiBase);
+  const rpt_StockInHTC = useRpt_StockInHTC(reportApiBase);
+  const rpt_DebitReport02New = useRpt_DebitReport02New(reportApiBase);
+  const rpt_StatisticGrpDealer01 = useRpt_StatisticGrpDealer01(reportApiBase);
+  const rpt_StatisticHTCBackOrderDealer01 =
+    useRpt_StatisticHTCBackOrderDealer01(reportApiBase);
+  const rpt_StatisticHTCBackOrderSpecCode01 =
+    useRpt_StatisticHTCBackOrderSpecCode01(reportApiBase);
+  const rpt_SalesDelivery01 = useRpt_SalesDelivery01(reportApiBase);
+  const rpt_GuaranteeDebit01 = useRpt_GuaranteeDebit01(reportApiBase);
+  const rpt_NXTQuyenDoiNo = useRpt_NXTQuyenDoiNo(reportApiBase);
+  const rpt_SalesPeriod01 = useRpt_SalesPeriod01(reportApiBase);
+  const rpt_NhapXuatTonTrongKy = useRpt_NhapXuatTonTrongKy(reportApiBase);
+  const rpt_XuatHoSo = useRpt_XuatHoSo(reportApiBase);
+  const rpt_RevenueHTCInvoice = useRpt_RevenueHTCInvoice(reportApiBase);
+  const rpt_PivotRevenueBySpec = useRpt_PivotRevenueBySpec(reportApiBase);
+  const rpt_CarColorChangeHistory = useRpt_CarColorChangeHistory(reportApiBase);
+  const rpt_WOOrderAndSchedule01 = useRpt_WOOrderAndSchedule01(reportApiBase);
+  const rpt_StatisticPIInStock = useRpt_StatisticPIInStock(reportApiBase);
+  const rpt_PenaltyPmtDelay = useRpt_PenaltyPmtDelay(reportApiBase);
+  const rpt_BaoCaoXeThieuBBBG = useRpt_BaoCaoXeThieuBBBG(reportApiBase);
+  const rpt_statistic_DMS40CarDeliveryOrder =
+    useRpt_Statistic_DMS40CarDeliveryOrder(reportApiBase);
+  const rpt_BCSupportDealerSales = useRpt_BCSupportDealerSales(reportApiBase);
+  const rpt_CarAllocationByArea = useRpt_CarAllocationByArea(reportApiBase);
+  const rpt_Master = useRpt_Master(reportApiBase);
   const sysuser = useSys_user(reportApiBase);
   const SysUserControl = useSys_UserControl(reportApiBase);
-
+  const rpt_BLDenhanthanhtoan = useRpt_BLDenHanThanhToan(reportApiBase);
+  const rpt_StockAndSalesDealer = useRpt_StockAndSalesDealer(reportApiBase);
+  const rpt_PivotRetailContractApi =
+    useRpt_PivotRetailContractApi(reportApiBase);
 
   return {
     // report start
@@ -442,6 +534,13 @@ export const createClientGateApi = (
     ...rptPivotRearrangeCBParam, // ThangPV
     ...rptStatisticHTCStockOut01, // ThangPV
     ...rptStatisticGrpDealer03, // ThangPV
+    ...rpt_PmtPaymentDtl_ByDealer, // ThangPV
+    ...rpt_CarDeliveryOutButNotDutyComplete, // ThangPV
+    ...rpt_ReportCarDocReq, // ThangPV
+    ...rpt_MapVIN, // ThangPV
+    ...rptTheoDoiKiemTraDatHang, // ThangPV
+    ...rptDuKienDongTienTT_ChiTietData, // ThangPV
+    ...rpt_SMCertificate, // ThangPV
     ...rptStatisticHTCStock03,
     ...useRptPivotDlrTestDriver,
     ...RptStatisticDealerStockForSaleMstData,
@@ -456,15 +555,22 @@ export const createClientGateApi = (
     ...rptStaticGrpDealerInSock02,
     ...rptMasterdata,
     ...useRptCarDeliveryOrderExpectData,
-    ...useRptPivotTransPlanF,
+    ...useRptPivotTransPlanF, // DongNV
+    ...rpt_PenaltyPmtDelay, // DongNV
+    ...rpt_statistic_DMS40CarDeliveryOrder, // DongNV
+    ...rptDuBaoDatHang5THTMV, //DongNV
+    ...rptSaleExpectedTarget, //DongNV
+    ...rpt_BLDenhanthanhtoan, //DongNV
+    ...rpt_StockAndSalesDealer, //DongNV
     // report end
+    ...useMstInvoiceIDHTC, // ThangPV
     ...mstInvoiceIDApi,
     ...useMstQuota,
     ...useMstCarColorApi,
     ...useMstPosition,
     ...useMstInventoryCost,
     ...useMstSalesManTypeCertificate,
-    ...useMstBankAccount,
+    ...useMstBankAccount, // ThangPV
     ...useMstWarrantyExpires,
     ...useMstMngRateTonKhoBanHang,
     ...useMstAmplitudeApprOrd,
@@ -490,6 +596,8 @@ export const createClientGateApi = (
     ...mstSalesOrderType,
     ...mstStorage,
     ...userApis,
+    ...mstPart, //DongNV
+    ...mstMaintainTaskItem, //DongNV
     ...mstPaymentType,
     ...mstCarCancelType,
     ...mstPlant,
@@ -522,7 +630,7 @@ export const createClientGateApi = (
     ...useMstBankDealer,
     ...useMstDepartment,
     ...useMstQualification,
-    ...useTCGCarPrice,
+    ...useTCGCarPrice, // ThangPV
     ...useMstTCGCarSalePrice,
     ...useMstSalesManType,
     ...useMstBankApi,
@@ -531,7 +639,7 @@ export const createClientGateApi = (
     ...rptHRSalesMan,
     ...rptStatisticHTCStockOut02Api,
     ...rptStatisticGrpDealer02,
-    ...rptStatisticHTCBackOrderSpecCode01,
+    ...rptStatisticHTCBackOrderSpecCode01Pivot,
     ...rptStatisticHTCStockOutOnWay,
     ...rptBaoCaoMoi,
     ...rptDLSDealLoanEUBankMarketSum01,
@@ -542,6 +650,30 @@ export const createClientGateApi = (
     ...rptSalesReportApi,
     ...rptSaleBaoCaoTongHopGet,
     ...rptTonHoSoNganHang,
+    ...rpt_StatisticHTCStock01,
+    ...rpt_StockInHTC,
+    ...rpt_DebitReport02New,
+    ...rpt_StatisticGrpDealer01,
+    ...rpt_StatisticHTCBackOrderDealer01,
+    ...rpt_StatisticHTCBackOrderSpecCode01,
+    ...rpt_GuaranteeDebit01,
+    ...rpt_SalesDelivery01,
+    ...rpt_NXTQuyenDoiNo,
+    ...rpt_SalesPeriod01,
+    ...rpt_NhapXuatTonTrongKy,
+    ...rpt_XuatHoSo,
+    ...rpt_RevenueHTCInvoice,
+    ...rpt_PivotRevenueBySpec,
+    ...rpt_CarColorChangeHistory,
+    ...rpt_WOOrderAndSchedule01,
+    ...rpt_StatisticPIInStock,
+    ...rpt_BaoCaoXeThieuBBBG,
+    ...rpt_BCSupportDealerSales,
+    ...rpt_CarAllocationByArea,
+    ...rpt_Master,
+    ...useCarDeliveryOrderApi,
+    ...useCarCarApi,
+    ...rpt_PivotRetailContractApi,
   };
 };
 

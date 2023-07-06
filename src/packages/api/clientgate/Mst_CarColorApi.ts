@@ -35,6 +35,7 @@ export const useMst_CarColorApi = (apiBase: AxiosInstance) => {
       );
     },
     Mst_CarColor_Update: async (code: any, values: Partial<Mst_CarColor>) => {
+      console.log("code, values:", code, Object.keys(values).join(","));
       return await apiBase.post<DeleteCarColorParam, ApiResponse<Mst_CarColor>>(
         "/MstCarColor/Update",
         {
@@ -43,7 +44,7 @@ export const useMst_CarColorApi = (apiBase: AxiosInstance) => {
             ModelCode: code.ModelCode,
             ColorCode: code.ColorCode,
           }),
-          ColsUpd: Object.keys(values),
+          ColsUpd: Object.keys(values).join(","),
         },
         {
           headers: {
@@ -144,7 +145,7 @@ export const useMst_CarColorApi = (apiBase: AxiosInstance) => {
       const form = new FormData();
       form.append("file", file); // file is the file you want to upload
 
-      const resp = await apiBase.post<File, ApiResponse<any>>(
+      return await apiBase.post<File, ApiResponse<any>>(
         "/MstCarColor/Import",
         form,
         {
@@ -153,10 +154,6 @@ export const useMst_CarColorApi = (apiBase: AxiosInstance) => {
           },
         }
       );
-      return {
-        ...resp,
-        isSuccess: resp.Data._strErrCode === "0",
-      };
     },
   };
 };

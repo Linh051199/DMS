@@ -2,7 +2,7 @@ import { AdminContentLayout } from "@/packages/layouts/admin-content-layout";
 import { PageHeaderLayout } from "@/packages/layouts/page-header-layout";
 import { HeaderPart } from "./header-part";
 import "./base.scss";
-import { BaseGridView ,ColumnOptions} from "@/packages/ui/base-gridview";
+import { BaseGridView, ColumnOptions } from "@/packages/ui/base-gridview";
 
 import { useConfiguration } from "@/packages/hooks";
 import { useQuery } from "@tanstack/react-query";
@@ -35,7 +35,7 @@ export const BasePage = () => {
   // call API
 
   const { data, isLoading, refetch } = useQuery(["data", keyword], () =>
-    api.Mst_MngRateTonKhoBanHang_Search({
+    api.Mst_VINProductionYear_Actual_Search({
       KeyWord: keyword,
       FlagActive: FlagActiveEnum.All,
       Ft_PageIndex: 0,

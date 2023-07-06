@@ -54,7 +54,7 @@ export const useMst_AmplitudeApprOrd = (apiBase: AxiosInstance) => {
     },
 
     Mst_AmplitudeApprOrd_ExportExcel: async (
-      keys: any[],
+      keys: Partial<Mst_AmplitudeApprOrd>[],
       keyword?: string
     ): Promise<ApiResponse<any>> => {
       if (keys.length > 0) {

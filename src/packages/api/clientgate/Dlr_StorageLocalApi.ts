@@ -1,6 +1,9 @@
 import { ApiResponse, Dlr_StorageLocal, SearchParam } from "@/packages/types";
 import { AxiosInstance } from "axios";
-
+interface IListStorageCodeAndDealerCode {
+  StorageCode: string;
+  DealerCode: string;
+}
 export const useDlr_StorageLocalApi = (apiBase: AxiosInstance) => {
   return {
     Dlr_StorageLocal_Search: async (
@@ -114,13 +117,21 @@ export const useDlr_StorageLocalApi = (apiBase: AxiosInstance) => {
     },
 
     Dlr_StorageLocal_ExportByListStorageCode: async (
-      object: any
+      object: IListStorageCodeAndDealerCode[]
     ): Promise<ApiResponse<any>> => {
+      const listResult = object
+        .map(
+          (item: IListStorageCodeAndDealerCode) =>
+            `${item.StorageCode},${item.DealerCode}`
+        )
+        .join(";");
       {
         return await apiBase.post<
           Partial<Dlr_StorageLocal>,
           ApiResponse<string>
-        >("/DlrStorageLocal/ExportByListStorageCode", object);
+        >("/DlrStorageLocal/ExportByListStorageCodeAndDealerCode", {
+          ListStorageCodeAndDealerCode: listResult,
+        });
       }
     },
   };

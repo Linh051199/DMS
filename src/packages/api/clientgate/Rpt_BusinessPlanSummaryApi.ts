@@ -2,6 +2,8 @@ import { ApiResponse } from "@/packages/types";
 import { AxiosError, AxiosInstance } from "axios";
 
 export interface RptBusinessPlanSummaryParam {
+  VisitDateFrom: any;
+  VisitDateTo: any;
   DealerCodeInput: string;
   BusinessPlanStatus: string;
   TimesPlan: string;

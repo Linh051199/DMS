@@ -1,0 +1,1 @@
+export * from 'src/pages/reports/RptPayment01/components/useReportColumns'

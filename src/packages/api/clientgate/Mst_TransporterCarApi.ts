@@ -48,7 +48,7 @@ export const useMst_TransporterCar = (apiBase: AxiosInstance) => {
     },
 
     Mst_TransporterCar_Update: async (
-      key: string[],
+      key: Object,
       data: Partial<Mst_TransporterCar>
     ): Promise<ApiResponse<Mst_TransporterCar>> => {
       console.log("Object.keys(data) ", Object.keys(data));
@@ -65,22 +65,23 @@ export const useMst_TransporterCar = (apiBase: AxiosInstance) => {
       keys: string[],
       keyword?: string
     ): Promise<ApiResponse<any>> => {
-      console.log("keys ", keys);
+      console.log("keys nè ", keys, keys.length);
+
       if (keys.length > 0) {
+        // console.log(
+        //   "export nè",
+        //   keys
+        //     .map((item) => `${item.TransporterCode},${item.PlateNo}`)
+        //     .join(";")
+        // );
+        const listExport = keys
+          .map((item: any) => `${item.TransporterCode},${item.PlateNo}`)
+          .join(";");
         return await apiBase.post<
           Partial<Mst_TransporterCar>,
           ApiResponse<string>
         >("/MstTransporterCar/ExportByListCode", {
-          ListTransporterCode: keys
-            .map((item: any) => {
-              return item.TransporterCode;
-            })
-            .join(","),
-          ListPlateNo: keys
-            .map((item: any) => {
-              return item.PlateNo;
-            })
-            .join(","),
+          ListTransporterCodeAndPlateNo: listExport,
         });
       } else {
         return await apiBase.post<
