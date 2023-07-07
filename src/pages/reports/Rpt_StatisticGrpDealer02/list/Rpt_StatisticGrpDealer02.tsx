@@ -1,8 +1,7 @@
 import { useI18n } from "@/i18n/useI18n";
 import { useClientgateApi } from "@/packages/api";
-import { RptStatistic_DealerStock_ForSale_MstParam } from "@/packages/api/clientgate/RptStatistic_DealerStock_ForSale_Mst";
-import { Rpt_GuaranteeDebit01Param } from "@/packages/api/clientgate/Rpt_GuaranteeDebit01Api";
-import { Rpt_SalesDelivery01Param } from "@/packages/api/clientgate/Rpt_SalesDelivery01Api";
+import { RptStatisticGrpDealer02Param } from "@/packages/api/clientgate/RptStatisticGrpDealer02Api";
+import { RequiredField } from "@/packages/common/Validation_Rules";
 import { useWindowSize } from "@/packages/hooks/useWindowSize";
 import { AdminContentLayout } from "@/packages/layouts/admin-content-layout";
 import {
@@ -11,7 +10,7 @@ import {
 } from "@/packages/layouts/content-searchpanel-layout";
 import { SearchPanelV2 } from "@/packages/ui/search-panel";
 import { useQuery } from "@tanstack/react-query";
-import { format } from "date-fns";
+import { format, isAfter, isBefore } from "date-fns";
 import { LoadPanel, PivotGrid } from "devextreme-react";
 import { IItemProps } from "devextreme-react/form";
 import {
@@ -29,22 +28,11 @@ import { useSetAtom } from "jotai";
 import { nanoid } from "nanoid";
 import { useCallback, useMemo, useReducer, useState } from "react";
 import { toast } from "react-toastify";
+import { IReportParam } from "../components/header";
 import { PageHeader } from "../components/page-header";
-interface IReportParam {
-  DateFrom: Date;
-  DateTo: Date;
-  FlagDataWH?: 1 | 0;
-}
 
-const dateBoxOptions = {
-  displayFormat: "yyyy-MM-dd",
-  openOnFieldClick: true,
-  validationMessageMode: "always",
-  showClearButton: true,
-};
-
-export const BasePivot = () => {
-  const { t } = useI18n("base");
+export const Rpt_StatisticGrpDealer02 = () => {
+  const { t } = useI18n("Rpt_StatisticGrpDealer02");
   const setSearchPanelVisibility = useSetAtom(searchPanelVisibleAtom);
   const api = useClientgateApi();
   const windowSize = useWindowSize();
@@ -52,6 +40,8 @@ export const BasePivot = () => {
   const [searchCondition, setSearchCondition] = useState<IReportParam>(
     {} as IReportParam
   );
+  console.log("🚀 ~ searchCondition.Date_From:", searchCondition.Date_From);
+  console.log("🚀 ~ searchCondition.Date_To:", searchCondition.Date_To);
 
   const [loadingKey, reloading] = useReducer(() => nanoid(), "0");
 
@@ -59,19 +49,21 @@ export const BasePivot = () => {
   const { data, isLoading } = useQuery({
     queryKey: [
       "report",
-      "Rpt_StatisticHTCBackOrderDealer01",
+      "RptStatisticGrpDealer02",
       loadingKey,
       JSON.stringify(searchCondition),
     ],
     queryFn: async () => {
       if (loadingKey !== "0") {
-        const resp = await api.RptStatistic_DealerStock_ForSale_Mst_SearchHQ({
-          DateFrom: format(searchCondition.DateFrom, "yyyy-MM-dd"),
-          DateTo: searchCondition.DateTo
-            ? format(searchCondition.DateTo, "yyyy-MM-dd")
+        const resp = await api.RptStatisticGrpDealer02_SearchHQ({
+          DateFrom: searchCondition.Date_From
+            ? format(searchCondition.Date_From, "yyyy-MM-dd")
+            : "",
+          DateTo: searchCondition.Date_To
+            ? format(searchCondition.Date_To, "yyyy-MM-dd")
             : "",
           FlagDataWH: searchCondition.FlagDataWH ? 1 : 0,
-        } as RptStatistic_DealerStock_ForSale_MstParam);
+        } as RptStatisticGrpDealer02Param);
         return resp;
       } else {
         return null;
@@ -83,7 +75,13 @@ export const BasePivot = () => {
   //PageHeader
   const handleExportExcel = useCallback(() => {}, []);
   const handleExportExcelDetail = useCallback(async () => {
-    const result = await api.RptStatisticHTCStockOutOnWay_ExportDetailSearchHQ({
+    const result = await api.RptStatisticGrpDealer02_ExportDetailSearchHQ({
+      DateFrom: searchCondition.Date_From
+        ? format(searchCondition.Date_From, "yyyy-MM-dd")
+        : "",
+      DateTo: searchCondition.Date_To
+        ? format(searchCondition.Date_To, "yyyy-MM-dd")
+        : "",
       FlagDataWH: searchCondition.FlagDataWH ? 1 : 0,
     });
     if (result.isSuccess && result.Data) {
@@ -98,6 +96,55 @@ export const BasePivot = () => {
 
   //SearchPanelV2
   const searchFields: IItemProps[] = [
+    {
+      dataField: "Date_From",
+      caption: t("DateFrom"),
+      editorType: "dxDateBox",
+      visible: true,
+      editorOptions: {
+        displayFormat: "yyyy-MM-dd",
+        openOnFieldClick: true,
+        validationMessageMode: "always",
+        showClearButton: true,
+      },
+      validationRules: [
+        RequiredField(t("DateFromIsRequired")),
+        {
+          type: "custom",
+          ignoreEmptyValue: true,
+          validationCallback: ({ value }: any) => {
+            if (searchCondition.Date_To) {
+              return !isAfter(value, searchCondition.Date_To);
+            }
+            return true;
+          },
+          message: t("DateFromMustBeBeforeDateTo"),
+        },
+      ],
+    },
+    {
+      dataField: "Date_To",
+      caption: t("DateTo"),
+      editorType: "dxDateBox",
+      visible: true,
+      editorOptions: {
+        displayFormat: "yyyy-MM-dd",
+        openOnFieldClick: true,
+        validationMessageMode: "always",
+        showClearButton: true,
+      },
+      validationRules: [
+        RequiredField(t("DateToIsRequired")),
+        {
+          type: "custom",
+          ignoreEmptyValue: true,
+          validationCallback: ({ value }: any) => {
+            return !isBefore(value, searchCondition.Date_From);
+          },
+          message: t("DateToMustBeAfterDateFrom"),
+        },
+      ],
+    },
     {
       dataField: "FlagDataWH",
       visible: true,
@@ -117,23 +164,32 @@ export const BasePivot = () => {
   const fields = useMemo<Field[]>(() => {
     return [
       {
-        caption: t("CarID"),
-        dataField: "CarID",
+        dataField: "CVMODELCODE",
+        area: "filter",
+        areaIndex: 0,
+      },
+
+      {
+        dataField: "CVMODELNAME",
+        area: "row",
+        areaIndex: 0,
+      },
+
+      {
+        dataField: "TOTAL",
         area: "data",
-        showGrandTotals: true,
-        showTotals: true,
-        summaryType: "count",
-        isMeasure: true, // allows the end-user to place this f
+        areaIndex: 0,
+      },
+
+      {
+        dataField: "MDDEALERCODE",
+        area: "column",
+        areaIndex: 0,
       },
       {
-        caption: t("DUTYCOMPLETEDPERCENT_RANGE"),
-        dataField: "DUTYCOMPLETEDPERCENT_RANGE",
-        area: "row",
-      },
-      {
-        caption: t("DUTYDAYS_RANGE"),
-        dataField: "DUTYDAYS_RANGE",
-        area: "row",
+        dataField: "MDDEALERNAME",
+        area: "column",
+        areaIndex: 1,
       },
     ];
   }, [t]);
@@ -159,7 +215,7 @@ export const BasePivot = () => {
                 conditionFields={searchFields}
                 data={searchCondition}
                 onSearch={handleSearch}
-                storeKey={"base-search"}
+                storeKey={"Rpt_StatisticGrpDealer02-search"}
               />
             </div>
           </ContentSearchPanelLayout.Slot>
@@ -208,7 +264,10 @@ export const BasePivot = () => {
                   {/* cho phép người dùng xuất file */}
                   <Export enabled={true} />
                   {/* lưu cấu hình pivot vào trong local storage  */}
-                  <StateStoring enabled={true} storageKey={"base"} />
+                  <StateStoring
+                    enabled={true}
+                    storageKey={"Rpt_StatisticGrpDealer02"}
+                  />
                   <FieldPanel visible={true} />
                 </PivotGrid>
               )}

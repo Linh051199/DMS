@@ -1,10 +1,10 @@
-import {ApiResponse,} from "@/packages/types";
-import {AxiosError, AxiosInstance} from "axios";
+import { ApiResponse } from "@/packages/types";
+import { AxiosError, AxiosInstance } from "axios";
 
 export interface RptStatisticGrpDealer02Param {
   DateFrom: string;
   DateTo: string;
-  FlagDataWH: 1 | 0
+  FlagDataWH: 1 | 0;
 }
 
 export interface RptStatisticGrpDealer02Record {
@@ -44,7 +44,7 @@ export interface RptStatisticGrpDealer02Record {
   PRODUCTIONYEARACTUAL: string;
   LOAITHUNGTEXT: string;
   DEALERCODE: string;
-  DEALERNAME : string;
+  DEALERNAME: string;
   FLAGDIRECT: string;
   DEALERCODEDEFAULT: string;
   DEALERNAMEDEFAULT: string;
@@ -86,15 +86,20 @@ export interface RptStatisticGrpDealer02Record {
 }
 
 interface RptStatisticGrpDealer02Data {
-  Lst_RptStatistic_GrpDealer02: RptStatisticGrpDealer02Record[] 
+  Lst_RptStatistic_GrpDealer02: RptStatisticGrpDealer02Record[];
 }
 export const useRptStatisticGrpDealer02 = (apiBase: AxiosInstance) => {
-  apiBase.defaults.headers["DealerCode"] = "HTV"
+  apiBase.defaults.headers["DealerCode"] = "HTV";
 
   return {
-    RptStatisticGrpDealer02_SearchHQ: async (params: RptStatisticGrpDealer02Param): Promise<ApiResponse<RptStatisticGrpDealer02Data>> => {
-          // console.log(96, params)
-      return await apiBase.post<RptStatisticGrpDealer02Param, ApiResponse<RptStatisticGrpDealer02Data>>("/RptStatisticGrpDealer02/SearchHQ", {
+    RptStatisticGrpDealer02_SearchHQ: async (
+      params: RptStatisticGrpDealer02Param
+    ): Promise<ApiResponse<RptStatisticGrpDealer02Data>> => {
+      // console.log(96, params)
+      return await apiBase.post<
+        RptStatisticGrpDealer02Param,
+        ApiResponse<RptStatisticGrpDealer02Data>
+      >("/RptStatisticGrpDealer02/SearchHQ", {
         ...params,
       });
     },
@@ -103,10 +108,15 @@ export const useRptStatisticGrpDealer02 = (apiBase: AxiosInstance) => {
     //     ...params,
     //   });
     // },
-    RptStatisticGrpDealer02_ExportDetailSearchHQ: async (params: RptStatisticGrpDealer02Param): Promise<ApiResponse<string>> => {
-      return await apiBase.post<RptStatisticGrpDealer02Param, ApiResponse<string>>("/RptStatisticGrpDealer02/ExportDetailSearchHQ", {
+    RptStatisticGrpDealer02_ExportDetailSearchHQ: async (
+      params: RptStatisticGrpDealer02Param
+    ): Promise<ApiResponse<string>> => {
+      return await apiBase.post<
+        RptStatisticGrpDealer02Param,
+        ApiResponse<string>
+      >("/RptStatisticGrpDealer02/ExportDetailSearchHQ", {
         ...params,
       });
-    }
-  }
-}
+    },
+  };
+};
