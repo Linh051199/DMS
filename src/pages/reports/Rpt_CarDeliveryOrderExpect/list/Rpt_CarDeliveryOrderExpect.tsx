@@ -1,6 +1,6 @@
 import { useI18n } from "@/i18n/useI18n";
 import { useClientgateApi } from "@/packages/api";
-import { RptSalesCtmCare01Param } from "@/packages/api/clientgate/Rpt_SalesCtmCare01Api";
+import { Rpt_CarDeliveryOrderExpectParam } from "@/packages/api/clientgate/Rpt_CarDeliveryOrderExpectApi";
 import { useWindowSize } from "@/packages/hooks/useWindowSize";
 import { AdminContentLayout } from "@/packages/layouts/admin-content-layout";
 import {
@@ -29,8 +29,8 @@ import { useCallback, useMemo, useReducer, useState } from "react";
 import { toast } from "react-toastify";
 import { PageHeader } from "../components/page-header";
 interface IReportParam {
-  TDateReport: Date;
-  FlagDataWH: boolean;
+  FlagDataWH: 1 | 0;
+  FlagTTCoc: 1 | 0;
 }
 
 const dateBoxOptions = {
@@ -40,8 +40,8 @@ const dateBoxOptions = {
   showClearButton: true,
 };
 
-export const BasePivot = () => {
-  const { t } = useI18n("base");
+export const Rpt_CarDeliveryOrderExpect = () => {
+  const { t } = useI18n("Rpt_CarDeliveryOrderExpect");
   const setSearchPanelVisibility = useSetAtom(searchPanelVisibleAtom);
   const api = useClientgateApi();
   const windowSize = useWindowSize();
@@ -55,20 +55,17 @@ export const BasePivot = () => {
   // Call API
   const { data, isLoading } = useQuery({
     queryKey: [
-      "report",
-      "RptSaleBaoCaoTongHopGet_SearchHQ",
+      "Rpt_CarDeliveryOrderExpect",
+      "Rpt_CarDeliveryOrderExpectData_SearchHQ",
       loadingKey,
       JSON.stringify(searchCondition),
     ],
     queryFn: async () => {
       if (loadingKey !== "0") {
-        const resp = await api.RptSaleBaoCaoTongHopGet_SearchHQ({
-          TDateReport: searchCondition?.TDateReport
-            ? format(searchCondition.TDateReport, "yyyy-MM-dd")
-            : "",
-
+        const resp = await api.Rpt_CarDeliveryOrderExpectData_SearchHQ({
+          FlagTTCoc: searchCondition.FlagTTCoc ? 1 : 0,
           FlagDataWH: searchCondition.FlagDataWH ? 1 : 0,
-        } as RptSalesCtmCare01Param);
+        } as Rpt_CarDeliveryOrderExpectParam);
         return resp;
       } else {
         return null;
@@ -80,9 +77,11 @@ export const BasePivot = () => {
   //PageHeader
   const handleExportExcel = useCallback(() => {}, []);
   const handleExportExcelDetail = useCallback(async () => {
-    const result = await api.RptStatisticHTCStockOutOnWay_ExportDetailSearchHQ({
-      FlagDataWH: searchCondition.FlagDataWH ? 1 : 0,
-    });
+    const result =
+      await api.Rpt_CarDeliveryOrderExpectData_ExportDetailSearchHQ({
+        FlagTTCoc: searchCondition.FlagTTCoc ? 1 : 0,
+        FlagDataWH: searchCondition.FlagDataWH ? 1 : 0,
+      });
     if (result.isSuccess && result.Data) {
       toast.success(t("DownloadSuccessfully"));
       window.location.href = result.Data;
@@ -104,6 +103,15 @@ export const BasePivot = () => {
         location: "left",
       },
     },
+    {
+      dataField: "FlagTTCoc",
+      visible: true,
+      caption: t("FlagTTCoc"),
+      editorType: "dxCheckBox",
+      label: {
+        location: "left",
+      },
+    },
   ];
 
   const handleSearch = useCallback(async (data: IReportParam) => {
@@ -114,29 +122,27 @@ export const BasePivot = () => {
   const fields = useMemo<Field[]>(() => {
     return [
       {
-        caption: t("CarID"),
-        dataField: "CarID",
+        dataField: "CARID",
+        caption: t("Total"),
         area: "data",
-        showGrandTotals: true,
-        showTotals: true,
+        areaIndex: 0,
         summaryType: "count",
-        isMeasure: true, // allows the end-user to place this f
       },
-      {
-        caption: t("DUTYCOMPLETEDPERCENT_RANGE"),
-        dataField: "DUTYCOMPLETEDPERCENT_RANGE",
-        area: "row",
-      },
-      {
-        caption: t("DUTYDAYS_RANGE"),
-        dataField: "DUTYDAYS_RANGE",
-        area: "row",
-      },
+      { dataField: "CARID", area: "filter", areaIndex: 4 },
+      { dataField: "SPECCODE", area: "row", areaIndex: 3 },
+      { dataField: "MODELCODE", area: "row", areaIndex: 2 },
+      { dataField: "COLORCODE", area: "row", areaIndex: 4 },
+      { dataField: "DEALERCODE", area: "row", areaIndex: 0 },
+      { dataField: "VIN", area: "filter", areaIndex: 3 },
+      { dataField: "MCSSPECDESCRIPTION", area: "filter", areaIndex: 0 },
+      { dataField: "MCCCOLOREXTNAME", area: "filter", areaIndex: 1 },
+      { dataField: "CDODDELIVERYSTARTDATE", area: "filter", areaIndex: 2 },
+      { dataField: "MDDEALERCODE", area: "row", areaIndex: 1 },
     ];
   }, [t]);
   const dataSource = new PivotGridDataSource({
     fields: fields,
-    store: data?.Data?.Lst_RptSales_CtmCare_01,
+    store: data?.Data?.Lst_Rpt_CarDeliveryOrderExpect,
   });
 
   return (
@@ -156,7 +162,7 @@ export const BasePivot = () => {
                 conditionFields={searchFields}
                 data={searchCondition}
                 onSearch={handleSearch}
-                storeKey={"base-search"}
+                storeKey={"Rpt_CarDeliveryOrderExpect-search"}
               />
             </div>
           </ContentSearchPanelLayout.Slot>
@@ -170,7 +176,7 @@ export const BasePivot = () => {
               showPane={true}
             />
             <div className="w-full mt-4">
-              {!!data && data?.Data?.Lst_RptSales_CtmCare_01 && (
+              {!!data && data?.Data?.Lst_Rpt_CarDeliveryOrderExpect && (
                 <PivotGrid
                   id="pivotgrid"
                   dataSource={dataSource}
@@ -205,7 +211,10 @@ export const BasePivot = () => {
                   {/* cho phép người dùng xuất file */}
                   <Export enabled={true} />
                   {/* lưu cấu hình pivot vào trong local storage  */}
-                  <StateStoring enabled={true} storageKey={"base"} />
+                  <StateStoring
+                    enabled={true}
+                    storageKey={"Rpt_CarDeliveryOrderExpect"}
+                  />
                   <FieldPanel visible={true} />
                 </PivotGrid>
               )}
@@ -216,26 +225,3 @@ export const BasePivot = () => {
     </AdminContentLayout>
   );
 };
-
-{/* <ScrollView height={windowSize.height - 120}>
-<DataGrid
-  id={"gridContainer"}
-  dataSource={
-    data?.Data?.Lst_RptStatistic_HTCBackOrder_SpecCode_01 ?? []
-  }
-  columns={columns}
-  showBorders={true}
-  showRowLines={true}
-  showColumnLines={true}
-  columnAutoWidth={true}
-  allowColumnResizing={false}
-  allowColumnReordering={false}
-  className={"mx-auto my-5"}
-  width={"100%"}
-  columnResizingMode="widget"
->
-  <HeaderFilter allowSearch={true} visible={true} />
-  <Scrolling showScrollbar={"always"} />
-  <Sorting mode={"none"} />
-</DataGrid>
-</ScrollView> */}

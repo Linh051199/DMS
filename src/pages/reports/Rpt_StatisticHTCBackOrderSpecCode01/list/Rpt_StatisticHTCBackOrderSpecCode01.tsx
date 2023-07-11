@@ -11,7 +11,7 @@ import { SearchPanelV2 } from "@/packages/ui/search-panel";
 import { ColumnOptions } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { DataGrid, LoadPanel, PivotGrid } from "devextreme-react";
+import { DataGrid, LoadPanel, PivotGrid, ScrollView } from "devextreme-react";
 import { HeaderFilter, Scrolling, Sorting } from "devextreme-react/data-grid";
 import { IItemProps } from "devextreme-react/form";
 
@@ -218,26 +218,28 @@ export const Rpt_StatisticHTCBackOrderSpecCode01 = () => {
               showPane={true}
             />
             <div className={"w-full mt-4"}>
-              <DataGrid
-                id={"gridContainer"}
-                dataSource={
-                  data?.Data?.Lst_RptStatistic_HTCBackOrder_SpecCode_01 ?? []
-                }
-                columns={columns}
-                showBorders={true}
-                showRowLines={true}
-                showColumnLines={true}
-                columnAutoWidth={true}
-                allowColumnResizing={false}
-                allowColumnReordering={false}
-                className={"mx-auto my-5"}
-                width={"100%"}
-                columnResizingMode="widget"
-              >
-                <HeaderFilter allowSearch={true} visible={true} />
-                <Scrolling showScrollbar={"always"} />
-                <Sorting mode={"none"} />
-              </DataGrid>
+              <ScrollView height={windowSize.height - 120}>
+                <DataGrid
+                  id={"gridContainer"}
+                  dataSource={
+                    data?.Data?.Lst_RptStatistic_HTCBackOrder_SpecCode_01 ?? []
+                  }
+                  columns={columns}
+                  showBorders={true}
+                  showRowLines={true}
+                  showColumnLines={true}
+                  columnAutoWidth={true}
+                  allowColumnResizing={false}
+                  allowColumnReordering={false}
+                  className={"mx-auto my-5"}
+                  width={"100%"}
+                  columnResizingMode="widget"
+                >
+                  <HeaderFilter allowSearch={true} visible={true} />
+                  <Scrolling showScrollbar={"always"} />
+                  <Sorting mode={"none"} />
+                </DataGrid>
+              </ScrollView>
             </div>
           </ContentSearchPanelLayout.Slot>
         </ContentSearchPanelLayout>

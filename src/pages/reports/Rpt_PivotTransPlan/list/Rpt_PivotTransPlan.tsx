@@ -1,6 +1,7 @@
 import { useI18n } from "@/i18n/useI18n";
 import { useClientgateApi } from "@/packages/api";
-import { RptSalesCtmCare01Param } from "@/packages/api/clientgate/Rpt_SalesCtmCare01Api";
+import { Rpt_PivotTransPlanParam } from "@/packages/api/clientgate/Rpt_PivotTransPlanApi";
+import { RequiredField } from "@/packages/common/Validation_Rules";
 import { useWindowSize } from "@/packages/hooks/useWindowSize";
 import { AdminContentLayout } from "@/packages/layouts/admin-content-layout";
 import {
@@ -9,7 +10,7 @@ import {
 } from "@/packages/layouts/content-searchpanel-layout";
 import { SearchPanelV2 } from "@/packages/ui/search-panel";
 import { useQuery } from "@tanstack/react-query";
-import { format } from "date-fns";
+import { format, isAfter, isBefore } from "date-fns";
 import { LoadPanel, PivotGrid } from "devextreme-react";
 import { IItemProps } from "devextreme-react/form";
 import {
@@ -29,8 +30,11 @@ import { useCallback, useMemo, useReducer, useState } from "react";
 import { toast } from "react-toastify";
 import { PageHeader } from "../components/page-header";
 interface IReportParam {
-  TDateReport: Date;
-  FlagDataWH: boolean;
+  FlagDataWH: 1 | 0;
+  ExpectedDateFrom: Date;
+  SDMDlvStartDateFrom: Date;
+  SDMDlvStartDateTo: Date;
+  ExpectedDateTo: Date;
 }
 
 const dateBoxOptions = {
@@ -40,8 +44,8 @@ const dateBoxOptions = {
   showClearButton: true,
 };
 
-export const BasePivot = () => {
-  const { t } = useI18n("base");
+export const Rpt_PivotTransPlan = () => {
+  const { t } = useI18n("Rpt_PivotTransPlan");
   const setSearchPanelVisibility = useSetAtom(searchPanelVisibleAtom);
   const api = useClientgateApi();
   const windowSize = useWindowSize();
@@ -62,13 +66,22 @@ export const BasePivot = () => {
     ],
     queryFn: async () => {
       if (loadingKey !== "0") {
-        const resp = await api.RptSaleBaoCaoTongHopGet_SearchHQ({
-          TDateReport: searchCondition?.TDateReport
-            ? format(searchCondition.TDateReport, "yyyy-MM-dd")
+        const resp = await api.Rpt_PivotTransPlan_SearchHQ({
+          ExpectedDateFrom: searchCondition?.ExpectedDateFrom
+            ? format(searchCondition.ExpectedDateFrom, "yyyy-MM-dd")
+            : "",
+          ExpectedDateTo: searchCondition?.ExpectedDateTo
+            ? format(searchCondition.ExpectedDateTo, "yyyy-MM-dd")
+            : "",
+          SDMDlvStartDateFrom: searchCondition?.SDMDlvStartDateFrom
+            ? format(searchCondition.SDMDlvStartDateFrom, "yyyy-MM-dd")
+            : "",
+          SDMDlvStartDateTo: searchCondition?.SDMDlvStartDateTo
+            ? format(searchCondition.SDMDlvStartDateTo, "yyyy-MM-dd")
             : "",
 
           FlagDataWH: searchCondition.FlagDataWH ? 1 : 0,
-        } as RptSalesCtmCare01Param);
+        } as Rpt_PivotTransPlanParam);
         return resp;
       } else {
         return null;
@@ -80,7 +93,20 @@ export const BasePivot = () => {
   //PageHeader
   const handleExportExcel = useCallback(() => {}, []);
   const handleExportExcelDetail = useCallback(async () => {
-    const result = await api.RptStatisticHTCStockOutOnWay_ExportDetailSearchHQ({
+    const result = await api.Rpt_PivotTransPlan_ExportDetailSearchHQ({
+      ExpectedDateFrom: searchCondition?.ExpectedDateFrom
+        ? format(searchCondition.ExpectedDateFrom, "yyyy-MM-dd")
+        : "",
+      ExpectedDateTo: searchCondition?.ExpectedDateTo
+        ? format(searchCondition.ExpectedDateTo, "yyyy-MM-dd")
+        : "",
+      SDMDlvStartDateFrom: searchCondition?.SDMDlvStartDateFrom
+        ? format(searchCondition.SDMDlvStartDateFrom, "yyyy-MM-dd")
+        : "",
+      SDMDlvStartDateTo: searchCondition?.SDMDlvStartDateTo
+        ? format(searchCondition.SDMDlvStartDateTo, "yyyy-MM-dd")
+        : "",
+
       FlagDataWH: searchCondition.FlagDataWH ? 1 : 0,
     });
     if (result.isSuccess && result.Data) {
@@ -95,6 +121,56 @@ export const BasePivot = () => {
 
   //SearchPanelV2
   const searchFields: IItemProps[] = [
+    {
+      dataField: "SDMDlvStartDateFrom",
+      caption: t("SDMDlvStartDateFrom"),
+      editorType: "dxDateBox",
+      visible: true,
+      editorOptions: {
+        displayFormat: "yyyy-MM-dd",
+        openOnFieldClick: true,
+        validationMessageMode: "always",
+        showClearButton: true,
+        max: new Date(),
+      },
+      validationRules: [
+        RequiredField(t("SDMDlvStartDateFromIsRequired")),
+        {
+          type: "custom",
+          ignoreEmptyValue: true,
+          validationCallback: ({ value }: any) => {
+            if (searchCondition.SDMDlvStartDateTo) {
+              return !isAfter(value, searchCondition.SDMDlvStartDateTo);
+            }
+            return true;
+          },
+          message: t("SDMDlvStartDateFromMustBeBeforeSDMDlvStartDateFrom"),
+        },
+      ],
+    },
+    {
+      dataField: "SDMDlvStartDateTo",
+      caption: t("SDMDlvStartDateTo"),
+      editorType: "dxDateBox",
+      visible: true,
+      editorOptions: {
+        displayFormat: "yyyy-MM-dd",
+        openOnFieldClick: true,
+        validationMessageMode: "always",
+        showClearButton: true,
+      },
+      validationRules: [
+        RequiredField(t("SDMDlvStartDateToIsRequired")),
+        {
+          type: "custom",
+          ignoreEmptyValue: true,
+          validationCallback: ({ value }: any) => {
+            return !isBefore(value, searchCondition.SDMDlvStartDateFrom);
+          },
+          message: t("SDMDlvStartDateToMustBeAfterExpectedDateFrom"),
+        },
+      ],
+    },
     {
       dataField: "FlagDataWH",
       visible: true,
@@ -114,29 +190,70 @@ export const BasePivot = () => {
   const fields = useMemo<Field[]>(() => {
     return [
       {
-        caption: t("CarID"),
-        dataField: "CarID",
+        dataField: "VIN",
+        area: "filter",
+        areaIndex: 4,
+      },
+      {
+        dataField: "MODELCODE",
+        area: "row",
+        areaIndex: 1,
+      },
+      {
+        dataField: "NGAYCHUNGCHUNG",
+        area: "column",
+        areaIndex: 1,
+      },
+      {
+        dataField: "MCMMODELNAME",
+        area: "filter",
+        areaIndex: 5,
+      },
+
+      {
+        dataField: "MDDEALERCODE",
+        area: "filter",
+        areaIndex: 3,
+      },
+      {
+        dataField: "STORAGECODE",
+        area: "filter",
+        areaIndex: 2,
+      },
+
+      {
+        dataField: "TRANSPORTERNAME",
+        area: "row",
+        areaIndex: 0,
+        expanded: false,
+      },
+
+      {
+        dataField: "TINHGIAO_HUYENGIAO",
+        area: "filter",
+        areaIndex: 0,
+      },
+      {
+        dataField: "TINHNHAN_HUYENNHAN",
+        area: "filter",
+        areaIndex: 1,
+      },
+      {
+        dataField: "FLAG_CHUNGCHUNG",
+        area: "column",
+        areaIndex: 0,
+        expanded: false,
+      },
+      {
+        dataField: "TOTAL",
         area: "data",
-        showGrandTotals: true,
-        showTotals: true,
-        summaryType: "count",
-        isMeasure: true, // allows the end-user to place this f
-      },
-      {
-        caption: t("DUTYCOMPLETEDPERCENT_RANGE"),
-        dataField: "DUTYCOMPLETEDPERCENT_RANGE",
-        area: "row",
-      },
-      {
-        caption: t("DUTYDAYS_RANGE"),
-        dataField: "DUTYDAYS_RANGE",
-        area: "row",
+        areaIndex: 0,
       },
     ];
   }, [t]);
   const dataSource = new PivotGridDataSource({
     fields: fields,
-    store: data?.Data?.Lst_RptSales_CtmCare_01,
+    store: data?.Data?.Lst_Rpt_PivotTransPlan,
   });
 
   return (
@@ -151,12 +268,12 @@ export const BasePivot = () => {
       <AdminContentLayout.Slot name={"Content"}>
         <ContentSearchPanelLayout>
           <ContentSearchPanelLayout.Slot name={"SearchPanel"}>
-            <div className="w-[300px]">
+            <div className="w-[200px]">
               <SearchPanelV2
                 conditionFields={searchFields}
                 data={searchCondition}
                 onSearch={handleSearch}
-                storeKey={"base-search"}
+                storeKey={"Rpt_PivotTransPlan-search"}
               />
             </div>
           </ContentSearchPanelLayout.Slot>
@@ -170,7 +287,7 @@ export const BasePivot = () => {
               showPane={true}
             />
             <div className="w-full mt-4">
-              {!!data && data?.Data?.Lst_RptSales_CtmCare_01 && (
+              {!!data && data?.Data?.Lst_Rpt_PivotTransPlan && (
                 <PivotGrid
                   id="pivotgrid"
                   dataSource={dataSource}
@@ -205,7 +322,10 @@ export const BasePivot = () => {
                   {/* cho phép người dùng xuất file */}
                   <Export enabled={true} />
                   {/* lưu cấu hình pivot vào trong local storage  */}
-                  <StateStoring enabled={true} storageKey={"base"} />
+                  <StateStoring
+                    enabled={true}
+                    storageKey={"Rpt_PivotTransPlan"}
+                  />
                   <FieldPanel visible={true} />
                 </PivotGrid>
               )}
@@ -216,26 +336,3 @@ export const BasePivot = () => {
     </AdminContentLayout>
   );
 };
-
-{/* <ScrollView height={windowSize.height - 120}>
-<DataGrid
-  id={"gridContainer"}
-  dataSource={
-    data?.Data?.Lst_RptStatistic_HTCBackOrder_SpecCode_01 ?? []
-  }
-  columns={columns}
-  showBorders={true}
-  showRowLines={true}
-  showColumnLines={true}
-  columnAutoWidth={true}
-  allowColumnResizing={false}
-  allowColumnReordering={false}
-  className={"mx-auto my-5"}
-  width={"100%"}
-  columnResizingMode="widget"
->
-  <HeaderFilter allowSearch={true} visible={true} />
-  <Scrolling showScrollbar={"always"} />
-  <Sorting mode={"none"} />
-</DataGrid>
-</ScrollView> */}

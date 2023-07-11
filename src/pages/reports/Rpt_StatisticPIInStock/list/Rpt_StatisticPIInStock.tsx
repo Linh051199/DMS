@@ -1,6 +1,7 @@
 import { useI18n } from "@/i18n/useI18n";
 import { useClientgateApi } from "@/packages/api";
-import { RptSalesCtmCare01Param } from "@/packages/api/clientgate/Rpt_SalesCtmCare01Api";
+import { Rpt_StatisticPIInStockParam } from "@/packages/api/clientgate/Rpt_StatisticPIInStockApi";
+import { convertDate } from "@/packages/common";
 import { useWindowSize } from "@/packages/hooks/useWindowSize";
 import { AdminContentLayout } from "@/packages/layouts/admin-content-layout";
 import {
@@ -29,8 +30,10 @@ import { useCallback, useMemo, useReducer, useState } from "react";
 import { toast } from "react-toastify";
 import { PageHeader } from "../components/page-header";
 interface IReportParam {
-  TDateReport: Date;
-  FlagDataWH: boolean;
+  ProductMonthFrom: Date;
+  ProductMonthTo: Date;
+  DateTo: Date;
+  FlagDataWH: 1 | 0;
 }
 
 const dateBoxOptions = {
@@ -40,8 +43,8 @@ const dateBoxOptions = {
   showClearButton: true,
 };
 
-export const BasePivot = () => {
-  const { t } = useI18n("base");
+export const Rpt_StatisticPIInStock = () => {
+  const { t } = useI18n("Rpt_StatisticPIInStock");
   const setSearchPanelVisibility = useSetAtom(searchPanelVisibleAtom);
   const api = useClientgateApi();
   const windowSize = useWindowSize();
@@ -55,20 +58,21 @@ export const BasePivot = () => {
   // Call API
   const { data, isLoading } = useQuery({
     queryKey: [
-      "report",
-      "RptSaleBaoCaoTongHopGet_SearchHQ",
+      "Rpt_StatisticPIInStock",
+      "Rpt_StatisticPIInStock_SearchHQ",
       loadingKey,
       JSON.stringify(searchCondition),
     ],
     queryFn: async () => {
       if (loadingKey !== "0") {
-        const resp = await api.RptSaleBaoCaoTongHopGet_SearchHQ({
-          TDateReport: searchCondition?.TDateReport
-            ? format(searchCondition.TDateReport, "yyyy-MM-dd")
+        const resp = await api.Rpt_StatisticPIInStock_SearchHQ({
+          ProductMonthFrom: convertDate(searchCondition.ProductMonthFrom),
+          ProductMonthTo: convertDate(searchCondition.ProductMonthTo),
+          DateTo: searchCondition.DateTo
+            ? format(searchCondition.DateTo, "yyyy-MM-dd")
             : "",
-
           FlagDataWH: searchCondition.FlagDataWH ? 1 : 0,
-        } as RptSalesCtmCare01Param);
+        } as Rpt_StatisticPIInStockParam);
         return resp;
       } else {
         return null;
@@ -80,7 +84,12 @@ export const BasePivot = () => {
   //PageHeader
   const handleExportExcel = useCallback(() => {}, []);
   const handleExportExcelDetail = useCallback(async () => {
-    const result = await api.RptStatisticHTCStockOutOnWay_ExportDetailSearchHQ({
+    const result = await api.Rpt_StatisticPIInStock_ExportDetailSearchHQ({
+      ProductMonthFrom: convertDate(searchCondition.ProductMonthFrom),
+      ProductMonthTo: convertDate(searchCondition.ProductMonthTo),
+      DateTo: searchCondition.DateTo
+        ? format(searchCondition.DateTo, "yyyy-MM-dd")
+        : "",
       FlagDataWH: searchCondition.FlagDataWH ? 1 : 0,
     });
     if (result.isSuccess && result.Data) {
@@ -151,12 +160,12 @@ export const BasePivot = () => {
       <AdminContentLayout.Slot name={"Content"}>
         <ContentSearchPanelLayout>
           <ContentSearchPanelLayout.Slot name={"SearchPanel"}>
-            <div className="w-[300px]">
+            <div className="w-[200px]">
               <SearchPanelV2
                 conditionFields={searchFields}
                 data={searchCondition}
                 onSearch={handleSearch}
-                storeKey={"base-search"}
+                storeKey={"Rpt_StatisticPIInStock-search"}
               />
             </div>
           </ContentSearchPanelLayout.Slot>
@@ -205,7 +214,10 @@ export const BasePivot = () => {
                   {/* cho phép người dùng xuất file */}
                   <Export enabled={true} />
                   {/* lưu cấu hình pivot vào trong local storage  */}
-                  <StateStoring enabled={true} storageKey={"base"} />
+                  <StateStoring
+                    enabled={true}
+                    storageKey={"Rpt_StatisticPIInStock"}
+                  />
                   <FieldPanel visible={true} />
                 </PivotGrid>
               )}
@@ -216,26 +228,3 @@ export const BasePivot = () => {
     </AdminContentLayout>
   );
 };
-
-{/* <ScrollView height={windowSize.height - 120}>
-<DataGrid
-  id={"gridContainer"}
-  dataSource={
-    data?.Data?.Lst_RptStatistic_HTCBackOrder_SpecCode_01 ?? []
-  }
-  columns={columns}
-  showBorders={true}
-  showRowLines={true}
-  showColumnLines={true}
-  columnAutoWidth={true}
-  allowColumnResizing={false}
-  allowColumnReordering={false}
-  className={"mx-auto my-5"}
-  width={"100%"}
-  columnResizingMode="widget"
->
-  <HeaderFilter allowSearch={true} visible={true} />
-  <Scrolling showScrollbar={"always"} />
-  <Sorting mode={"none"} />
-</DataGrid>
-</ScrollView> */}
