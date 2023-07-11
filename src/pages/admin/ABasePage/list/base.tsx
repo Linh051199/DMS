@@ -217,22 +217,22 @@ export const BasePage = () => {
   };
 
   const handleSaveRow = async (e: any) => {
-    // if (e.changes && e.changes.length > 0) {
-    //   const { type } = e.changes[0];
-    //   if (type === "remove") {
-    //     const id = e.changes[0].key;
-    //     e.promise = handleDelete(id);
-    //   } else if (type === "insert") {
-    //     let newData = e.changes[0].data!;
-    //     if (!Object.keys(newData).includes("FlagActive")) {
-    //       newData = { ...newData, FlagActive: true };
-    //     }
-    //     e.promise = handleCreate(newData);
-    //   } else if (type === "update") {
-    //     e.promise = handleUpdate(e.changes[0].key, e.changes[0].data!);
-    //   }
-    // }
-    // e.cancel = true;
+    if (e.changes && e.changes.length > 0) {
+      const { type } = e.changes[0];
+      if (type === "remove") {
+        const id = e.changes[0].key;
+        e.promise = handleDelete(id);
+      } else if (type === "insert") {
+        let newData = e.changes[0].data!;
+        if (!Object.keys(newData).includes("FlagActive")) {
+          newData = { ...newData, FlagActive: true };
+        }
+        e.promise = handleCreate(newData);
+      } else if (type === "update") {
+        e.promise = handleUpdate(e.changes[0].key, e.changes[0].data!);
+      }
+    }
+    e.cancel = true;
   };
 
   const handleDeleteRows = async (rows: string[]) => {

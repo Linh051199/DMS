@@ -17,9 +17,7 @@ export const PageHeader = ({
   return (
     <PageHeaderNoSearchLayout>
       <PageHeaderNoSearchLayout.Slot name={"Before"}>
-        <div className="font-bold dx-font-m">
-          Báo cáo bán hàng chi tiết DL nội bộ
-        </div>
+        <div className="font-bold dx-font-m">Báo cáo LXX, xuất kho</div>
       </PageHeaderNoSearchLayout.Slot>
       <PageHeaderNoSearchLayout.Slot name={"After"}>
         <Button

@@ -1,6 +1,7 @@
 import { useI18n } from "@/i18n/useI18n";
 import { useClientgateApi } from "@/packages/api";
-import { RptSalesCtmCare01Param } from "@/packages/api/clientgate/Rpt_SalesCtmCare01Api";
+import { useRptPivotDlrTestDriverParam } from "@/packages/api/clientgate/Rpt_PivotDlrTestDriverApt";
+import { RequiredField } from "@/packages/common/Validation_Rules";
 import { useWindowSize } from "@/packages/hooks/useWindowSize";
 import { AdminContentLayout } from "@/packages/layouts/admin-content-layout";
 import {
@@ -9,7 +10,7 @@ import {
 } from "@/packages/layouts/content-searchpanel-layout";
 import { SearchPanelV2 } from "@/packages/ui/search-panel";
 import { useQuery } from "@tanstack/react-query";
-import { format } from "date-fns";
+import { format, isAfter, isBefore } from "date-fns";
 import { LoadPanel, PivotGrid } from "devextreme-react";
 import { IItemProps } from "devextreme-react/form";
 import {
@@ -20,6 +21,7 @@ import {
   StateStoring,
   LoadPanel as PivotLoadPanel,
 } from "devextreme-react/pivot-grid";
+import dxDateBox from "devextreme/ui/date_box";
 import PivotGridDataSource, {
   Field,
 } from "devextreme/ui/pivot_grid/data_source";
@@ -28,69 +30,44 @@ import { nanoid } from "nanoid";
 import { useCallback, useMemo, useReducer, useState } from "react";
 import { toast } from "react-toastify";
 import { PageHeader } from "../components/page-header";
+
 interface IReportParam {
-  DeliveryDateFrom: Date;
-  DeliveryDateTo: Date;
-  CreateDealDateFrom: Date;
-  CreateDealDateTo: Date;
-  CtmCareUpdDateFrom: Date;
-  CtmCareUpdDateTo: Date;
-  FlagDataWH: boolean
+  DriverDateFrom: Date;
+  DriverDateTo: Date;
+  FlagDataWH: 1 | 0;
 }
 
-const dateBoxOptions = {
-  displayFormat: "yyyy-MM-dd",
-  openOnFieldClick: true,
-  validationMessageMode: "always",
-  showClearButton: true,
-};
-
-export const BasePivot = () => {
-  const { t } = useI18n("base");
-  const setSearchPanelVisibility = useSetAtom(searchPanelVisibleAtom);
+export const Rpt_PivotDlrTestDriver = () => {
+  const { t } = useI18n("Rpt_PivotDlrTestDriver");
   const api = useClientgateApi();
   const windowSize = useWindowSize();
+  const setSearchPanelVisibility = useSetAtom(searchPanelVisibleAtom);
 
   const [searchCondition, setSearchCondition] = useState<IReportParam>(
     {} as IReportParam
   );
-
   const [loadingKey, reloading] = useReducer(() => nanoid(), "0");
 
   // Call API
   const { data, isLoading } = useQuery({
     queryKey: [
-      "report",
-      "Rpt_StatisticHTCBackOrderDealer01",
+      "Rpt_PivotDlrTestDriver",
+      "Rpt_PivotDlrTestDriver_SearchHQ",
       loadingKey,
       JSON.stringify(searchCondition),
     ],
+
     queryFn: async () => {
       if (loadingKey !== "0") {
-        const resp = await api.RptSalesCtmCare01_SearchHQ({
-          DeliveryDateFrom: format(
-            searchCondition.DeliveryDateFrom,
-            "yyyy-MM-dd"
-          ),
-          DeliveryDateTo: searchCondition.DeliveryDateTo
-            ? format(searchCondition.DeliveryDateTo, "yyyy-MM-dd")
+        const resp = await api.Rpt_PivotDlrTestDriver_SearchHQ({
+          DriverDateFrom: searchCondition.DriverDateFrom
+            ? format(searchCondition.DriverDateFrom, "yyyy-MM-dd")
             : "",
-          CreateDealDateFrom: format(
-            searchCondition.CreateDealDateFrom,
-            "yyyy-MM-dd"
-          ),
-          CreateDealDateTo: searchCondition.CreateDealDateTo
-            ? format(searchCondition.CreateDealDateTo, "yyyy-MM-dd")
-            : "",
-          CtmCareUpdDateFrom: format(
-            searchCondition.CtmCareUpdDateFrom,
-            "yyyy-MM-dd"
-          ),
-          CtmCareUpdDateTo: searchCondition.CtmCareUpdDateTo
-            ? format(searchCondition.CtmCareUpdDateTo, "yyyy-MM-dd")
+          DriverDateTo: searchCondition.DriverDateTo
+            ? format(searchCondition.DriverDateTo, "yyyy-MM-dd")
             : "",
           FlagDataWH: searchCondition.FlagDataWH ? 1 : 0,
-        } as RptSalesCtmCare01Param);
+        } as useRptPivotDlrTestDriverParam);
         return resp;
       } else {
         return null;
@@ -99,10 +76,124 @@ export const BasePivot = () => {
   });
   console.log("🚀 ~ data:", data);
 
+  const fields = useMemo<Field[]>(() => {
+    return [
+      {
+        dataField: "TOTAL",
+        area: "data",
+        areaIndex: 0,
+      },
+
+      {
+        dataField: "DEALERCODE",
+        area: "row",
+        areaIndex: 1,
+      },
+      {
+        dataField: "MODELCODE",
+        area: "filter",
+        areaIndex: 7,
+      },
+      {
+        dataField: "DEALERNAME",
+        area: "row",
+        areaIndex: 0,
+        expanded: false,
+      },
+      {
+        dataField: "MODELNAME",
+        area: "filter",
+        areaIndex: 8,
+      },
+
+      {
+        dataField: "GENDERNAME",
+        area: "column",
+        areaIndex: 0,
+      },
+      {
+        dataField: "DRIVETESTCODE",
+        area: "filter",
+        areaIndex: 10,
+      },
+
+      {
+        dataField: "DRIVERLICENSENO",
+        area: "filter",
+        areaIndex: 9,
+      },
+
+      {
+        dataField: "RANGEAGECODE",
+        area: "filter",
+        areaIndex: 6,
+      },
+
+      {
+        dataField: "DRVTESTPLATENO",
+        area: "filter",
+        areaIndex: 11,
+      },
+      {
+        dataField: "DRIVERTESTTYPE",
+        area: "filter",
+        areaIndex: 12,
+      },
+      {
+        dataField: "DRIVERTESTGROUP",
+        area: "filter",
+        areaIndex: 13,
+      },
+      {
+        dataField: "DDCFULLNAME",
+        area: "filter",
+        areaIndex: 2,
+      },
+
+      {
+        dataField: "DDCADDRESS",
+        area: "filter",
+        areaIndex: 3,
+      },
+      {
+        dataField: "DDCPHONENO",
+        area: "filter",
+        areaIndex: 4,
+      },
+
+      {
+        dataField: "DDCEMAIL",
+        area: "filter",
+        areaIndex: 5,
+      },
+      {
+        dataField: "DDCIDCARDNO",
+        area: "filter",
+        areaIndex: 0,
+      },
+      {
+        dataField: "DDCIDCARDTYPE",
+        area: "filter",
+        areaIndex: 1,
+      },
+    ];
+  }, [t]);
+
+  const dataSource = new PivotGridDataSource({
+    fields: fields,
+    store: data?.Data?.Lst_RptPivot_Dlr_TestDriver,
+  });
+
   //PageHeader
   const handleExportExcel = useCallback(() => {}, []);
-  const handleExportExcelDetail = useCallback(async () => {
-    const result = await api.RptStatisticHTCStockOutOnWay_ExportDetailSearchHQ({
+  const handleExportDetail = useCallback(async () => {
+    const result = await api.Rpt_PivotDlrTestDriver_ExportDetailSearchHQ({
+      DriverDateFrom: searchCondition.DriverDateFrom
+        ? format(searchCondition.DriverDateFrom, "yyyy-MM-dd")
+        : "",
+      DriverDateTo: searchCondition.DriverDateTo
+        ? format(searchCondition.DriverDateTo, "yyyy-MM-dd")
+        : "",
       FlagDataWH: searchCondition.FlagDataWH ? 1 : 0,
     });
     if (result.isSuccess && result.Data) {
@@ -110,13 +201,64 @@ export const BasePivot = () => {
       window.location.href = result.Data;
     }
   }, []);
-
-  const handletoggleSearchPanel = () => {
+  const handleToggleSearchPanel = () => {
     setSearchPanelVisibility((visible) => !visible);
   };
 
   //SearchPanelV2
   const searchFields: IItemProps[] = [
+    {
+      caption: "DriverDateFrom",
+      dataField: "DriverDateFrom",
+      editorType: "dxDateBox",
+      visible: true,
+      editorOptions: {
+        displayFormat: "yyyy-MM-dd",
+        openOnFieldClick: true,
+        validationMessage: "always",
+        showClearButton: true,
+      },
+      validationRules: [
+        RequiredField(t("DateFromIsRequired")),
+        {
+          type: "custom",
+          ignoreEmptyValue: true,
+          validationCallback: ({ value }: any) => {
+            if (searchCondition.DriverDateTo) {
+              return !isAfter(value, searchCondition.DriverDateTo);
+            }
+            return true;
+          },
+          message: t("DateFromMustBeBeforeDateTo"),
+        },
+      ],
+    },
+    {
+      caption: "DriverDateTo",
+      dataField: "DriverDateTo",
+      editorType: "dxDateBox",
+      visible: true,
+      editorOptions: {
+        displayFormat: "yyyy-MM-dd",
+        openOnFieldClick: true,
+        validationMessage: "always",
+        showClearButton: true,
+      },
+      validationRules: [
+        RequiredField(t("DateToIsRequired")),
+        {
+          type: "custom",
+          ignoreEmptyValue: true,
+          validationCallback: ({ value }: any) => {
+            if (searchCondition.DriverDateFrom) {
+              return !isBefore(value, searchCondition.DriverDateFrom);
+            }
+            return true;
+          },
+          message: t("DateToMustBeAfterDateTo"),
+        },
+      ],
+    },
     {
       dataField: "FlagDataWH",
       visible: true,
@@ -127,58 +269,28 @@ export const BasePivot = () => {
       },
     },
   ];
-
   const handleSearch = useCallback(async (data: IReportParam) => {
     reloading();
   }, []);
-
-  //PivotGrid
-  const fields = useMemo<Field[]>(() => {
-    return [
-      {
-        caption: t("CarID"),
-        dataField: "CarID",
-        area: "data",
-        showGrandTotals: true,
-        showTotals: true,
-        summaryType: "count",
-        isMeasure: true, // allows the end-user to place this f
-      },
-      {
-        caption: t("DUTYCOMPLETEDPERCENT_RANGE"),
-        dataField: "DUTYCOMPLETEDPERCENT_RANGE",
-        area: "row",
-      },
-      {
-        caption: t("DUTYDAYS_RANGE"),
-        dataField: "DUTYDAYS_RANGE",
-        area: "row",
-      },
-    ];
-  }, [t]);
-  const dataSource = new PivotGridDataSource({
-    fields: fields,
-    store: data?.Data?.Lst_RptSales_CtmCare_01,
-  });
 
   return (
     <AdminContentLayout>
       <AdminContentLayout.Slot name={"Header"}>
         <PageHeader
           onExportExcel={handleExportExcel}
-          onExportExcelDetail={handleExportExcelDetail}
-          toggleSearchPanel={handletoggleSearchPanel}
+          onExportExcelDetail={handleExportDetail}
+          toggleSearchPanel={handleToggleSearchPanel}
         />
       </AdminContentLayout.Slot>
       <AdminContentLayout.Slot name={"Content"}>
         <ContentSearchPanelLayout>
           <ContentSearchPanelLayout.Slot name={"SearchPanel"}>
-            <div className="w-[200px]">
+            <div className="w-[300px]">
               <SearchPanelV2
                 conditionFields={searchFields}
                 data={searchCondition}
                 onSearch={handleSearch}
-                storeKey={"base-search"}
+                storeKey={"Rpt_PivotDlrTestDriver-search"}
               />
             </div>
           </ContentSearchPanelLayout.Slot>
@@ -192,7 +304,7 @@ export const BasePivot = () => {
               showPane={true}
             />
             <div className="w-full mt-4">
-              {!!data && data?.Data?.Lst_RptSales_CtmCare_01 && (
+              {!!data && data?.Data?.Lst_RptPivot_Dlr_TestDriver && (
                 <PivotGrid
                   id="pivotgrid"
                   dataSource={dataSource}
@@ -227,7 +339,10 @@ export const BasePivot = () => {
                   {/* cho phép người dùng xuất file */}
                   <Export enabled={true} />
                   {/* lưu cấu hình pivot vào trong local storage  */}
-                  <StateStoring enabled={true} storageKey={"base"} />
+                  <StateStoring
+                    enabled={true}
+                    storageKey={"Rpt_PivotDlrTestDriver"}
+                  />
                   <FieldPanel visible={true} />
                 </PivotGrid>
               )}

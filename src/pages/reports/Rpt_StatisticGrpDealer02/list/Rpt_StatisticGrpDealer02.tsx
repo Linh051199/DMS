@@ -40,8 +40,6 @@ export const Rpt_StatisticGrpDealer02 = () => {
   const [searchCondition, setSearchCondition] = useState<IReportParam>(
     {} as IReportParam
   );
-  console.log("🚀 ~ searchCondition.Date_From:", searchCondition.Date_From);
-  console.log("🚀 ~ searchCondition.Date_To:", searchCondition.Date_To);
 
   const [loadingKey, reloading] = useReducer(() => nanoid(), "0");
 
@@ -97,8 +95,8 @@ export const Rpt_StatisticGrpDealer02 = () => {
   //SearchPanelV2
   const searchFields: IItemProps[] = [
     {
-      dataField: "Date_From",
       caption: t("DateFrom"),
+      dataField: "Date_From",
       editorType: "dxDateBox",
       visible: true,
       editorOptions: {
@@ -123,8 +121,8 @@ export const Rpt_StatisticGrpDealer02 = () => {
       ],
     },
     {
-      dataField: "Date_To",
       caption: t("DateTo"),
+      dataField: "Date_To",
       editorType: "dxDateBox",
       visible: true,
       editorOptions: {

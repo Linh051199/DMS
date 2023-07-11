@@ -4,7 +4,11 @@ import {
   RptPayment01Page,
   RptStaticGrpDealerInSock02,
   Rpt_BaoCaoMoi,
+  Rpt_DebitReport02New,
   Rpt_GuaranteeDebit01,
+  Rpt_PivotDlrCtmVisit,
+  Rpt_PivotDlrTestDriver,
+  Rpt_SalesCtmCare01,
   Rpt_SalesDelivery01,
   Rpt_ShareHTCStock03,
   Rpt_StatisticGrpDealer02,
@@ -13,6 +17,7 @@ import {
   Rpt_StatisticHTCBackOrderDealer01,
   Rpt_StatisticHTCBackOrderSpecCode01,
   Rpt_StatisticHTCBackOrderSpecCode01Pivot,
+  Rpt_StatisticHTCStockOut01,
   Rpt_StatisticHTCStockOutOnWay,
   Rpt_Statistic_DealerStock_ForSale_Mst,
   Rpt_UpdSalesManByDelear,
@@ -130,6 +135,15 @@ export const reportRoutes: RouteItem[] = [
     getPageElement: () => <Rpt_StatisticHTCBackOrderDealer01 />,
   },
   {
+    key: "Rpt_DebitReport02New", // Key menu con
+    path: "report/Rpt_DebitReport02New", // Address trên browser
+    subMenuTitle: "Báo cáo công nợ", // Title menu con
+    mainMenuKey: "report", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
+
+    getPageElement: () => <Rpt_DebitReport02New />,
+  },
+  {
     key: "Rpt_ShareHTCStock03", // Key menu con
     path: "report/rpt_ShareHTCStock03", // Address trên browser
     subMenuTitle: "Thông tin kế hoạch giao xe", // Title menu con
@@ -146,6 +160,15 @@ export const reportRoutes: RouteItem[] = [
     permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
 
     getPageElement: () => <Rpt_StatisticGrpDealer02 />,
+  },
+  {
+    key: "Rpt_PivotDlrCtmVisit", // Key menu con
+    path: "report/Rpt_PivotDlrCtmVisit", // Address trên browser
+    subMenuTitle: "Báo cáo Pivot thống kê khách thăm Showroom", // Title menu con
+    mainMenuKey: "report", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
+
+    getPageElement: () => <Rpt_PivotDlrCtmVisit />,
   },
   {
     key: "Rpt_GuaranteeDebit01", // Key menu con
@@ -173,5 +196,33 @@ export const reportRoutes: RouteItem[] = [
     permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
 
     getPageElement: () => <Rpt_Statistic_DealerStock_ForSale_Mst />,
+  },
+
+  {
+    key: "Rpt_PivotDlrTestDriver", // Key menu con
+    path: "report/Rpt_PivotDlrTestDriver", // Address trên browser
+    subMenuTitle: "Báo cáo Pivot thống kê khách thử lái xe", // Title menu con
+    mainMenuKey: "report", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
+
+    getPageElement: () => <Rpt_PivotDlrTestDriver />,
+  },
+  {
+    key: "Rpt_SalesCtmCare01", // Key menu con
+    path: "report/Rpt_SalesCtmCare01", // Address trên browser
+    subMenuTitle: "Báo cáo thống kê xe được kiểm chứng", // Title menu con
+    mainMenuKey: "report", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
+
+    getPageElement: () => <Rpt_SalesCtmCare01 />,
+  },
+  {
+    key: "Rpt_StatisticHTCStockOut01", // Key menu con
+    path: "report/Rpt_StatisticHTCStockOut01", // Address trên browser
+    subMenuTitle: "Báo cáo LXX, xuất kho", // Title menu con
+    mainMenuKey: "report", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
+
+    getPageElement: () => <Rpt_StatisticHTCStockOut01 />,
   },
 ];

@@ -2,7 +2,7 @@ import { useI18n } from "@/i18n/useI18n";
 import { PageHeaderNoSearchLayout } from "@/packages/layouts/page-header-layout-2/page-header-nosearch-layout";
 import { Button } from "devextreme-react";
 
-interface IPageHeader {
+interface IPageHeaderProps {
   toggleSearchPanel: () => void;
   onExportExcelDetail: () => void;
   onExportExcel: () => void;
@@ -12,13 +12,13 @@ export const PageHeader = ({
   onExportExcel,
   onExportExcelDetail,
   toggleSearchPanel,
-}: IPageHeader) => {
-  const { t } = useI18n("Rpt_StatisticGrpDealer03");
+}: IPageHeaderProps) => {
+  const { t } = useI18n("Rpt_PivotDlrCtmVisit");
   return (
     <PageHeaderNoSearchLayout>
       <PageHeaderNoSearchLayout.Slot name={"Before"}>
         <div className="font-bold dx-font-m">
-          Báo cáo bán hàng chi tiết DL nội bộ
+          Báo cáo Pivot thống kê khách thăm Showroom
         </div>
       </PageHeaderNoSearchLayout.Slot>
       <PageHeaderNoSearchLayout.Slot name={"After"}>
