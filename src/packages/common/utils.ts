@@ -117,7 +117,6 @@ export const flagEditorOptionsSearch = {
 
 export const convertDate = (param: Date) => {
   var date = new Date(param);
-  console.log("🚀 ~ date:", date);
   var dateString = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
     .toISOString()
     .split("T")[0];

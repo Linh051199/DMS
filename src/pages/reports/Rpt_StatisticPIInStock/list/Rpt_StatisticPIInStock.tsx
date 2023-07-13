@@ -9,24 +9,15 @@ import {
   searchPanelVisibleAtom,
 } from "@/packages/layouts/content-searchpanel-layout";
 import { SearchPanelV2 } from "@/packages/ui/search-panel";
+import { ColumnOptions } from "@/types";
 import { useQuery } from "@tanstack/react-query";
-import { format } from "date-fns";
-import { LoadPanel, PivotGrid } from "devextreme-react";
+import { format, getYear, set } from "date-fns";
+import { DataGrid, LoadPanel, PivotGrid, ScrollView } from "devextreme-react";
+import { HeaderFilter, Scrolling, Sorting } from "devextreme-react/data-grid";
 import { IItemProps } from "devextreme-react/form";
-import {
-  Export,
-  FieldChooser,
-  FieldPanel,
-  Scrolling,
-  StateStoring,
-  LoadPanel as PivotLoadPanel,
-} from "devextreme-react/pivot-grid";
-import PivotGridDataSource, {
-  Field,
-} from "devextreme/ui/pivot_grid/data_source";
 import { useSetAtom } from "jotai";
 import { nanoid } from "nanoid";
-import { useCallback, useMemo, useReducer, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import { toast } from "react-toastify";
 import { PageHeader } from "../components/page-header";
 interface IReportParam {
@@ -73,11 +64,13 @@ export const Rpt_StatisticPIInStock = () => {
             : "",
           FlagDataWH: searchCondition.FlagDataWH ? 1 : 0,
         } as Rpt_StatisticPIInStockParam);
-        return resp;
+
+        return resp?.Data?.Lst_RptStatistic_PIInStock;
       } else {
         return null;
       }
     },
+    enabled: true,
   });
   console.log("🚀 ~ data:", data);
 
@@ -103,7 +96,62 @@ export const Rpt_StatisticPIInStock = () => {
   };
 
   //SearchPanelV2
+
+  const yearDs = useCallback(() => {
+    const yearList = [];
+    // Set the start and end dates
+    const startDate = new Date("2019-01-01");
+    const endDate = new Date();
+
+    // Loop through the months from end to start in descending order
+    for (
+      let date = endDate;
+      date >= startDate;
+      date.setMonth(date.getMonth() - 1)
+    ) {
+      const year = date.getFullYear(); // Get the year
+      const month = String(date.getMonth() + 1).padStart(2, "0"); // Get the month and pad with leading zero if needed
+      const yearMonth = `${year}-${month}`; // Concatenate the year and month
+      yearList.push({ year: yearMonth, text: yearMonth });
+    }
+
+    return yearList; // Return the generated yearList
+  }, [searchCondition, data]);
+
   const searchFields: IItemProps[] = [
+    {
+      dataField: "ProductMonthFrom",
+      visible: true,
+      caption: t("ProductMonthFrom"),
+      editorType: "dxSelectBox",
+      editorOptions: {
+        dataSource: yearDs() ?? [],
+        displayExpr: "text",
+        valueExpr: "year",
+        validationMessageMode: "always",
+        validationGroup: "form",
+      },
+    },
+    {
+      dataField: "ProductMonthTo",
+      visible: true,
+      caption: t("ProductMonthTo"),
+      editorType: "dxSelectBox",
+      editorOptions: {
+        dataSource: yearDs() ?? [],
+        displayExpr: "text",
+        valueExpr: "year",
+        validationMessageMode: "always",
+        validationGroup: "form",
+      },
+    },
+    {
+      dataField: "DateTo",
+      visible: true,
+      caption: t("DateTo"),
+      editorType: "dxDateBox",
+      editorOptions: dateBoxOptions,
+    },
     {
       dataField: "FlagDataWH",
       visible: true,
@@ -119,34 +167,61 @@ export const Rpt_StatisticPIInStock = () => {
     reloading();
   }, []);
 
-  //PivotGrid
-  const fields = useMemo<Field[]>(() => {
+  useEffect(() => {
+    if (data) {
+      data.map((item: any, index: any) => (item.Id = index + 1));
+    }
+  }, [data]);
+
+  const columns: ColumnOptions[] = useMemo(() => {
     return [
       {
-        caption: t("CarID"),
-        dataField: "CarID",
-        area: "data",
-        showGrandTotals: true,
-        showTotals: true,
-        summaryType: "count",
-        isMeasure: true, // allows the end-user to place this f
+        dataField: "Id",
+        caption: t("STT"),
+        visible: true,
       },
       {
-        caption: t("DUTYCOMPLETEDPERCENT_RANGE"),
-        dataField: "DUTYCOMPLETEDPERCENT_RANGE",
-        area: "row",
+        dataField: "CCOCONTRACTNO",
+        caption: t("CCOCONTRACTNO"),
       },
       {
-        caption: t("DUTYDAYS_RANGE"),
-        dataField: "DUTYDAYS_RANGE",
-        area: "row",
+        dataField: "MODELCODE",
+        caption: t("MODELCODE"),
+      },
+      {
+        dataField: "SPECCODE",
+        caption: t("SPECCODE"),
+      },
+      {
+        dataField: "WWOWORKORDERNO",
+        caption: t("WWOWORKORDERNO"),
+      },
+      {
+        dataField: "COLORCODE",
+        caption: t("COLORCODE"),
+      },
+      {
+        dataField: "COLOR_VN_COMBINED",
+        caption: t("COLOR_VN_COMBINED"),
+      },
+      {
+        dataField: "SOLUONGPI",
+        caption: t("SOLUONGPI"),
+      },
+      {
+        dataField: "SOLUONGTONPI",
+        caption: t("SOLUONGTONPI"),
+      },
+      {
+        dataField: "SOLUONGDALENTAU",
+        caption: t("SOLUONGDALENTAU"),
+      },
+      {
+        dataField: "SOLUONGDATOICANG",
+        caption: t("SOLUONGDATOICANG"),
       },
     ];
-  }, [t]);
-  const dataSource = new PivotGridDataSource({
-    fields: fields,
-    store: data?.Data?.Lst_RptSales_CtmCare_01,
-  });
+  }, [isLoading]);
 
   return (
     <AdminContentLayout>
@@ -179,48 +254,26 @@ export const Rpt_StatisticPIInStock = () => {
               showPane={true}
             />
             <div className="w-full mt-4">
-              {!!data && data?.Data?.Lst_RptSales_CtmCare_01 && (
-                <PivotGrid
-                  id="pivotgrid"
-                  dataSource={dataSource}
-                  allowSortingBySummary={true}
-                  allowFiltering={true}
+              <ScrollView height={windowSize.height - 120}>
+                <DataGrid
+                  id={"gridContainer"}
+                  dataSource={data ?? []}
+                  columns={columns}
                   showBorders={true}
-                  disabled={false} // chặn người dùng không cho tương tác với màn hình giao diện
-                  onCellClick={(e: any) => {}} // lấy ra thông in của cột khi mà mình click vào bất kì ô nào
-                  onCellPrepared={(e: any) => {}} // Một chức năng được thực thi sau khi một ô lưới trục được tạo.
-                  onContentReady={(e) => {}} // A function that is executed when the UI component is rendered and each time the component is repainted.
-                  onContextMenuPreparing={(e) => {}} // A function that is executed * before the context menu is rendered. *
-                  onExporting={(e) => {}} // A function that is executed before data is exported. // thực thi sau khi xuất file
-                  onOptionChanged={(e) => {}} // A function that is executed after a UI component property is changed.
-                  showColumnGrandTotals={true} // chỉ định hiển thị tổng tính tổng hay không
-                  showColumnTotals={true} // chỉ định có hiện cột tính tổng của cột hay không
-                  showRowGrandTotals={true} // ngược lại với showColumnGrandTotals
-                  showRowTotals={true} // ngược lại với showColumnTotals
-                  showTotalsPrior={"none"} // 'both' | 'columns' | 'none' | 'rows' => default: 'none'
-                  height={windowSize.height - 150}
-                  // width={200}
-                  allowExpandAll={true}
+                  showRowLines={true}
+                  showColumnLines={true}
+                  columnAutoWidth={true}
+                  allowColumnResizing={false}
+                  allowColumnReordering={false}
+                  className={"mx-auto my-5"}
+                  width={"100%"}
+                  columnResizingMode="widget"
                 >
-                  <Scrolling mode={"virtual"} />
-                  {/* cho phép ấn và hiển thị cột theo mong muốn */}
-                  <FieldChooser enabled={true} height={400} />
-                  <PivotLoadPanel
-                    enabled={true}
-                    showPane={true}
-                    showIndicator={true}
-                  />
-
-                  {/* cho phép người dùng xuất file */}
-                  <Export enabled={true} />
-                  {/* lưu cấu hình pivot vào trong local storage  */}
-                  <StateStoring
-                    enabled={true}
-                    storageKey={"Rpt_StatisticPIInStock"}
-                  />
-                  <FieldPanel visible={true} />
-                </PivotGrid>
-              )}
+                  <HeaderFilter allowSearch={true} visible={true} />
+                  <Scrolling showScrollbar={"always"} />
+                  <Sorting mode={"none"} />
+                </DataGrid>
+              </ScrollView>
             </div>
           </ContentSearchPanelLayout.Slot>
         </ContentSearchPanelLayout>

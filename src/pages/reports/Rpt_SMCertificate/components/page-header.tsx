@@ -3,25 +3,23 @@ import { PageHeaderNoSearchLayout } from "@/packages/layouts/page-header-layout-
 import { Button } from "devextreme-react";
 
 interface IPageHeader {
-  toggleSearchPanel: () => void;
-  onExportExcelDetail: () => void;
-  onExportExcel: () => void;
+    toggleSearchPanel: () => void;
+    onExportExcelDetail: () => void;
+    onExportExcel: () => void;
 }
 
-export const PageHeader = ({
-  onExportExcel,
-  onExportExcelDetail,
-  toggleSearchPanel,
-}: IPageHeader) => {
-  const { t } = useI18n("Rpt_StatisticGrpDealer03");
+export const PageHeader = ({onExportExcel,onExportExcelDetail,toggleSearchPanel}: IPageHeader) => {
+
+    const {t}= useI18n('Rpt_StatisticGrpDealer03')
   return (
     <PageHeaderNoSearchLayout>
       <PageHeaderNoSearchLayout.Slot name={"Before"}>
-        <div className="font-bold dx-font-m">Báo cáo tồn PI</div>
+        <div className="font-bold dx-font-m">Báo cáo chứng chỉ</div>
       </PageHeaderNoSearchLayout.Slot>
-      <PageHeaderNoSearchLayout.Slot name={"After"}>
-        <Button
-          stylingMode={"text"}
+      <PageHeaderNoSearchLayout.Slot
+        name={"After"}
+      >
+        <Button  stylingMode={"text"}
           icon={"/images/icons/search.svg"}
           type="default"
           hoverStateEnabled={true}
@@ -44,7 +42,7 @@ export const PageHeader = ({
           text={t("ExportExcel")}
           onClick={onExportExcel}
           className={"mx-1"}
-        />
+        /> 
       </PageHeaderNoSearchLayout.Slot>
     </PageHeaderNoSearchLayout>
   );

@@ -1,36 +1,46 @@
 import { useI18n } from "@/i18n/useI18n";
 import { useClientgateApi } from "@/packages/api";
 import { RptSaleBaoCaoTongHopGetParam } from "@/packages/api/clientgate/Rpt_SaleBaoCaoTongHopGetApi";
+import { RequiredField } from "@/packages/common/Validation_Rules";
+import { useVisibilityControl } from "@/packages/hooks";
 import { useWindowSize } from "@/packages/hooks/useWindowSize";
 import { AdminContentLayout } from "@/packages/layouts/admin-content-layout";
 import {
   ContentSearchPanelLayout,
   searchPanelVisibleAtom,
 } from "@/packages/layouts/content-searchpanel-layout";
+import { useSavedState } from "@/packages/ui/base-gridview/components";
+import CustomColumnChooser from "@/packages/ui/column-toggler/custom-column-chooser";
 import { SearchPanelV2 } from "@/packages/ui/search-panel";
+import { ColumnOptions, ToolbarItemProps } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { LoadPanel, PivotGrid } from "devextreme-react";
-import { IItemProps } from "devextreme-react/form";
+import { Button, DataGrid, LoadPanel, PivotGrid } from "devextreme-react";
 import {
-  Export,
-  FieldChooser,
-  FieldPanel,
+  Column,
+  ColumnChooser,
+  ColumnFixing,
+  HeaderFilter,
+  Pager,
+  Paging,
   Scrolling,
-  StateStoring,
-  LoadPanel as PivotLoadPanel,
-} from "devextreme-react/pivot-grid";
-import PivotGridDataSource, {
-  Field,
-} from "devextreme/ui/pivot_grid/data_source";
+  Toolbar,
+  Item as ToolbarItem,
+} from "devextreme-react/data-grid";
+import { IItemProps } from "devextreme-react/form";
 import { useSetAtom } from "jotai";
 import { nanoid } from "nanoid";
-import { useCallback, useMemo, useReducer, useState } from "react";
+import { useCallback, useEffect, useReducer, useState } from "react";
 import { toast } from "react-toastify";
 import { PageHeader } from "../components/page-header";
+import {
+  selectedColumnsItemsAtom,
+  selectedSearchAtom,
+} from "../components/store";
+import { useReportColumns } from "../components/useReportColumns";
 interface IReportParam {
-  TDateReport: Date;
-  FlagDataWH: boolean;
+  TDateReport: any;
+  FlagDataWH: 1 | 0;
 }
 
 export const Rpt_SaleBaoCaoTongHop = () => {
@@ -38,15 +48,22 @@ export const Rpt_SaleBaoCaoTongHop = () => {
   const setSearchPanelVisibility = useSetAtom(searchPanelVisibleAtom);
   const api = useClientgateApi();
   const windowSize = useWindowSize();
+  const chooserVisible = useVisibilityControl({ defaultVisible: false });
+  const setSearchItems = useSetAtom(selectedSearchAtom);
+  const setColumnsItems = useSetAtom(selectedColumnsItemsAtom);
 
-  const [searchCondition, setSearchCondition] = useState<IReportParam>(
-    {} as IReportParam
-  );
+  const [searchCondition, setSearchCondition] =
+    useState<RptSaleBaoCaoTongHopGetParam>({
+      TDateReport: "",
+      FlagDataWH: 0,
+    } as RptSaleBaoCaoTongHopGetParam);
+  const [columnAreaState, setColumnAreaState] = useState<any[]>([]);
+  const [isLoading, setLoading] = useState(false);
 
   const [loadingKey, reloading] = useReducer(() => nanoid(), "0");
 
   // Call API
-  const { data, isLoading } = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: [
       "report",
       "RptSaleBaoCaoTongHopGet_SearchHQ",
@@ -54,30 +71,55 @@ export const Rpt_SaleBaoCaoTongHop = () => {
       JSON.stringify(searchCondition),
     ],
     queryFn: async () => {
-      if (loadingKey !== "0") {
-        const resp = await api.RptSaleBaoCaoTongHopGet_SearchHQ({
-          TDateReport: searchCondition?.TDateReport
-            ? format(searchCondition.TDateReport, "yyyy-MM-dd")
-            : "",
-
-          FlagDataWH: searchCondition.FlagDataWH ? 1 : 0,
-        } as RptSaleBaoCaoTongHopGetParam);
-        return resp;
-      } else {
-        return null;
+      if (loadingKey === "0") {
+        return [];
       }
+      // debugger;
+      const resp = await api.RptSaleBaoCaoTongHopGet_SearchHQ({
+        TDateReport: searchCondition.TDateReport ?? "",
+        FlagDataWH: searchCondition.FlagDataWH ? 1 : 0,
+      } as RptSaleBaoCaoTongHopGetParam);
+      if (resp.isSuccess) {
+        const listDealerCode = resp?.Data?.ListDealerCode;
+        if (listDealerCode) {
+          const valueDealer = listDealerCode?.map((item) => {
+            return {
+              caption: t(item.AreaName),
+              alignment: "center",
+              dataField: item.AreaCode,
+              columns: item.Lst_DealerCode.map((e: any) => {
+                return {
+                  dataField: e,
+                  caption: e,
+                };
+              }),
+            };
+          });
+          setColumnAreaState(valueDealer);
+        }
+        return resp.Data?.Lst_Rpt_Sale_BaoCaoTongHopGet ?? [];
+      }
+      return [];
     },
+    enabled: true,
   });
   console.log("🚀 ~ data:", data);
 
   //PageHeader
-  const handleExportExcel = useCallback(() => {}, []);
+  const handleExportExcel = useCallback(async () => {
+    const response = await api.RptSaleBaoCaoTongHopGet_ExportSearchHQ(
+      searchCondition
+    );
+    if (response.isSuccess) {
+      toast.success(t("DownloadSuccessfully"));
+      window.location.href = response.Data as string;
+    } else {
+      toast.error(t("DownloadUnsuccessfully"));
+    }
+  }, [searchCondition]);
   const handleExportExcelDetail = useCallback(async () => {
     const result = await api.RptSaleBaoCaoTongHopGet_ExportSearchHQ({
-      TDateReport: searchCondition?.TDateReport
-        ? format(searchCondition.TDateReport, "yyyy-MM-dd")
-        : "",
-
+      TDateReport: searchCondition.TDateReport ?? "",
       FlagDataWH: searchCondition.FlagDataWH ? 1 : 0,
     });
     if (result.isSuccess && result.Data) {
@@ -91,17 +133,46 @@ export const Rpt_SaleBaoCaoTongHop = () => {
   };
 
   //SearchPanelV2
+
+  const yearDs = useCallback(() => {
+    const yearList = [];
+    // Set the start and end dates
+    const startDate = new Date("2019-01-01");
+    const endDate = new Date();
+
+    // Loop through the months from end to start in descending order
+    for (
+      let date = endDate;
+      date >= startDate;
+      date.setMonth(date.getMonth() - 1)
+    ) {
+      const year = date.getFullYear(); // Get the year
+      const month = String(date.getMonth() + 1).padStart(2, "0"); // Get the month and pad with leading zero if needed
+      const yearMonth = `${year}-${month}`; // Concatenate the year and month
+      yearList.push({ year: yearMonth, text: yearMonth });
+    }
+
+    return yearList; // Return the generated yearList
+  }, [searchCondition, data]);
+
+  useEffect(() => {
+    searchCondition.TDateReport = yearDs()[1].text;
+  }, []);
+
   const searchFields: IItemProps[] = [
     {
-      caption: t("TDateReport"),
       dataField: "TDateReport",
-      editorType: "dxDateBox",
+      visible: true,
+      caption: t("TDateReport"),
+      editorType: "dxSelectBox",
       editorOptions: {
-        displayFormat: "yyyy-MM-dd",
-        openOnFieldClick: true,
+        dataSource: yearDs() ?? [],
+        displayExpr: "text",
+        valueExpr: "year",
         validationMessageMode: "always",
-        showClearButton: true,
+        validationGroup: "form",
       },
+      validationRules: [RequiredField(t("TDateReportIsRequired"))],
     },
     {
       dataField: "FlagDataWH",
@@ -115,37 +186,94 @@ export const Rpt_SaleBaoCaoTongHop = () => {
   ];
 
   const handleSearch = useCallback(async (data: IReportParam) => {
+    setSearchCondition(searchCondition);
+    setSearchItems(searchCondition);
+    setColumnsItems(columnAreaState);
+    setLoading(true);
     reloading();
+    await refetch();
+    setLoading(false);
   }, []);
 
-  //PivotGrid
-  const fields = useMemo<Field[]>(() => {
-    return [
-      {
-        caption: t("CarID"),
-        dataField: "CarID",
-        area: "data",
-        showGrandTotals: true,
-        showTotals: true,
-        summaryType: "count",
-        isMeasure: true, // allows the end-user to place this f
-      },
-      {
-        caption: t("DUTYCOMPLETEDPERCENT_RANGE"),
-        dataField: "DUTYCOMPLETEDPERCENT_RANGE",
-        area: "row",
-      },
-      {
-        caption: t("DUTYDAYS_RANGE"),
-        dataField: "DUTYDAYS_RANGE",
-        area: "row",
-      },
-    ];
-  }, [t]);
-  const dataSource = new PivotGridDataSource({
-    fields: fields,
-    store: data?.Data?.ListDealerCode,
+  // DataGrid
+ 
+
+  const { saveState, loadState } = useSavedState<ColumnOptions[]>({
+    storeKey: "Rpt_SaleBaoCaoTongHopGet-columns",
   });
+
+  useEffect(() => {
+    const savedState = loadState();
+    if (savedState) {
+      const outputColumns = [...columns, ...columnAreaState];
+      setColumnsState(outputColumns);
+    }
+  }, [data]);
+
+  const columns = useReportColumns({
+    data: data || [],
+  });
+
+  const [realColumns, setColumnsState] = useReducer(
+    (state: any, changes: any) => {
+      saveState(changes);
+      return changes;
+    },
+    columns
+  );
+
+  const onHiding = useCallback(() => {
+    chooserVisible.close();
+  }, []);
+
+  const onApply = useCallback(
+    (changes: any) => {
+      setColumnsState(changes);
+      chooserVisible.close();
+    },
+    [setColumnsState]
+  );
+
+  const renderColumnChooser = useCallback(() => {
+    return (
+      <CustomColumnChooser
+        title={t("ToggleColumn")}
+        applyText={t("Apply")}
+        cancelText={t("Cancel")}
+        selectAllText={t("SelectAll")}
+        container={"#gridContainer"}
+        button={"#myColumnChooser"}
+        visible={chooserVisible.visible}
+        columns={columns}
+        onHiding={onHiding}
+        onApply={onApply}
+        actualColumns={realColumns}
+      />
+    );
+  }, [chooserVisible, realColumns, columns]);
+
+  const allToolbarItems: ToolbarItemProps[] = [
+    {
+      location: "after",
+      render: renderColumnChooser,
+    },
+  ];
+
+  
+
+  const onToolbarPreparing = useCallback((e: any) => {
+    e.toolbarOptions.items.push({
+      widget: "dxButton",
+      location: "after",
+      options: {
+        icon: "/images/icons/settings.svg",
+        elementAttr: {
+          id: "myColumnChooser",
+        },
+        onClick: () => chooserVisible.toggle(),
+      },
+    });
+  }, []);
 
   return (
     <AdminContentLayout>
@@ -178,48 +306,46 @@ export const Rpt_SaleBaoCaoTongHop = () => {
               showPane={true}
             />
             <div className="w-full mt-4">
-              {!!data && data?.Data?.ListDealerCode && (
-                <PivotGrid
-                  id="pivotgrid"
-                  dataSource={dataSource}
-                  allowSortingBySummary={true}
-                  allowFiltering={true}
-                  showBorders={true}
-                  disabled={false} // chặn người dùng không cho tương tác với màn hình giao diện
-                  onCellClick={(e: any) => {}} // lấy ra thông in của cột khi mà mình click vào bất kì ô nào
-                  onCellPrepared={(e: any) => {}} // Một chức năng được thực thi sau khi một ô lưới trục được tạo.
-                  onContentReady={(e) => {}} // A function that is executed when the UI component is rendered and each time the component is repainted.
-                  onContextMenuPreparing={(e) => {}} // A function that is executed * before the context menu is rendered. *
-                  onExporting={(e) => {}} // A function that is executed before data is exported. // thực thi sau khi xuất file
-                  onOptionChanged={(e) => {}} // A function that is executed after a UI component property is changed.
-                  showColumnGrandTotals={true} // chỉ định hiển thị tổng tính tổng hay không
-                  showColumnTotals={true} // chỉ định có hiện cột tính tổng của cột hay không
-                  showRowGrandTotals={true} // ngược lại với showColumnGrandTotals
-                  showRowTotals={true} // ngược lại với showColumnTotals
-                  showTotalsPrior={"none"} // 'both' | 'columns' | 'none' | 'rows' => default: 'none'
-                  height={windowSize.height - 150}
-                  // width={200}
-                  allowExpandAll={true}
-                >
-                  <Scrolling mode={"virtual"} />
-                  {/* cho phép ấn và hiển thị cột theo mong muốn */}
-                  <FieldChooser enabled={true} height={400} />
-                  <PivotLoadPanel
-                    enabled={true}
-                    showPane={true}
-                    showIndicator={true}
-                  />
-
-                  {/* cho phép người dùng xuất file */}
-                  <Export enabled={true} />
-                  {/* lưu cấu hình pivot vào trong local storage  */}
-                  <StateStoring
-                    enabled={true}
-                    storageKey={"Rpt_SaleBaoCaoTongHop"}
-                  />
-                  <FieldPanel visible={true} />
-                </PivotGrid>
-              )}
+              <DataGrid
+                id="gridContainer"
+                dataSource={data}
+                showBorders={true}
+                showRowLines={true}
+                showColumnLines={true}
+                remoteOperations={false}
+                columnAutoWidth={true}
+                cacheEnabled={true}
+                noDataText={t("ThereIsNoData")}
+                height={windowSize.height - 150}
+                onToolbarPreparing={onToolbarPreparing}
+              >
+                <ColumnChooser enabled={true} />
+                <ColumnFixing enabled={true} />
+                <HeaderFilter allowSearch={true} visible={true} />
+                <Scrolling
+                  showScrollbar={"always"}
+                  mode={"standard"}
+                  rowRenderingMode={"standard"}
+                />
+                <Paging enabled={false} />
+                <Pager visible={false} />
+                <Toolbar>
+                  {!!allToolbarItems &&
+                    allToolbarItems.map((item, index) => {
+                      return (
+                        <ToolbarItem key={index} location={item.location}>
+                          {item.widget === "dxButton" && (
+                            <Button {...item.options} />
+                          )}
+                          {!!item.render && item.render()}
+                        </ToolbarItem>
+                      );
+                    })}
+                </Toolbar>
+                {realColumns?.map((column: ColumnOptions, index: number) => (
+                  <Column key={index} {...column} />
+                ))}
+              </DataGrid>
             </div>
           </ContentSearchPanelLayout.Slot>
         </ContentSearchPanelLayout>

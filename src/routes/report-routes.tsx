@@ -15,7 +15,9 @@ import {
   Rpt_SaleBaoCaoTongHop,
   Rpt_SalesCtmCare01,
   Rpt_SalesDelivery01,
+  Rpt_SalesPeriod01,
   Rpt_ShareHTCStock03,
+  Rpt_SMCertificate,
   Rpt_StatisticGrpDealer02,
   Rpt_StatisticGrpDealer03,
   Rpt_StatisticGrpDealer03Clone,
@@ -25,7 +27,9 @@ import {
   Rpt_StatisticHTCStock01,
   Rpt_StatisticHTCStockOut01,
   Rpt_StatisticHTCStockOutOnWay,
+  Rpt_StatisticPIInStock,
   Rpt_Statistic_DealerStock_ForSale_Mst,
+  Rpt_TonHoSoNganHang,
   Rpt_UpdSalesManByDelear,
 } from "@/pages";
 
@@ -177,6 +181,33 @@ export const reportRoutes: RouteItem[] = [
     getPageElement: () => <Rpt_ReportCarDocReq />,
   },
   {
+    key: "Rpt_SMCertificate", // Key menu con
+    path: "report/Rpt_SMCertificate", // Address trên browser
+    subMenuTitle: "Báo cáo chứng chỉ", // Title menu con
+    mainMenuKey: "report", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
+
+    getPageElement: () => <Rpt_SMCertificate />,
+  },
+  {
+    key: "Rpt_StatisticPIInStock", // Key menu con
+    path: "report/Rpt_StatisticPIInStock", // Address trên browser
+    subMenuTitle: "Báo cáo tồn PI", // Title menu con
+    mainMenuKey: "report", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
+
+    getPageElement: () => <Rpt_StatisticPIInStock />,
+  },
+  {
+    key: "Rpt_TonHoSoNganHang", // Key menu con
+    path: "report/Rpt_TonHoSoNganHang", // Address trên browser
+    subMenuTitle: "Báo cáo tồn hồ sơ ngân hàng", // Title menu con
+    mainMenuKey: "report", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
+
+    getPageElement: () => <Rpt_TonHoSoNganHang />,
+  },
+  {
     key: "Rpt_DebitReport02New", // Key menu con
     path: "report/Rpt_DebitReport02New", // Address trên browser
     subMenuTitle: "Báo cáo công nợ", // Title menu con
@@ -184,6 +215,16 @@ export const reportRoutes: RouteItem[] = [
     permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
 
     getPageElement: () => <Rpt_DebitReport02New />,
+  },
+
+  {
+    key: "Rpt_SalesPeriod01", // Key menu con
+    path: "report/Rpt_SalesPeriod01", // Address trên browser
+    subMenuTitle: "Báo cáo kinh doanh theo kỳ", // Title menu con
+    mainMenuKey: "report", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
+
+    getPageElement: () => <Rpt_SalesPeriod01 />,
   },
   {
     key: "Rpt_ShareHTCStock03", // Key menu con
