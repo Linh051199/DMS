@@ -53,9 +53,14 @@ export const Rpt_StatisticHTCStockOut01 = () => {
   const api = useClientgateApi();
   const windowSize = useWindowSize();
 
-  const [searchCondition, setSearchCondition] = useState<IReportParam>(
-    {} as IReportParam
-  );
+  const [searchCondition, setSearchCondition] = useState<IReportParam>({
+    OSOApprovedDate2To: new Date(),
+    CDODeliveryOutDateTo: new Date(),
+    OSOApprovedDateTo: new Date(),
+    CDOApprovedDate2To: new Date(),
+    CDOCreatedDateTo: new Date(),
+    HTCInvoiceDateTo: new Date(),
+  } as IReportParam);
 
   const [loadingKey, reloading] = useReducer(() => nanoid(), "0");
 
@@ -230,13 +235,13 @@ export const Rpt_StatisticHTCStockOut01 = () => {
             }
             return true;
           },
-          message: t("DateFromMustBeBeforeDateTo"),
+          message: t("HTCInvoiceDateFromMustBeBeforeHTCInvoiceDateTo"),
         },
       ],
     },
     {
-      dataField: "CDOApprovedDateTo",
-      caption: t("CDOApprovedDateTo"),
+      dataField: "HTCInvoiceDateTo",
+      caption: t("HTCInvoiceDateTo"),
       editorType: "dxDateBox",
       visible: true,
       editorOptions: {
@@ -250,9 +255,9 @@ export const Rpt_StatisticHTCStockOut01 = () => {
           type: "custom",
           ignoreEmptyValue: true,
           validationCallback: ({ value }: any) => {
-            return !isBefore(value, searchCondition.OSOApprovedDateFrom);
+            return !isBefore(value, searchCondition.HTCInvoiceDateFrom);
           },
-          message: t("DateToMustBeAfterDateFrom"),
+          message: t("HTCInvoiceDateToMustBeAfterHTCInvoiceDateFrom"),
         },
       ],
     },
@@ -281,7 +286,7 @@ export const Rpt_StatisticHTCStockOut01 = () => {
             }
             return true;
           },
-          message: t("DateFromMustBeBeforeDateTo"),
+          message: t("CDODeliveryOutDateFromMustBeBeforeCDODeliveryOutDateTo"),
         },
       ],
     },
@@ -303,7 +308,7 @@ export const Rpt_StatisticHTCStockOut01 = () => {
           validationCallback: ({ value }: any) => {
             return !isBefore(value, searchCondition.CDODeliveryOutDateFrom);
           },
-          message: t("DateToMustBeAfterDateFrom"),
+          message: t("CDODeliveryOutDateToMustBeAfterCDODeliveryOutDateFrom"),
         },
       ],
     },
@@ -345,7 +350,7 @@ export const Rpt_StatisticHTCStockOut01 = () => {
             }
             return true;
           },
-          message: t("DateFromMustBeBeforeDateTo"),
+          message: t("CDOApprovedDate2FromMustBeBeforeCDOApprovedDate2To"),
         },
       ],
     },
@@ -367,7 +372,7 @@ export const Rpt_StatisticHTCStockOut01 = () => {
           validationCallback: ({ value }: any) => {
             return !isBefore(value, searchCondition.CDOApprovedDate2From);
           },
-          message: t("DateToMustBeAfterDateFrom"),
+          message: t("CDOApprovedDate2ToMustBeAfterCDOApprovedDate2From"),
         },
       ],
     },
@@ -396,7 +401,7 @@ export const Rpt_StatisticHTCStockOut01 = () => {
             }
             return true;
           },
-          message: t("DateFromMustBeBeforeDateTo"),
+          message: t("CDOCreatedDateFromMustBeBeforeCDOCreatedDateTo"),
         },
       ],
     },
@@ -418,7 +423,7 @@ export const Rpt_StatisticHTCStockOut01 = () => {
           validationCallback: ({ value }: any) => {
             return !isBefore(value, searchCondition.CDOCreatedDateFrom);
           },
-          message: t("DateToMustBeAfterDateFrom"),
+          message: t("CDOCreatedDateToMustBeAfterCDOCreatedDateFrom"),
         },
       ],
     },

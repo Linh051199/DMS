@@ -10,19 +10,16 @@ import {
 import { SearchPanelV2 } from "@/packages/ui/search-panel";
 import { ColumnOptions } from "@/types";
 import { useQuery } from "@tanstack/react-query";
-import { format } from "date-fns";
+import { format, isAfter, isBefore } from "date-fns";
 import { DataGrid, LoadPanel, PivotGrid } from "devextreme-react";
 import { HeaderFilter, Scrolling, Sorting } from "devextreme-react/data-grid";
 import { IItemProps } from "devextreme-react/form";
-
-import PivotGridDataSource, {
-  Field,
-} from "devextreme/ui/pivot_grid/data_source";
 import { useSetAtom } from "jotai";
 import { nanoid } from "nanoid";
 import { useCallback, useMemo, useReducer, useState } from "react";
 import { toast } from "react-toastify";
 import { PageHeader } from "../components/page-header";
+import { RequiredField } from "@/packages/common/Validation_Rules";
 interface IReportParam {
   GrtNo: string;
   DateOpenFrom: Date;
@@ -43,11 +40,10 @@ export const Rpt_GuaranteeDebit01 = () => {
   const { t } = useI18n("Rpt_GuaranteeDebit01");
   const setSearchPanelVisibility = useSetAtom(searchPanelVisibleAtom);
   const api = useClientgateApi();
-  const windowSize = useWindowSize();
 
-  const [searchCondition, setSearchCondition] = useState<IReportParam>(
-    {} as IReportParam
-  );
+  const [searchCondition, setSearchCondition] = useState<IReportParam>({
+    DateOpenTo: new Date(),
+  } as IReportParam);
 
   const [loadingKey, reloading] = useReducer(() => nanoid(), "0");
 
@@ -117,18 +113,54 @@ export const Rpt_GuaranteeDebit01 = () => {
   //SearchPanelV2
   const searchFields: IItemProps[] = [
     {
-      caption: "DateOpenFrom",
+      caption: t("DateOpenFrom"),
       dataField: "DateOpenFrom",
-      visible: true,
       editorType: "dxDateBox",
-      editorOptions: dateBoxOptions,
+      visible: true,
+      editorOptions: {
+        displayFormat: "yyyy-MM-dd",
+        openOnFieldClick: true,
+        validationMessageMode: "always",
+        showClearButton: true,
+	max: new Date(),
+      },
+      validationRules: [
+        RequiredField(t("DateOpenFromIsRequired")),
+        {
+          type: "custom",
+          ignoreEmptyValue: true,
+          validationCallback: ({ value }: any) => {
+            if (searchCondition.DateOpenTo) {
+              return !isAfter(value, searchCondition.DateOpenTo);
+            }
+            return true;
+          },
+          message: t("DateOpenFromMustBeBeforeDateOpenTo"),
+        },
+      ],
     },
     {
-      dataField: "DateOpenTo",
-      visible: true,
       caption: t("DateOpenTo"),
+      dataField: "DateOpenTo",
       editorType: "dxDateBox",
-      editorOptions: dateBoxOptions,
+      visible: true,
+      editorOptions: {
+        displayFormat: "yyyy-MM-dd",
+        openOnFieldClick: true,
+        validationMessageMode: "always",
+        showClearButton: true,
+      },
+      validationRules: [
+        RequiredField(t("DateToIsRequired")),
+        {
+          type: "custom",
+          ignoreEmptyValue: true,
+          validationCallback: ({ value }: any) => {
+            return !isBefore(value, searchCondition.DateOpenFrom);
+          },
+          message: t("DateOpenToMustBeAfterDateOpenFrom"),
+        },
+      ],
     },
     {
       dataField: "StartDateTo",

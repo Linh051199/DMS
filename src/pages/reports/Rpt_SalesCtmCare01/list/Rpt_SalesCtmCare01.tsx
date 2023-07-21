@@ -28,7 +28,6 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { RequiredField } from "@packages/common/Validation_Rules";
 import { LoadPanel } from "devextreme-react";
 import { nanoid } from "nanoid";
-import { RptSalesCtmCare01Param } from "@/packages/api/clientgate/Rpt_SalesCtmCare01Api";
 import { PageHeader } from "../components/page-header";
 
 interface ReportParam {
@@ -44,9 +43,11 @@ interface ReportParam {
 export const Rpt_SalesCtmCare01 = () => {
   const { t } = useI18n("RptSalesCtmCare01");
 
-  const [searchCondition, setSearchCondition] = useState<ReportParam>(
-    {} as ReportParam
-  );
+  const [searchCondition, setSearchCondition] = useState<ReportParam>({
+    DeliveryDateTo: new Date(),
+    CreateDealDateTo: new Date(),
+    CtmCareUpdDateTo: new Date(),
+  } as ReportParam);
   const windowSize = useWindowSize();
   const [isGetingData, setGettingData] = useState(false);
   const [loadingKey, reloading] = useReducer(() => nanoid(), "0");
@@ -83,7 +84,7 @@ export const Rpt_SalesCtmCare01 = () => {
           ? format(searchCondition?.CtmCareUpdDateTo, "yyyy-MM-dd")
           : "",
         FlagDataWH: searchCondition?.FlagDataWH ? 1 : 0,
-      } as RptSalesCtmCare01Param);
+      } as any);
       if (resp.isSuccess) {
         return resp.Data?.Lst_RptSales_CtmCare_01 ?? [];
       }
@@ -223,6 +224,7 @@ export const Rpt_SalesCtmCare01 = () => {
         openOnFieldClick: true,
         validationMessageMode: "always",
         showClearButton: true,
+        max: new Date(),
       },
       validationRules: [
         RequiredField(t("DateFromIsRequired")),
@@ -272,6 +274,7 @@ export const Rpt_SalesCtmCare01 = () => {
         openOnFieldClick: true,
         validationMessageMode: "always",
         showClearButton: true,
+        max: new Date(),
       },
       validationRules: [
         // RequiredField(t("DateFromIsRequired")),
@@ -321,6 +324,7 @@ export const Rpt_SalesCtmCare01 = () => {
         openOnFieldClick: true,
         validationMessageMode: "always",
         showClearButton: true,
+        max: new Date(),
       },
       validationRules: [
         // RequiredField(t("DateFromIsRequired")),
@@ -389,7 +393,7 @@ export const Rpt_SalesCtmCare01 = () => {
             <div className={"w-[300px] h-full"}>
               <SearchPanelV2
                 conditionFields={searchFields}
-                data={searchCondition}     
+                data={searchCondition}
                 onSearch={handleSearch}
                 storeKey={"sales-ctm-care-01-search"}
               />

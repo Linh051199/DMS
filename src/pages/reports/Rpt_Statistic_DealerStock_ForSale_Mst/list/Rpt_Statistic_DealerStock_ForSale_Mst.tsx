@@ -43,9 +43,9 @@ export const Rpt_Statistic_DealerStock_ForSale_Mst = () => {
   const api = useClientgateApi();
   const windowSize = useWindowSize();
 
-  const [searchCondition, setSearchCondition] = useState<IReportParam>(
-    {} as IReportParam
-  );
+  const [searchCondition, setSearchCondition] = useState<IReportParam>({
+    DateTo: new Date(),
+  } as IReportParam);
 
   const [loadingKey, reloading] = useReducer(() => nanoid(), "0");
 
@@ -102,6 +102,7 @@ export const Rpt_Statistic_DealerStock_ForSale_Mst = () => {
         openOnFieldClick: true,
         validationMessageMode: "always",
         showClearButton: true,
+        max: new Date(),
       },
       validationRules: [
         RequiredField(t("DateFromIsRequired")),

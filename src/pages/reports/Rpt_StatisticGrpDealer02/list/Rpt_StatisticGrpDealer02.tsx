@@ -37,9 +37,9 @@ export const Rpt_StatisticGrpDealer02 = () => {
   const api = useClientgateApi();
   const windowSize = useWindowSize();
 
-  const [searchCondition, setSearchCondition] = useState<IReportParam>(
-    {} as IReportParam
-  );
+  const [searchCondition, setSearchCondition] = useState<IReportParam>({
+    Date_To: new Date(),
+  } as IReportParam);
 
   const [loadingKey, reloading] = useReducer(() => nanoid(), "0");
 
@@ -104,6 +104,7 @@ export const Rpt_StatisticGrpDealer02 = () => {
         openOnFieldClick: true,
         validationMessageMode: "always",
         showClearButton: true,
+        max: new Date(),
       },
       validationRules: [
         RequiredField(t("DateFromIsRequired")),

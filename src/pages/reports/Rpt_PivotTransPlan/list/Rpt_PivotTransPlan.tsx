@@ -50,9 +50,10 @@ export const Rpt_PivotTransPlan = () => {
   const api = useClientgateApi();
   const windowSize = useWindowSize();
 
-  const [searchCondition, setSearchCondition] = useState<IReportParam>(
-    {} as IReportParam
-  );
+  const [searchCondition, setSearchCondition] = useState<IReportParam>({
+    SDMDlvStartDateTo: new Date(),
+    ExpectedDateTo: new Date(),
+  } as IReportParam);
 
   const [loadingKey, reloading] = useReducer(() => nanoid(), "0");
 
@@ -144,7 +145,7 @@ export const Rpt_PivotTransPlan = () => {
             }
             return true;
           },
-          message: t("SDMDlvStartDateFromMustBeBeforeSDMDlvStartDateFrom"),
+          message: t("SDMDlvStartDateFromMustBeBeforeSDMDlvStartDateTo"),
         },
       ],
     },
@@ -168,6 +169,57 @@ export const Rpt_PivotTransPlan = () => {
             return !isBefore(value, searchCondition.SDMDlvStartDateFrom);
           },
           message: t("SDMDlvStartDateToMustBeAfterExpectedDateFrom"),
+        },
+      ],
+    },
+
+    {
+      dataField: "ExpectedDateFrom",
+      caption: t("ExpectedDateFrom"),
+      editorType: "dxDateBox",
+      visible: true,
+      editorOptions: {
+        displayFormat: "yyyy-MM-dd",
+        openOnFieldClick: true,
+        validationMessageMode: "always",
+        showClearButton: true,
+        max: new Date(),
+      },
+      validationRules: [
+        RequiredField(t("ExpectedDateFromIsRequired")),
+        {
+          type: "custom",
+          ignoreEmptyValue: true,
+          validationCallback: ({ value }: any) => {
+            if (searchCondition.ExpectedDateTo) {
+              return !isAfter(value, searchCondition.ExpectedDateTo);
+            }
+            return true;
+          },
+          message: t("ExpectedDateFromMustBeBeforeSDMDlvStartDateFrom"),
+        },
+      ],
+    },
+    {
+      dataField: "ExpectedDateTo",
+      caption: t("ExpectedDateTo"),
+      editorType: "dxDateBox",
+      visible: true,
+      editorOptions: {
+        displayFormat: "yyyy-MM-dd",
+        openOnFieldClick: true,
+        validationMessageMode: "always",
+        showClearButton: true,
+      },
+      validationRules: [
+        RequiredField(t("ExpectedDateToIsRequired")),
+        {
+          type: "custom",
+          ignoreEmptyValue: true,
+          validationCallback: ({ value }: any) => {
+            return !isBefore(value, searchCondition.ExpectedDateFrom);
+          },
+          message: t("ExpectedDateToMustBeAfterExpectedDateFrom"),
         },
       ],
     },

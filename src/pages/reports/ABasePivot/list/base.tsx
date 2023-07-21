@@ -64,10 +64,9 @@ export const BasePivot = () => {
   const windowSize = useWindowSize();
 
   const [isGetingData, setGettingData] = useState(false);
-  const [searchCondition, setSearchCondition] =
-    useState<IReportParam>(
-      {} as IReportParam
-    );
+  const [searchCondition, setSearchCondition] = useState<IReportParam>(
+    {} as IReportParam
+  );
 
   const [loadingKey, reloading] = useReducer(() => nanoid(), "0");
 
@@ -313,7 +312,6 @@ export const BasePivot = () => {
   //   }
   // }, []);
 
-
   return (
     <AdminContentLayout>
       <AdminContentLayout.Slot name={"Header"}>
@@ -415,8 +413,8 @@ export const BasePivot = () => {
 //   mode={"standard"}
 //   rowRenderingMode={"standard"}
 // />
-// <Paging enabled={false} />
-// <Pager visible={false} />
+// <Paging enabled={true} />
+// <Pager visible={true} />
 // <Toolbar>
 //   {!!allToolbarItems &&
 //     allToolbarItems.map((item, index) => {

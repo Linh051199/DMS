@@ -41,6 +41,9 @@ import {
   Rpt_NXTQuyenDoiNo,
   Rpt_RevenueHTCInvoice,
   RptSPLSPSupportRetail,
+  Rpt_MapVIN,
+  Rpt_Statistic_DMS40CarDeliveryOrder,
+  Rpt_PmtPaymentDtlByDealer,
 } from "@/pages";
 
 import { RouteItem } from "@/types";
@@ -267,6 +270,7 @@ export const reportRoutes: RouteItem[] = [
 
     getPageElement: () => <RptSPLSPSupportRetail />,
   },
+
   {
     key: "Rpt_SalesPeriod01", // Key menu con
     path: "report/Rpt_SalesPeriod01", // Address trên browser
@@ -430,5 +434,32 @@ export const reportRoutes: RouteItem[] = [
     permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
 
     getPageElement: () => <Rpt_DebitReport02New />,
+  },
+  {
+    key: "Rpt_MapVIN", // Key menu con
+    path: "report/Rpt_MapVIN", // Address trên browser
+    subMenuTitle: "(R2)Rpt_MapVIN", // Title menu con
+    mainMenuKey: "report", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
+
+    getPageElement: () => <Rpt_MapVIN />,
+  },
+  {
+    key: "Rpt_Statistic_DMS40CarDeliveryOrder", // Key menu con
+    path: "report/Rpt_Statistic_DMS40CarDeliveryOrder", // Address trên browser
+    subMenuTitle: "(R2)Rpt_Statistic_DMS40CarDeliveryOrder", // Title menu con
+    mainMenuKey: "report", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
+
+    getPageElement: () => <Rpt_Statistic_DMS40CarDeliveryOrder />,
+  },
+  {
+    key: "Rpt_PmtPaymentDtlByDealer", // Key menu con
+    path: "report/Rpt_PmtPaymentDtlByDealer", // Address trên browser
+    subMenuTitle: "(R2)Rpt_PmtPaymentDtlByDealer", // Title menu con
+    mainMenuKey: "report", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
+
+    getPageElement: () => <Rpt_PmtPaymentDtlByDealer />,
   },
 ];

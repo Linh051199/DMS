@@ -43,9 +43,9 @@ export const Rpt_PivotDlrCtmVisit = () => {
   const windowSize = useWindowSize();
   const setSearchPanelVisibility = useSetAtom(searchPanelVisibleAtom);
 
-  const [searchCondition, setSearchCondition] = useState<IReportParam>(
-    {} as IReportParam
-  );
+  const [searchCondition, setSearchCondition] = useState<IReportParam>({
+    VisitDateTo: new Date(),
+  } as IReportParam);
   const [loadingKey, reloading] = useReducer(() => nanoid(), "0");
 
   // Call API
@@ -160,6 +160,7 @@ export const Rpt_PivotDlrCtmVisit = () => {
         openOnFieldClick: true,
         validationMessage: "always",
         showClearButton: true,
+        max: new Date(),
       },
       validationRules: [
         RequiredField(t("DateFromIsRequired")),
