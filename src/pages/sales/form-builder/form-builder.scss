@@ -1,0 +1,37 @@
+#form-builder {
+  background: #F5F5F5;
+  .dx-switch-on-value {
+    &.dx-state-readonly {
+      .dx-switch-container {
+        &:before {
+          background: #00703c80
+        }
+      }
+      .dx-switch-handle {
+        &:before {
+          background: #00703c80
+
+        }
+      }
+    }
+  }
+  .dx-checkbox-checked {
+    &.dx-state-readonly {
+      .dx-checkbox-container {
+        .dx-checkbox-icon {
+          background: #00703c80;
+          opacity: 0.6;
+        }
+      }
+    }
+    
+  }
+  .dx-accordion-item {
+    background: #FFFFFF;
+    .dx-accordion-item-title {
+      background: #FFFFFF;
+      padding: 8px;
+      
+    }
+  }
+}

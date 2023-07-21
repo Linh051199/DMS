@@ -1,10 +1,5 @@
 import { useI18n } from "@/i18n/useI18n";
 import { useClientgateApi } from "@/packages/api";
-import {
-  EReportType,
-  Rpt_CarDeliveryOutButNotDutyCompleteParam,
-} from "@/packages/api/clientgate/Rpt_CarDeliveryOutButNotDutyCompleteApi";
-import { requiredType } from "@/packages/common/Validation_Rules";
 import { useWindowSize } from "@/packages/hooks/useWindowSize";
 import { AdminContentLayout } from "@/packages/layouts/admin-content-layout";
 import {
@@ -12,22 +7,23 @@ import {
   searchPanelVisibleAtom,
 } from "@/packages/layouts/content-searchpanel-layout";
 import { SearchPanelV2 } from "@/packages/ui/search-panel";
-import { ColumnOptions } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { format, isAfter, isBefore, set } from "date-fns";
 import { DataGrid, LoadPanel, PivotGrid, ScrollView } from "devextreme-react";
-import { HeaderFilter, Scrolling, Sorting } from "devextreme-react/data-grid";
 import { IItemProps } from "devextreme-react/form";
-
 import { useSetAtom } from "jotai";
 import { nanoid } from "nanoid";
 import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import { toast } from "react-toastify";
 import { PageHeader } from "../components/page-header";
+import { useRpt_DlrContractInstockParam } from "@/packages/api/clientgate/Rpt_DlrContractInstockApi";
+import { HeaderFilter, Scrolling, Sorting } from "devextreme-react/data-grid";
+import { Rpt_NhapXuatTonTrongKyParam } from "@/packages/api/clientgate/Rpt_NhapXuatTonTrongKyApi";
+import { ColumnOptions } from "@/types";
+import { RequiredField } from "@/packages/common/Validation_Rules";
 interface IReportParam {
-  ReportType: EReportType;
-  DateFrom: Date;
-  DateTo: Date;
+  TDate_From: Date;
+  TDate_To: Date;
   FlagDataWH: 1 | 0;
 }
 
@@ -39,18 +35,16 @@ const dateBoxOptions = {
 };
 
 const now = new Date();
-const firstDayOfMonth = set(now, { date: 1 });
 
-export const Rpt_CarDeliveryOutButNotDutyComplete = () => {
-  const { t } = useI18n("Rpt_CarDeliveryOutButNotDutyComplete");
+export const Rpt_NhapXuatTonTrongKy = () => {
+  const { t } = useI18n("Rpt_NhapXuatTonTrongKy");
   const setSearchPanelVisibility = useSetAtom(searchPanelVisibleAtom);
   const api = useClientgateApi();
   const windowSize = useWindowSize();
 
+  const [isGetingData, setGettingData] = useState(false);
   const [searchCondition, setSearchCondition] = useState<IReportParam>({
-    // ReportType: "Dealer",
-    DateFrom: firstDayOfMonth,
-    DateTo: firstDayOfMonth,
+    TDate_To: now,
     FlagDataWH: 0,
   } as IReportParam);
 
@@ -59,27 +53,19 @@ export const Rpt_CarDeliveryOutButNotDutyComplete = () => {
   // Call API
   const { data, isLoading } = useQuery({
     queryKey: [
-      "Rpt_CarDeliveryOutButNotDutyComplete",
-      "Rpt_CarDeliveryOutButNotDutyComplete_SearchHQ",
+      "report",
+      "Rpt_DlrContractInstock_SearchHQ",
       loadingKey,
       JSON.stringify(searchCondition),
     ],
     queryFn: async () => {
       if (loadingKey !== "0") {
-        const resp = await api.Rpt_CarDeliveryOutButNotDutyComplete_SearchHQ({
-          ReportType: searchCondition.ReportType ?? "",
-          DateFrom: searchCondition?.DateFrom
-            ? format(searchCondition.DateFrom, "yyyy-MM-dd")
-            : "",
-          DateTo: searchCondition?.DateTo
-            ? format(searchCondition.DateTo, "yyyy-MM-dd")
-            : "",
+        const resp = await api.Rpt_NhapXuatTonTrongKy_SearchHQ({
+          TDate_From: searchCondition.TDate_From ?? "",
+          TDate_To: searchCondition.TDate_To ?? "",
           FlagDataWH: searchCondition.FlagDataWH ? 1 : 0,
-        } as Rpt_CarDeliveryOutButNotDutyCompleteParam);
-        return (
-          resp?.Data?.Lst_RptCarDeliveryOut_ButNotDutyComplete_ByDealer ??
-          resp?.Data?.Lst_RptCarDeliveryOut_ButNotDutyComplete_BySpec
-        );
+        } as Rpt_NhapXuatTonTrongKyParam);
+        return resp;
       } else {
         return null;
       }
@@ -88,19 +74,24 @@ export const Rpt_CarDeliveryOutButNotDutyComplete = () => {
   console.log("🚀 ~ data:", data);
 
   //PageHeader
-  const handleExportExcel = useCallback(() => {}, []);
+  const handleExportExcel = useCallback(async () => {
+    const response = await api.Rpt_NhapXuatTonTrongKy_ExportSearchHQ(
+      searchCondition
+    );
+    if (response.isSuccess) {
+      toast.success(t("DownloadSuccessfully"));
+      window.location.href = response.Data as string;
+    } else {
+      toast.error(t("DownloadUnsuccessfully"));
+    }
+  }, [searchCondition]);
+
   const handleExportExcelDetail = useCallback(async () => {
-    const result =
-      await api.Rpt_CarDeliveryOutButNotDutyComplete_ExportDetailSearchHQ({
-        ReportType: searchCondition.ReportType ?? "",
-        DateFrom: searchCondition?.DateFrom
-          ? format(searchCondition.DateFrom, "yyyy-MM-dd")
-          : "",
-        DateTo: searchCondition?.DateTo
-          ? format(searchCondition.DateTo, "yyyy-MM-dd")
-          : "",
-        FlagDataWH: searchCondition.FlagDataWH ? 1 : 0,
-      });
+    const result = await api.Rpt_NhapXuatTonTrongKy_ExportDetailSearchHQ({
+      TDate_From: searchCondition.TDate_From ?? "",
+      TDate_To: searchCondition.TDate_To ?? "",
+      FlagDataWH: searchCondition.FlagDataWH ? 1 : 0,
+    });
     if (result.isSuccess && result.Data) {
       toast.success(t("DownloadSuccessfully"));
       window.location.href = result.Data;
@@ -114,41 +105,19 @@ export const Rpt_CarDeliveryOutButNotDutyComplete = () => {
   //SearchPanelV2
   const searchFields: IItemProps[] = [
     {
-      caption: t("ReportType"),
-      dataField: t("ReportType"),
-      editorType: "dxSelectBox",
-      validationRules: [requiredType],
-      editorOptions: {
-        displayExpr: "text",
-        valueExpr: "value",
-        items: [
-          {
-            value: "Spec",
-            text: "Spec",
-          },
-          {
-            value: "Dealer",
-            text: "Dealer",
-          },
-        ],
-      },
-    },
-    {
-      caption: t("DateFrom"),
-      dataField: "DateFrom",
+      caption: t("TDate_From"),
+      dataField: "TDate_From",
       editorType: "dxDateBox",
-      editorOptions: {
-        ...dateBoxOptions,
-        max: new Date(),
-      },
+      visible: true,
+      editorOptions: dateBoxOptions,
       validationRules: [
+        RequiredField(t("TDate_FromIsRequired")),
         {
           type: "custom",
           ignoreEmptyValue: true,
-          validationCallback: (e: any) => {
-            // console.log("==event", e);
-            if (searchCondition.DateTo) {
-              return !isAfter(e.value, searchCondition.DateTo);
+          validationCallback: ({ value }: any) => {
+            if (searchCondition.TDate_To) {
+              return !isAfter(value, searchCondition.TDate_To);
             }
             return true;
           },
@@ -156,18 +125,19 @@ export const Rpt_CarDeliveryOutButNotDutyComplete = () => {
         },
       ],
     },
-
     {
-      caption: t("DateTo"),
-      dataField: "DateTo",
+      caption: t("TDate_To"),
+      dataField: "TDate_To",
       editorType: "dxDateBox",
+      visible: true,
       editorOptions: dateBoxOptions,
       validationRules: [
+        RequiredField(t("TDate_ToIsRequired")),
         {
           type: "custom",
           ignoreEmptyValue: true,
           validationCallback: ({ value }: any) => {
-            return !isBefore(value, searchCondition.DateFrom);
+            return !isBefore(value, searchCondition.TDate_To);
           },
           message: t("DateToMustBeAfterDateFrom"),
         },
@@ -185,89 +155,121 @@ export const Rpt_CarDeliveryOutButNotDutyComplete = () => {
     },
   ];
 
-  const handleSearch = useCallback(async (data: IReportParam) => {
+  const handleSearch = useCallback(async () => {
+    setSearchCondition(searchCondition);
+    setGettingData(true);
     reloading();
+    // await refetch()
+    setGettingData(false);
   }, []);
 
   useEffect(() => {
     if (data) {
-      data.map((item: any, index: number) => (item.Id = index + 1));
+      data.Data?.Lst_Rpt_NhapXuatTonTrongKy.map((item: any, index: number) => {
+        item.ID = index + 1;
+      });
     }
   }, [data]);
 
-  const columns: ColumnOptions[] = useMemo(
-    () => [
+  const columns: ColumnOptions[] = useMemo(() => {
+    return [
       {
         caption: t("STT"),
-        dataField: "Id",
+        dataField: "ID",
+        visible: true,
+        alignment: "center",
       },
       {
-        caption: t(""),
+        caption: t("MortageBankCode"),
+        dataField: "MortageBankCode",
+        visible: true,
+      },
+      {
+        caption: t("Đầu kỳ"),
+        visible: true,
         alignment: "center",
         columns: [
           {
-            dataField:
-              searchCondition.ReportType === "Dealer"
-                ? "DEALERCODE"
-                : "SPECCODE",
-            caption:
-              searchCondition.ReportType === "Dealer"
-                ? t("DEALERCODE")
-                : t("SPECCODE"),
+            caption: t("SoLuongDauKy"),
+            dataField: "SoLuongDauKy",
+            customizeText: (e: any) => {
+              return e.value.toLocaleString();
+            },
           },
           {
-            dataField:
-              searchCondition.ReportType === "Dealer"
-                ? "DEALERNAME"
-                : "SPECDESCRIPTION",
-            caption:
-              searchCondition.ReportType === "Dealer"
-                ? t("DEALERNAME")
-                : t("SPECDESCRIPTION"),
+            caption: t("GiaTriDauKy"),
+            dataField: "GiaTriDauKy",
+            customizeText: (e: any) => {
+              return e.value.toLocaleString();
+            },
           },
         ],
       },
       {
-        caption: t(
-          "Ngày tồn của xe đã giao chưa hoàn thành nghĩa vụ giao xe tính từ ngày xuất kho"
-        ),
+        caption: t("Tăng"),
+        visible: true,
         alignment: "center",
         columns: [
           {
-            dataField: "SUM1_15",
-            caption: t("SUM1_15"),
+            caption: t("SoLuongTang"),
+            dataField: "SoLuongTang",
+            customizeText: (e: any) => {
+              return e.value.toLocaleString();
+            },
           },
           {
-            dataField: "SUM16_30",
-            caption: t("SUM16_30"),
-          },
-
-          {
-            dataField: "SUM31_60",
-            caption: t("SUM31_60"),
-          },
-          {
-            dataField: "SUM61_180",
-            caption: t("SUM61_180"),
-          },
-
-          {
-            dataField: "SUM181_360",
-            caption: t("SUM181_360"),
-          },
-          {
-            dataField: "SUM361",
-            caption: t("> SUM360"),
-          },
-          {
-            caption: t("TOTALCAR"),
-            dataField: "TOTALCAR",
+            caption: t("GiaTriTang"),
+            dataField: "GiaTriTang",
+            customizeText: (e: any) => {
+              return e.value.toLocaleString();
+            },
           },
         ],
       },
-    ],
-    [isLoading]
-  );
+      {
+        caption: t("Giảm"),
+        visible: true,
+        alignment: "center",
+        columns: [
+          {
+            caption: t("SoLuongGiam"),
+            dataField: "SoLuongGiam",
+            customizeText: (e: any) => {
+              return e.value.toLocaleString();
+            },
+          },
+          {
+            caption: t("GiaTriGiam"),
+            dataField: "GiaTriGiam",
+            customizeText: (e: any) => {
+              return e.value.toLocaleString();
+            },
+          },
+        ],
+      },
+      {
+        caption: t("Cuối kỳ"),
+        visible: true,
+        alignment: "center",
+        columns: [
+          {
+            caption: t("SoLuongCuoiKy"),
+            dataField: "SoLuongCuoiKy",
+            customizeText: (e: any) => {
+              return e.value.toLocaleString();
+            },
+          },
+          {
+            caption: t("GiaTriCuoiKy"),
+            dataField: "GiaTriCuoiKy",
+            customizeText: (e: any) => {
+              return e.value.toLocaleString();
+            },
+          },
+        ],
+      },
+    ];
+  }, [isLoading]);
 
   return (
     <AdminContentLayout>
@@ -281,12 +283,12 @@ export const Rpt_CarDeliveryOutButNotDutyComplete = () => {
       <AdminContentLayout.Slot name={"Content"}>
         <ContentSearchPanelLayout>
           <ContentSearchPanelLayout.Slot name={"SearchPanel"}>
-            <div className="w-[200px]">
+            <div className="w-[300px]">
               <SearchPanelV2
                 conditionFields={searchFields}
                 data={searchCondition}
                 onSearch={handleSearch}
-                storeKey={"Rpt_CarDeliveryOutButNotDutyComplete-search"}
+                storeKey={"Rpt_NhapXuatTonTrongKy-search"}
               />
             </div>
           </ContentSearchPanelLayout.Slot>
@@ -303,16 +305,17 @@ export const Rpt_CarDeliveryOutButNotDutyComplete = () => {
               <ScrollView height={windowSize.height - 120}>
                 <DataGrid
                   id={"gridContainer"}
-                  dataSource={data ?? []}
+                  dataSource={data?.Data?.Lst_Rpt_NhapXuatTonTrongKy ?? []}
+                  columns={columns}
                   showBorders={true}
                   showRowLines={true}
                   showColumnLines={true}
-                  columns={columns}
                   columnAutoWidth={true}
                   allowColumnResizing={false}
                   allowColumnReordering={false}
                   className={"mx-auto my-5"}
                   width={"100%"}
+                  columnResizingMode="widget"
                 >
                   <HeaderFilter allowSearch={true} visible={true} />
                   <Scrolling showScrollbar={"always"} />

@@ -1,7 +1,5 @@
 import { useI18n } from "@/i18n/useI18n";
 import { useClientgateApi } from "@/packages/api";
-import { Rpt_StatisticPIInStockParam } from "@/packages/api/clientgate/Rpt_StatisticPIInStockApi";
-import { convertDate } from "@/packages/common";
 import { useWindowSize } from "@/packages/hooks/useWindowSize";
 import { AdminContentLayout } from "@/packages/layouts/admin-content-layout";
 import {
@@ -9,21 +7,23 @@ import {
   searchPanelVisibleAtom,
 } from "@/packages/layouts/content-searchpanel-layout";
 import { SearchPanelV2 } from "@/packages/ui/search-panel";
-import { ColumnOptions } from "@/types";
 import { useQuery } from "@tanstack/react-query";
-import { format, getYear, set } from "date-fns";
+import { format, set } from "date-fns";
 import { DataGrid, LoadPanel, PivotGrid, ScrollView } from "devextreme-react";
-import { HeaderFilter, Scrolling, Sorting } from "devextreme-react/data-grid";
 import { IItemProps } from "devextreme-react/form";
 import { useSetAtom } from "jotai";
 import { nanoid } from "nanoid";
 import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import { toast } from "react-toastify";
 import { PageHeader } from "../components/page-header";
+import { useRpt_DlrContractInstockParam } from "@/packages/api/clientgate/Rpt_DlrContractInstockApi";
+import { HeaderFilter, Scrolling, Sorting } from "devextreme-react/data-grid";
+import { ColumnOptions } from "@/types";
+import { Rpt_XuatHoSoParam } from "@/packages/api/clientgate/Rpt_XuatHoSoApi";
+import { RequiredField } from "@/packages/common/Validation_Rules";
 interface IReportParam {
-  ProductMonthFrom: Date | string;
-  ProductMonthTo: Date | string;
-  DateTo: Date | string;
+  TDate_From: Date;
+  TDate_To: Date;
   FlagDataWH: 1 | 0;
 }
 
@@ -34,16 +34,19 @@ const dateBoxOptions = {
   showClearButton: true,
 };
 
-export const Rpt_StatisticPIInStock = () => {
-  const { t } = useI18n("Rpt_StatisticPIInStock");
+const now = new Date();
+const firstDayOfMonth = set(now, { date: 1 });
+
+export const Rpt_XuatHoSo = () => {
+  const { t } = useI18n("Rpt_XuatHoSo");
   const setSearchPanelVisibility = useSetAtom(searchPanelVisibleAtom);
   const api = useClientgateApi();
   const windowSize = useWindowSize();
 
+  const [isGetingData, setGettingData] = useState(false);
   const [searchCondition, setSearchCondition] = useState<IReportParam>({
-    ProductMonthFrom: "",
-    ProductMonthTo: "",
-    DateTo: "",
+    TDate_From: firstDayOfMonth,
+    TDate_To: firstDayOfMonth,
     FlagDataWH: 0,
   } as IReportParam);
 
@@ -52,37 +55,42 @@ export const Rpt_StatisticPIInStock = () => {
   // Call API
   const { data, isLoading } = useQuery({
     queryKey: [
-      "Rpt_StatisticPIInStock",
-      "Rpt_StatisticPIInStock_SearchHQ",
+      "report",
+      "Rpt_DlrContractInstock_SearchHQ",
       loadingKey,
       JSON.stringify(searchCondition),
     ],
     queryFn: async () => {
       if (loadingKey !== "0") {
-        const resp = await api.Rpt_StatisticPIInStock_SearchHQ({
-          ProductMonthFrom: searchCondition.ProductMonthFrom ?? "",
-          ProductMonthTo: searchCondition.ProductMonthTo ?? "",
-          DateTo: searchCondition.DateTo ?? "",
+        const resp = await api.Rpt_XuatHoSo_SearchHQ({
+          TDate_From: searchCondition.TDate_From ?? "",
+          TDate_To: searchCondition.TDate_To ?? "",
           FlagDataWH: searchCondition.FlagDataWH ? 1 : 0,
-        } as Rpt_StatisticPIInStockParam);
-
-        return resp?.Data?.Lst_RptStatistic_PIInStock;
+        } as Rpt_XuatHoSoParam);
+        return resp;
       } else {
         return null;
       }
     },
-    enabled: true,
   });
   console.log("🚀 ~ data:", data);
 
   //PageHeader
-  const handleExportExcel = useCallback(() => {}, []);
+  const handleExportExcel = useCallback(async () => {
+    // const response = await api.RptSaleBaoCaoTongHopGet_ExportSearchHQ(
+    //   searchCondition
+    // );
+    // if (response.isSuccess) {
+    //   toast.success(t("DownloadSuccessfully"));
+    //   window.location.href = response.Data as string;
+    // } else {
+    //   toast.error(t("DownloadUnsuccessfully"));
+    // }
+  }, [searchCondition]);
+
   const handleExportExcelDetail = useCallback(async () => {
-    const result = await api.Rpt_StatisticPIInStock_ExportDetailSearchHQ({
-      ProductMonthFrom: searchCondition.ProductMonthFrom ?? "",
-          ProductMonthTo: searchCondition.ProductMonthTo ?? "",
-          DateTo: searchCondition.DateTo ?? "",
-          FlagDataWH: searchCondition.FlagDataWH ? 1 : 0,
+    const result = await api.RptStatisticHTCStockOutOnWay_ExportDetailSearchHQ({
+      FlagDataWH: searchCondition.FlagDataWH ? 1 : 0,
     });
     if (result.isSuccess && result.Data) {
       toast.success(t("DownloadSuccessfully"));
@@ -95,59 +103,19 @@ export const Rpt_StatisticPIInStock = () => {
   };
 
   //SearchPanelV2
-
-  const yearDs = useCallback(() => {
-    const yearList = [];
-    // Set the start and end dates
-    const startDate = new Date("2019-01-01");
-    const endDate = new Date();
-
-    // Loop through the months from end to start in descending order
-    for (
-      let date = endDate;
-      date >= startDate;
-      date.setMonth(date.getMonth() - 1)
-    ) {
-      const year = date.getFullYear(); // Get the year
-      const month = String(date.getMonth() + 1).padStart(2, "0"); // Get the month and pad with leading zero if needed
-      const yearMonth = `${year}-${month}`; // Concatenate the year and month
-      yearList.push({ year: yearMonth, text: yearMonth });
-    }
-
-    return yearList; // Return the generated yearList
-  }, [searchCondition, data]);
-
   const searchFields: IItemProps[] = [
     {
-      dataField: "ProductMonthFrom",
+      caption: t("TDate_From"),
+      dataField: "TDate_From",
       visible: true,
-      caption: t("ProductMonthFrom"),
-      editorType: "dxSelectBox",
-      editorOptions: {
-        dataSource: yearDs() ?? [],
-        displayExpr: "text",
-        valueExpr: "year",
-        validationMessageMode: "always",
-        validationGroup: "form",
-      },
+      editorType: "dxDateBox",
+      editorOptions: dateBoxOptions,
+      validationRules: [RequiredField(t("TDate_FromIsRequired"))],
     },
     {
-      dataField: "ProductMonthTo",
+      caption: t("TDate_To"),
+      dataField: "TDate_To",
       visible: true,
-      caption: t("ProductMonthTo"),
-      editorType: "dxSelectBox",
-      editorOptions: {
-        dataSource: yearDs() ?? [],
-        displayExpr: "text",
-        valueExpr: "year",
-        validationMessageMode: "always",
-        validationGroup: "form",
-      },
-    },
-    {
-      dataField: "DateTo",
-      visible: true,
-      caption: t("DateTo"),
       editorType: "dxDateBox",
       editorOptions: dateBoxOptions,
     },
@@ -163,69 +131,53 @@ export const Rpt_StatisticPIInStock = () => {
   ];
 
   const handleSearch = useCallback(async (data: IReportParam) => {
+    setSearchCondition(searchCondition);
+    setGettingData(true);
     reloading();
+    // await refetch()
+    setGettingData(false);
   }, []);
 
   useEffect(() => {
     if (data) {
-      data.map((item: any, index: any) => (item.Id = index + 1));
+      data?.Data?.Lst_Rpt_XuatHoSo.map(
+        (d: any, index: number) => (d.Id = index + 1)
+      );
     }
   }, [data]);
 
-  const columns: ColumnOptions[] = useMemo(() => {
-    return [
+  const columns: ColumnOptions[] = useMemo(
+    () => [
       {
-        dataField: "Id",
         caption: t("STT"),
+        dataField: "Id",
+        visible: true,
+        alignment: "center",
+      },
+      {
+        caption: t("TypeReport"),
+        dataField: "TextReport",
         visible: true,
       },
       {
-        dataField: "CCOCONTRACTNO",
-        caption: t("CCOCONTRACTNO"),
+        caption: t("SoLuong"),
+        dataField: "SoLuong",
+        visible: true,
+        customizeText: (e: any) => {
+          return e.value.toLocaleString();
+        },
       },
       {
-        dataField: "MODELCODE",
-        caption: t("MODELCODE"),
+        caption: t("GiaTri"),
+        dataField: "GiaTri",
+        visible: true,
+        customizeText: (e: any) => {
+          return e.value.toLocaleString();
+        },
       },
-      {
-        dataField: "SPECCODE",
-        caption: t("SPECCODE"),
-      },
-      {
-        dataField: "WWOWORKORDERNO",
-        caption: t("WWOWORKORDERNO"),
-      },
-      {
-        dataField: "COLORCODE",
-        caption: t("COLORCODE"),
-      },
-      {
-        dataField: "COLOR_VN_COMBINED",
-        caption: t("COLOR_VN_COMBINED"),
-      },
-      {
-        dataField: "SOLUONGPI",
-        caption: t("SOLUONGPI"),
-      },
-      {
-        dataField: "SOLUONGTONPI",
-        caption: t("SOLUONGTONPI"),
-      },
-      {
-        dataField: "SOLUONGDALENTAU",
-        caption: t("SOLUONGDALENTAU"),
-      },
-      {
-        dataField: "SOLUONGDATOICANG",
-        caption: t("SOLUONGDATOICANG"),
-      },
-    ];
-  }, [isLoading]);
-
-  // useEffect(() => {
-
-  //    searchCondition.ProductMonthFrom = "2023-03",
-  // }, []);
+    ],
+    []
+  );
 
   return (
     <AdminContentLayout>
@@ -239,12 +191,12 @@ export const Rpt_StatisticPIInStock = () => {
       <AdminContentLayout.Slot name={"Content"}>
         <ContentSearchPanelLayout>
           <ContentSearchPanelLayout.Slot name={"SearchPanel"}>
-            <div className="w-[200px]">
+            <div className="w-[300px]">
               <SearchPanelV2
                 conditionFields={searchFields}
                 data={searchCondition}
                 onSearch={handleSearch}
-                storeKey={"Rpt_StatisticPIInStock-search"}
+                storeKey={"Rpt_XuatHoSo-search"}
               />
             </div>
           </ContentSearchPanelLayout.Slot>
@@ -261,7 +213,7 @@ export const Rpt_StatisticPIInStock = () => {
               <ScrollView height={windowSize.height - 120}>
                 <DataGrid
                   id={"gridContainer"}
-                  dataSource={data ?? []}
+                  dataSource={data?.Data?.Lst_Rpt_XuatHoSo ?? []}
                   columns={columns}
                   showBorders={true}
                   showRowLines={true}

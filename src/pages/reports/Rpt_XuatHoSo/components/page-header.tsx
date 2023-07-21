@@ -14,7 +14,7 @@ export const PageHeader = ({onExportExcel,onExportExcelDetail,toggleSearchPanel}
   return (
     <PageHeaderNoSearchLayout>
       <PageHeaderNoSearchLayout.Slot name={"Before"}>
-        <div className="font-bold dx-font-m">Báo cáo tổng hợp tình trạng hàng hoá</div>
+        <div className="font-bold dx-font-m">Báo cáo xuất hồ sơ</div>
       </PageHeaderNoSearchLayout.Slot>
       <PageHeaderNoSearchLayout.Slot
         name={"After"}

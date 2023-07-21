@@ -548,7 +548,7 @@ export const Rpt_SMCertificate = () => {
                   showColumnLines={true}
                   // columns={columns}
                   columnAutoWidth={true}
-                  allowColumnResizing={false}
+                  allowColumnResizing={true}
                   allowColumnReordering={false}
                   className={"mx-auto my-5"}
                   width={"100%"}

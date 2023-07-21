@@ -1,6 +1,5 @@
 import { useI18n } from "@/i18n/useI18n";
 import { useClientgateApi } from "@/packages/api";
-import { Rpt_SMCertificateParam } from "@/packages/api/clientgate/Rpt_SMCertificateApi";
 import { useWindowSize } from "@/packages/hooks/useWindowSize";
 import { AdminContentLayout } from "@/packages/layouts/admin-content-layout";
 import {
@@ -23,13 +22,31 @@ import {
 import PivotGridDataSource, {
   Field,
 } from "devextreme/ui/pivot_grid/data_source";
+
+// import {
+//   Column,
+//   ColumnChooser,
+//   ColumnFixing,
+//   HeaderFilter,
+//   Pager,
+//   Paging,
+//   Scrolling,
+//   Toolbar,
+//   Item as ToolbarItem,
+// } from "devextreme-react/data-grid";
 import { useSetAtom } from "jotai";
 import { nanoid } from "nanoid";
-import { useCallback, useMemo, useReducer, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import { toast } from "react-toastify";
 import { PageHeader } from "../components/page-header";
+import { useRpt_DlrContractInstockParam } from "@/packages/api/clientgate/Rpt_DlrContractInstockApi";
+import { ColumnOptions } from "@/types";
+import { useSavedState } from "@/packages/ui/base-gridview/components";
+import CustomColumnChooser from "@/packages/ui/column-toggler/custom-column-chooser";
 interface IReportParam {
-  HRMonth?: string;
+  MDDealerCodeConditionList: string;
+  MAAreaCodeConditonList: string;
+  DateBegin: string;
   FlagDataWH: 1 | 0;
 }
 
@@ -47,9 +64,10 @@ export const BasePivot = () => {
   const windowSize = useWindowSize();
 
   const [isGetingData, setGettingData] = useState(false);
-  const [searchCondition, setSearchCondition] = useState<IReportParam>(
-    {} as IReportParam
-  );
+  const [searchCondition, setSearchCondition] =
+    useState<IReportParam>(
+      {} as IReportParam
+    );
 
   const [loadingKey, reloading] = useReducer(() => nanoid(), "0");
 
@@ -57,16 +75,19 @@ export const BasePivot = () => {
   const { data, isLoading } = useQuery({
     queryKey: [
       "report",
-      "Rpt_SMCertificate_SearchHQ",
+      "Rpt_DlrContractInstock_SearchHQ",
       loadingKey,
       JSON.stringify(searchCondition),
     ],
     queryFn: async () => {
       if (loadingKey !== "0") {
-        const resp = await api.Rpt_SMCertificate_SearchHQ({
-          HRMonth: "2023-02-01",
-          FlagDataWH: searchCondition.FlagDataWH ? 1 : 0,
-        } as Rpt_SMCertificateParam);
+        const resp = await api.Rpt_DlrContractInstock_SearchHQ({
+          MDDealerCodeConditionList:
+            searchCondition.MDDealerCodeConditionList ?? "",
+          MAAreaCodeConditonList: searchCondition.MAAreaCodeConditonList ?? "",
+          DateBegin: "2023",
+          FlagDataWH: 1,
+        } as useRpt_DlrContractInstockParam);
         return resp;
       } else {
         return null;
@@ -76,7 +97,18 @@ export const BasePivot = () => {
   console.log("🚀 ~ data:", data);
 
   //PageHeader
-  const handleExportExcel = useCallback(() => {}, []);
+  const handleExportExcel = useCallback(async () => {
+    // const response = await api.RptSaleBaoCaoTongHopGet_ExportSearchHQ(
+    //   searchCondition
+    // );
+    // if (response.isSuccess) {
+    //   toast.success(t("DownloadSuccessfully"));
+    //   window.location.href = response.Data as string;
+    // } else {
+    //   toast.error(t("DownloadUnsuccessfully"));
+    // }
+  }, [searchCondition]);
+
   const handleExportExcelDetail = useCallback(async () => {
     const result = await api.RptStatisticHTCStockOutOnWay_ExportDetailSearchHQ({
       FlagDataWH: searchCondition.FlagDataWH ? 1 : 0,
@@ -104,7 +136,7 @@ export const BasePivot = () => {
     },
   ];
 
-  const handleSearch = useCallback(async (data: IReportParam) => {
+  const handleSearch = useCallback(async () => {
     setSearchCondition(searchCondition);
     setGettingData(true);
     reloading();
@@ -138,8 +170,149 @@ export const BasePivot = () => {
   }, [t]);
   const dataSource = new PivotGridDataSource({
     fields: fields,
-    store: data?.Data?.Lst_RptSales_CtmCare_01,
+    store: data?.Data?.Lst_Rpt_DlrContractInstock,
   });
+
+  // useEffect(() => {
+  //   if (data) {
+  //     data.Data?.Lst_Rpt_DuKienDongTienTT.map(
+  //       (item: any, index: any) => (item.Id = index + 1)
+  //     );
+  //   }
+  // }, [data]);
+
+  // const columns: ColumnOptions[] = useMemo(() => {
+  //   return [
+  //     {
+  //       dataField: "Id",
+  //       // visible: true,
+  //       caption: t("STT"),
+  //       editorType: "dxSelectBox",
+  //     },
+  //     {
+  //       dataField: "BANKCODE",
+  //       // visible: true,
+  //       caption: t("BANKCODE"),
+  //     },
+  //     {
+  //       dataField: "BANKNAME_BL",
+  //       // visible: true,
+  //       caption: t("BANKNAME_BL"),
+  //     },
+  //     {
+  //       dataField: "BANKCODEMONITOR",
+  //       // visible: true,
+  //       caption: t("BANKCODEMONITOR"),
+  //     },
+  //     {
+  //       dataField: "BANKNAME_GS",
+  //       // visible: true,
+  //       caption: t("BANKNAME_GS"),
+  //     },
+  //     {
+  //       dataField: "COUNTCARID",
+  //       // visible: true,
+  //       caption: t("COUNTCARID"),
+  //     },
+  //     {
+  //       dataField: "GUARANTEEVALUE",
+  //       // visible: true,
+  //       caption: t("GUARANTEEVALUE"),
+  //     },
+  //     {
+  //       dataField: "GUARANTEEVALUENOPAYMENT",
+  //       // visible: true,
+  //       caption: t("GUARANTEEVALUENOPAYMENT"),
+  //     },
+  //   ];
+  // }, [isLoading]);
+
+  // // =================================================================
+  // const { saveState, loadState } = useSavedState<ColumnOptions[]>({
+  //   storeKey: "Rpt_NXTQuyenDoiNo-columns",
+  // });
+
+  // const chooserVisible = useVisibilityControl({ defaultVisible: false });
+  // const [realColumns, setColumnsState] = useReducer(
+  //   (state: any, changes: any) => {
+  //     saveState(changes);
+  //     return changes;
+  //   },
+  //   columns
+  // );
+  // const onHiding = useCallback(() => {
+  //   chooserVisible.close();
+  // }, []);
+
+  // const onApply = useCallback(
+  //   (changes: any) => {
+  //     setColumnsState(changes);
+  //     chooserVisible.close();
+  //   },
+  //   [setColumnsState]
+  // );
+
+  // const renderColumnChooser = useCallback(() => {
+  //   return (
+  //     <CustomColumnChooser
+  //       title={t("ToggleColumn")}
+  //       applyText={t("Apply")}
+  //       cancelText={t("Cancel")}
+  //       selectAllText={t("SelectAll")}
+  //       container={"#gridContainer"}
+  //       button={"#myColumnChooser"}
+  //       visible={chooserVisible.visible}
+  //       columns={columns}
+  //       onHiding={onHiding}
+  //       onApply={onApply}
+  //       actualColumns={realColumns}
+  //     />
+  //   );
+  // }, [chooserVisible, realColumns, columns]);
+  // const allToolbarItems: ToolbarItemProps[] = [
+  //   {
+  //     location: "after",
+  //     render: renderColumnChooser,
+  //   },
+  // ];
+  // const onToolbarPreparing = useCallback((e: any) => {
+  //   e.toolbarOptions.items.push({
+  //     widget: "dxButton",
+  //     location: "after",
+  //     options: {
+  //       icon: "/images/icons/settings.svg",
+  //       elementAttr: {
+  //         id: "myColumnChooser",
+  //       },
+  //       onClick: () => chooserVisible.toggle(),
+  //     },
+  //   });
+  // }, []);
+
+  // useEffect(() => {
+  //   const savedState = loadState() === undefined ? columns : loadState();
+
+  //   if (savedState) {
+  //     const columnOrders = savedState.map(
+  //       (column: ColumnOptions) => column.dataField
+  //     );
+  //     const outputColumns = columns.map((column: ColumnOptions) => {
+  //       const filterResult = savedState.find(
+  //         (c: ColumnOptions) => c.dataField === column.dataField
+  //       );
+  //       return {
+  //         ...column,
+  //         visible: filterResult ? filterResult.visible ?? true : false,
+  //       };
+  //     });
+  //     outputColumns.sort(
+  //       (a, b) =>
+  //         columnOrders.indexOf(a.dataField) - columnOrders.indexOf(b.dataField)
+  //     );
+  //     setColumnsState(outputColumns);
+  //   }
+  // }, []);
+
 
   return (
     <AdminContentLayout>
@@ -172,7 +345,7 @@ export const BasePivot = () => {
               showPane={true}
             />
             <div className="w-full mt-4">
-              {!!data && data?.Data?.Lst_RptSales_CtmCare_01 && (
+              {!!data && data?.Data?.Lst_Rpt_DlrContractInstock && (
                 <PivotGrid
                   id="pivotgrid"
                   dataSource={dataSource}
@@ -219,25 +392,46 @@ export const BasePivot = () => {
   );
 };
 
-//  <ScrollView height={windowSize.height - 120}>
 // <DataGrid
-//   id={"gridContainer"}
-//   dataSource={
-//     data?.Data?.Lst_RptStatistic_HTCBackOrder_SpecCode_01 ?? []
-//   }
-//   columns={columns}
-//   showBorders={true}
-//   showRowLines={true}
-//   showColumnLines={true}
-//   columnAutoWidth={true}
-//   allowColumnResizing={false}
-//   allowColumnReordering={false}
-//   className={"mx-auto my-5"}
-//   width={"100%"}
-//   columnResizingMode="widget"
+// id="gridContainer"
+// dataSource={data ?? []}
+// showBorders={true}
+// showRowLines={true}
+// showColumnLines={true}
+// remoteOperations={false}
+// columnAutoWidth={true}
+// cacheEnabled={true}
+// noDataText={t("ThereIsNoData")}
+// height={windowSize.height - 150}
+// onToolbarPreparing={onToolbarPreparing}
+// columnResizingMode="widget"
+// allowColumnResizing={true}
 // >
-//   <HeaderFilter allowSearch={true} visible={true} />
-//   <Scrolling showScrollbar={"always"} />
-//   <Sorting mode={"none"} />
+// <ColumnChooser enabled={true} />
+// <ColumnFixing enabled={true} />
+// <HeaderFilter allowSearch={true} visible={true} />
+// <Scrolling
+//   showScrollbar={"always"}
+//   mode={"standard"}
+//   rowRenderingMode={"standard"}
+// />
+// <Paging enabled={false} />
+// <Pager visible={false} />
+// <Toolbar>
+//   {!!allToolbarItems &&
+//     allToolbarItems.map((item, index) => {
+//       return (
+//         <ToolbarItem key={index} location={item.location}>
+//           {item.widget === "dxButton" && (
+//             <Button {...item.options} />
+//           )}
+//           {!!item.render && item.render()}
+//         </ToolbarItem>
+//       );
+//     })}
+// </Toolbar>
+
+// {realColumns.map((column: ColumnOptions, index: number) => (
+//   <Column key={index} {...column} />
+// ))}
 // </DataGrid>
-// </ScrollView>

@@ -26,9 +26,11 @@ export interface AuthContextData {
   logout: () => void;
   selectNetwork: (networkId: string) => void;
   setClientGateInfo: (clientGate: ClientGateInfo) => void;
+  isHQ: () => boolean;
 }
 export interface SidebarItem {
-  text: string;
+  text?: string;
+  subMenuTitle?: string;
   path: string;
   key: string;
 }
@@ -109,7 +111,8 @@ export interface RouteItem {
   mainMenuKey: string;
   subMenuKey?: string;
   permissionCode?: string;
-  getPageElement: Function;
+  getPageElement?: Function;
+  items?: RouteItem[]
 }
 
 export interface ExItem extends IItemProps {
@@ -126,6 +129,9 @@ export interface ColumnOptions extends IColumnProps {
   groupKey?: string;
   isSearchable?: boolean;
   order?: number;
+  label?: {
+    text?: string;
+  }
 }
 
 export interface ToolbarItemProps extends IToolbarItemProps {

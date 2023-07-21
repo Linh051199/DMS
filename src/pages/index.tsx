@@ -60,6 +60,16 @@ export * from "./reports/RptPayment01";
 export * from "./reports/Rpt_BaoCaoMoi/list/Rpt_BaoCaoMoi";
 export * from "./reports/Rpt_UpdSalesManByDelear/list/Rpt_UpdSalesManByDelear";
 export * from "./reports/Rpt_StatisticGrpDealer03";
+export * from "./reports/Rpt_SPLSPSupportRetail/list/RptSPLSPSupportRetail";
+export * from "./reports/Rpt_RevenueHTCInvoice/list/Rpt_RevenueHTCInvoice";
+export * from "./reports/Rpt_NXTQuyenDoiNo/list/Rpt_NXTQuyenDoiNo";
+export * from "./reports/Rpt_BLDenHanThanhToan/list/Rpt_BLDenHanThanhToan";
+export * from "./reports/Rpt_DuKienDongTienTT_ChiTiet/list/Rpt_DuKienDongTienTT_ChiTiet";
+export * from "./reports/Rpt_NhapXuatTonTrongKy/list/Rpt_NhapXuatTonTrongKy";
+export * from "./reports/Rpt_XuatHoSo/list/Rpt_XuatHoSo";
+export * from "./reports/Rpt_Master/list/Rpt_Master";
+export * from "./reports/Rpt_DlrContractInstock/list/Rpt_DlrContractInstock";
+export * from "./reports/Rpt_WOOrderAndSchedule01/list/Rpt_WOOrderAndSchedule01";
 export * from "./reports/Rpt_SMCertificate/list/Rpt_SMCertificate";
 export * from "./reports/Rpt_TonHoSoNganHang/list/Rpt_TonHoSoNganHang";
 export * from "./reports/Rpt_StatisticPIInStock/list/Rpt_StatisticPIInStock";
@@ -86,3 +96,8 @@ export * from "./reports/Rpt_StatisticHTCStockOutOnWay";
 export * from "./reports/Rpt_ShareHTCStock03/list/Rpt_ShareHTCStock03";
 export * from "./reports/Rpt_StaticGrpDealerInSock02/list/Rpt_StaticGrpDealerInSock02";
 export * from "./reports/Rpt_StatisticHTCBackOrderSpecCode01Pivot/list/Rpt_StatisticHTCBackOrderSpecCode01Pivot";
+
+// ____________________________________________________________________________________________
+// Sale
+export * from "./sales/form-builder/form-builder";
+export * from "./sales/form-render/form-render";

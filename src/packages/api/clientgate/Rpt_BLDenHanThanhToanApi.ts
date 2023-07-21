@@ -27,6 +27,7 @@ export const useRpt_BLDenHanThanhToan = (apiBase: AxiosInstance) => {
     Rpt_BLDenHanThanhToan_SearchHQ: async (
       params: Rpt_BLDenHanThanhToanParam
     ): Promise<ApiResponse<Rpt_BLDenHanThanhToanParamData>> => {
+      console.log("🚀 ~ params:", params);
       return await apiBase.post<
         Rpt_BLDenHanThanhToanParam,
         ApiResponse<Rpt_BLDenHanThanhToanParamData>

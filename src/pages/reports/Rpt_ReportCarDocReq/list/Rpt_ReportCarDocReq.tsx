@@ -11,7 +11,7 @@ import {
 import { SearchPanelV2 } from "@/packages/ui/search-panel";
 import { ColumnOptions } from "@/types";
 import { useQuery } from "@tanstack/react-query";
-import { format, isAfter, isBefore } from "date-fns";
+import { format, isAfter, isBefore, set } from "date-fns";
 import { DataGrid, LoadPanel, PivotGrid, ScrollView } from "devextreme-react";
 import { HeaderFilter, Scrolling, Sorting } from "devextreme-react/data-grid";
 import { IItemProps } from "devextreme-react/form";
@@ -42,9 +42,9 @@ export const Rpt_ReportCarDocReq = () => {
   const api = useClientgateApi();
   const windowSize = useWindowSize();
 
-  const [searchCondition, setSearchCondition] = useState<IReportParam>(
-    {} as IReportParam
-  );
+  const [searchCondition, setSearchCondition] = useState<IReportParam>({
+    DateTo: new Date(),
+  } as IReportParam);
 
   const [loadingKey, reloading] = useReducer(() => nanoid(), "0");
 
@@ -238,7 +238,6 @@ export const Rpt_ReportCarDocReq = () => {
         dataField: "DREXPECTEDDATE",
       },
 
-
       {
         caption: t("CDRDDRDTLSTATUS"),
         dataField: "CDRDDRDTLSTATUS",
@@ -258,7 +257,6 @@ export const Rpt_ReportCarDocReq = () => {
         dataField: "MBBANKNAME",
       },
 
-      
       {
         caption: t("PGDDATESTART"),
         dataField: "PGDDATESTART",
@@ -268,10 +266,6 @@ export const Rpt_ReportCarDocReq = () => {
         caption: t("MORTAGEENDDATE"),
         dataField: "MORTAGEENDDATE",
       },
-
-
-     
-
     ],
     [isLoading]
   );
@@ -306,7 +300,6 @@ export const Rpt_ReportCarDocReq = () => {
               showIndicator={true}
               showPane={true}
             />
-            <div className="w-full mt-4">
               <ScrollView height={windowSize.height - 120}>
                 <DataGrid
                   id={"gridContainer"}
@@ -316,7 +309,7 @@ export const Rpt_ReportCarDocReq = () => {
                   showRowLines={true}
                   showColumnLines={true}
                   columnAutoWidth={true}
-                  allowColumnResizing={false}
+                  allowColumnResizing={true}
                   allowColumnReordering={false}
                   className={"mx-auto my-5"}
                   width={"100%"}
@@ -327,7 +320,6 @@ export const Rpt_ReportCarDocReq = () => {
                   <Sorting mode={"none"} />
                 </DataGrid>
               </ScrollView>
-            </div>
           </ContentSearchPanelLayout.Slot>
         </ContentSearchPanelLayout>
       </AdminContentLayout.Slot>

@@ -91,7 +91,6 @@ export const Rpt_StatisticHTCBackOrderSpecCode01 = () => {
     reloading();
   }, []);
 
-  //PivotGrid
   const columns: ColumnOptions[] = useMemo(() => {
     return [
       {

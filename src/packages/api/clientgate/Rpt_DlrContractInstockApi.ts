@@ -20,7 +20,6 @@ export const useRpt_DlrContractInstock = (apiBase: AxiosInstance) => {
     Rpt_DlrContractInstock_SearchHQ: async (
       params: useRpt_DlrContractInstockParam
     ): Promise<ApiResponse<useRpt_DlrContractInstockRecord>> => {
-      console.log(23, params);
       return await apiBase.post<
         useRpt_DlrContractInstockParam,
         ApiResponse<useRpt_DlrContractInstockRecord>
