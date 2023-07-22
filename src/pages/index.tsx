@@ -60,6 +60,8 @@ export * from "./reports/RptPayment01";
 export * from "./reports/Rpt_BaoCaoMoi/list/Rpt_BaoCaoMoi";
 export * from "./reports/Rpt_UpdSalesManByDelear/list/Rpt_UpdSalesManByDelear";
 export * from "./reports/Rpt_StatisticGrpDealer03";
+export * from "./reports/Rpt_BusinessPlanSummary/list/Rpt_BusinessPlanSummary";
+export * from "./reports/Rpt_MasterData/list/Rpt_MasterData";
 export * from "./reports/Rpt_PmtPaymentDtlByDealer/list/Rpt_PmtPaymentDtlByDealer";
 export * from "./reports/Rpt_Statistic_DMS40CarDeliveryOrder/list/Rpt_Statistic_DMS40CarDeliveryOrder";
 export * from "./reports/Rpt_MapVIN/list/Rpt_MapVIN";

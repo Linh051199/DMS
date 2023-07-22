@@ -44,6 +44,8 @@ import {
   Rpt_MapVIN,
   Rpt_Statistic_DMS40CarDeliveryOrder,
   Rpt_PmtPaymentDtlByDealer,
+  Rpt_MasterData,
+  Rpt_BusinessPlanSummary,
 } from "@/pages";
 
 import { RouteItem } from "@/types";
@@ -269,6 +271,26 @@ export const reportRoutes: RouteItem[] = [
     permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
 
     getPageElement: () => <RptSPLSPSupportRetail />,
+  },
+
+  {
+    key: "Rpt_MasterData", // Key menu con
+    path: "report/Rpt_MasterData", // Address trên browser
+    subMenuTitle: "(R1.1)Rpt_MasterData", // Title menu con
+    mainMenuKey: "report", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
+
+    getPageElement: () => <Rpt_MasterData />,
+  },
+
+  {
+    key: "Rpt_BusinessPlanSummary", // Key menu con
+    path: "report/Rpt_BusinessPlanSummary", // Address trên browser
+    subMenuTitle: "(R1.1)Rpt_BusinessPlanSummary", // Title menu con
+    mainMenuKey: "report", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
+
+    getPageElement: () => <Rpt_BusinessPlanSummary />,
   },
 
   {
