@@ -46,6 +46,9 @@ import {
   Rpt_PmtPaymentDtlByDealer,
   Rpt_MasterData,
   Rpt_BusinessPlanSummary,
+  Rpt_Statistic_HTC_CarDocReq,
+  Rpt_PivotTransPlanF,
+  Rpt_TheoDoiKiemTraDatHang,
 } from "@/pages";
 
 import { RouteItem } from "@/types";
@@ -143,6 +146,16 @@ export const reportRoutes: RouteItem[] = [
   },
 
   {
+    key: "Rpt_Statistic_HTC_CarDocReq", // Key menu con
+    path: "report/Rpt_Statistic_HTC_CarDocReq", // Address trên browser
+    subMenuTitle: "(R1)Rpt_Statistic_HTC_CarDocReq", // Title menu con
+    mainMenuKey: "report", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
+
+    getPageElement: () => <Rpt_Statistic_HTC_CarDocReq />,
+  },
+
+  {
     key: "Rpt_ShareHTCStock03", // Key menu con
     path: "report/Rpt_ShareHTCStock03", // Address trên browser
     subMenuTitle: "(R1.1)Rpt_ShareHTCStock03", // Title menu con
@@ -207,6 +220,15 @@ export const reportRoutes: RouteItem[] = [
     getPageElement: () => <Rpt_PivotTransPlan />,
   },
 
+  {
+    key: "Rpt_PivotTransPlanF", // Key menu con
+    path: "report/Rpt_PivotTransPlanF", // Address trên browser
+    subMenuTitle: "(R1.1)Rpt_PivotTransPlanF", // Title menu con
+    mainMenuKey: "report", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
+
+    getPageElement: () => <Rpt_PivotTransPlanF />,
+  },
   {
     key: "Rpt_CarDeliveryOrderExpect", // Key menu con
     path: "report/Rpt_CarDeliveryOrderExpect", // Address trên browser
@@ -412,15 +434,7 @@ export const reportRoutes: RouteItem[] = [
 
     getPageElement: () => <Rpt_ReportCarDocReq />,
   },
-  {
-    key: "Rpt_SMCertificate", // Key menu con
-    path: "report/Rpt_SMCertificate", // Address trên browser
-    subMenuTitle: "(R2)Rpt_SMCertificate", // Title menu con
-    mainMenuKey: "report", // Key của menu cha
-    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
 
-    getPageElement: () => <Rpt_SMCertificate />,
-  },
   {
     key: "Rpt_StatisticPIInStock", // Key menu con
     path: "report/Rpt_StatisticPIInStock", // Address trên browser
@@ -483,5 +497,25 @@ export const reportRoutes: RouteItem[] = [
     permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
 
     getPageElement: () => <Rpt_PmtPaymentDtlByDealer />,
+  },
+
+  {
+    key: "Rpt_SMCertificate", // Key menu con
+    path: "report/Rpt_SMCertificate", // Address trên browser
+    subMenuTitle: "(R3)Rpt_SMCertificate", // Title menu con
+    mainMenuKey: "report", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
+
+    getPageElement: () => <Rpt_SMCertificate />,
+  },
+
+  {
+    key: "Rpt_TheoDoiKiemTraDatHang", // Key menu con
+    path: "report/Rpt_TheoDoiKiemTraDatHang", // Address trên browser
+    subMenuTitle: "(R3)Rpt_TheoDoiKiemTraDatHang", // Title menu con
+    mainMenuKey: "report", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
+
+    getPageElement: () => <Rpt_TheoDoiKiemTraDatHang />,
   },
 ];

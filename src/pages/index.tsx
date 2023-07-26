@@ -57,6 +57,9 @@ export * from "./Master2/rate-appr-order-model-max/list/rate-appr-order-model-ma
 export * from "./Master2/invoiceID/list/invoiceID";
 export * from "./reports/ABasePivot/list/base";
 export * from "./reports/RptPayment01";
+export * from "./reports/Rpt_TheoDoiKiemTraDatHang/list/Rpt_TheoDoiKiemTraDatHang";
+export * from "./reports/Rpt_PivotTransPlanF/list/Rpt_PivotTransPlanF";
+export * from "./reports/Rpt_Statistic_HTC_CarDocReq/list/Rpt_Statistic_HTC_CarDocReq";
 export * from "./reports/Rpt_BaoCaoMoi/list/Rpt_BaoCaoMoi";
 export * from "./reports/Rpt_UpdSalesManByDelear/list/Rpt_UpdSalesManByDelear";
 export * from "./reports/Rpt_StatisticGrpDealer03";

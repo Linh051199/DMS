@@ -19,6 +19,7 @@ import { selectedItemsAtom } from "./bank-dealer-store";
 interface IHeaderPartProps {
   onAddNew: () => void;
   searchCondition: Partial<SearchMst_CarStdOptParam>;
+  
 }
 
 export const HeaderPart = ({ onAddNew, searchCondition }: IHeaderPartProps) => {

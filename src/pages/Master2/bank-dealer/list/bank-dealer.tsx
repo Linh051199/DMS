@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DataGrid, LoadPanel } from "devextreme-react";
 import {
   HeaderPart,
@@ -30,6 +30,7 @@ import { IPopupOptions } from "devextreme-react/popup";
 import { IItemProps } from "devextreme-react/form";
 import { SearchPanelV2 } from "@/packages/ui/search-panel";
 import { flagEditorOptions } from "@/packages/common";
+import { useColumnEdit } from "../components/use-columns-edit";
 
 export const BankDealerPage = () => {
   const { t } = useI18n("Mst_BankDealer");
@@ -53,6 +54,9 @@ export const BankDealerPage = () => {
     KeyWord: "",
   });
 
+  const [columnEdit, setColumnEdit] = useState("add");
+  console.log("🚀 ~ columnEdit:", columnEdit);
+
   //Call API
   const { data, isLoading, refetch } = useQuery(
     ["Mst_BankDealer", JSON.stringify(searchCondition)],
@@ -62,7 +66,7 @@ export const BankDealerPage = () => {
       });
     }
   );
-  console.log("🚀 ~ data:", data);
+  // console.log("🚀 ~ data:", data);
 
   const { data: listBankCode } = useQuery(["List_BankCode"], () =>
     api.Mst_Bank_GetAllActive()
@@ -71,7 +75,6 @@ export const BankDealerPage = () => {
   const { data: listDealerCode } = useQuery(["List_DealerCode"], () =>
     api.Mst_Dealer_GetAllActive()
   );
-  console.log("🚀 ~ listDealerCode:", listDealerCode);
 
   //Handle
   // re-render API search
@@ -140,6 +143,7 @@ export const BankDealerPage = () => {
 
   // action C-D-U
   const handleSaveRow = (e: any) => {
+    console.log("🚀 ~ e:", e);
     if (e.changes && e.changes.length > 0) {
       console.log(336, e.changes[0]);
       const { type } = e.changes[0];
@@ -177,6 +181,7 @@ export const BankDealerPage = () => {
   };
 
   const handleEditRow = (e: any) => {
+    // setColumnEdit("edit");
     const { row, column } = e;
     handleEdit(row.rowIndex);
   };
@@ -215,6 +220,7 @@ export const BankDealerPage = () => {
 
   //HeaderPart
   const handleAddNew = () => {
+    setColumnEdit("add");
     gridRef.current.instance.addRow();
   };
 
@@ -254,11 +260,21 @@ export const BankDealerPage = () => {
     listBankCode: listBankCode?.DataList ?? [],
     listDealerCode: listDealerCode?.DataList ?? [],
   });
+  // columnEdit
+  const columnsEdit = useColumnEdit({
+    data: data?.DataList ?? [],
+    listBankCode: listBankCode?.DataList ?? [],
+    listDealerCode: listDealerCode?.DataList ?? [],
+  });
+
+  let columnsType = [{}];
+
+  useEffect(() => {}, [columnEdit]);
 
   // setting popup (title, buttons)
   const popupSettings: IPopupOptions = {
     showTitle: true,
-    title: "Mst_CarStdOpt",
+    title: "Mst_BankDealer",
     toolbarItems: [
       {
         toolbar: "bottom",
@@ -287,7 +303,8 @@ export const BankDealerPage = () => {
 
   // setup form setting
   const formSettings = useFormSettings({
-    columns,
+    // columns: columnEdit === "add" ? columns : columnsEdit,
+    columns: columnsType,
     listBankCode: listBankCode?.DataList ?? [],
     listDealerCode: listDealerCode?.DataList ?? [],
   });

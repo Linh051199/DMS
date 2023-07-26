@@ -23,32 +23,17 @@ import PivotGridDataSource, {
   Field,
 } from "devextreme/ui/pivot_grid/data_source";
 
-// import {
-//   Column,
-//   ColumnChooser,
-//   ColumnFixing,
-//   HeaderFilter,
-//   Pager,
-//   Paging,
-//   Scrolling,
-//   Toolbar,
-//   Item as ToolbarItem,
-// } from "devextreme-react/data-grid";
 import { useSetAtom } from "jotai";
 import { nanoid } from "nanoid";
 import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import { toast } from "react-toastify";
 import { PageHeader } from "../components/page-header";
-import { useRpt_DlrContractInstockParam } from "@/packages/api/clientgate/Rpt_DlrContractInstockApi";
-import { useVisibilityControl } from "@/packages/hooks";
-import { ColumnOptions } from "@/types";
-import { useSavedState } from "@/packages/ui/base-gridview/components";
-import CustomColumnChooser from "@/packages/ui/column-toggler/custom-column-chooser";
+import { RptStatistic_HTC_CarDocReqParam } from "@/packages/api/clientgate/RptStatistic_HTC_CarDocReqApi";
 interface IReportParam {
-  MDDealerCodeConditionList: string;
-  MAAreaCodeConditonList: string;
-  DateBegin: string;
   FlagDataWH: 1 | 0;
+  MDDealerCodeConditionList?: string;
+  MAAreaCodeConditonList?: string;
+  DateBegin?: number;
 }
 
 const dateBoxOptions = {
@@ -58,8 +43,8 @@ const dateBoxOptions = {
   showClearButton: true,
 };
 
-export const BasePivot = () => {
-  const { t } = useI18n("base");
+export const Rpt_Statistic_HTC_CarDocReq = () => {
+  const { t } = useI18n("Rpt_Statistic_HTC_CarDocReq");
   const setSearchPanelVisibility = useSetAtom(searchPanelVisibleAtom);
   const api = useClientgateApi();
   const windowSize = useWindowSize();
@@ -74,20 +59,16 @@ export const BasePivot = () => {
   // Call API
   const { data, isLoading } = useQuery({
     queryKey: [
-      "report",
-      "Rpt_DlrContractInstock_SearchHQ",
+      "Rpt_Statistic_HTC_CarDocReq",
+      "RptStatistic_HTC_CarDocReq_SearchHQ",
       loadingKey,
       JSON.stringify(searchCondition),
     ],
     queryFn: async () => {
       if (loadingKey !== "0") {
-        const resp = await api.Rpt_DlrContractInstock_SearchHQ({
-          MDDealerCodeConditionList:
-            searchCondition.MDDealerCodeConditionList ?? "",
-          MAAreaCodeConditonList: searchCondition.MAAreaCodeConditonList ?? "",
-          DateBegin: "2023",
-          FlagDataWH: 1,
-        } as useRpt_DlrContractInstockParam);
+        const resp = await api.RptStatistic_HTC_CarDocReq_SearchHQ({
+          FlagDataWH: searchCondition.FlagDataWH ? 1 : 0,
+        } as RptStatistic_HTC_CarDocReqParam);
         return resp;
       } else {
         return null;
@@ -110,7 +91,7 @@ export const BasePivot = () => {
   }, [searchCondition]);
 
   const handleExportExcelDetail = useCallback(async () => {
-    const result = await api.RptStatisticHTCStockOutOnWay_ExportDetailSearchHQ({
+    const result = await api.RptStatistic_HTC_CarDocReq_ExportDetailSearchHQ({
       FlagDataWH: searchCondition.FlagDataWH ? 1 : 0,
     });
     if (result.isSuccess && result.Data) {
@@ -148,170 +129,65 @@ export const BasePivot = () => {
   const fields = useMemo<Field[]>(() => {
     return [
       {
-        caption: t("CarID"),
-        dataField: "CarID",
+        dataField: "Total",
         area: "data",
-        showGrandTotals: true,
-        showTotals: true,
+        areaIndex: 0,
         summaryType: "count",
-        isMeasure: true, // allows the end-user to place this f
       },
       {
-        caption: t("DUTYCOMPLETEDPERCENT_RANGE"),
-        dataField: "DUTYCOMPLETEDPERCENT_RANGE",
-        area: "row",
+        dataField: "DutyCompletedPercent_Range",
+        area: "column",
+        areaIndex: 0,
+        expanded: false,
       },
       {
-        caption: t("DUTYDAYS_RANGE"),
-        dataField: "DUTYDAYS_RANGE",
+        dataField: "DutyDays_Range",
+        area: "column",
+        areaIndex: 1,
+      },
+      {
+        dataField: "CCDealerCode",
         area: "row",
+        areaIndex: 0,
+        expanded: false,
+      },
+      {
+        dataField: "MCSSpecDescription",
+        area: "row",
+        areaIndex: 1,
+      },
+
+      {
+        dataField: "CCDealerName",
+        area: "filter",
+        areaIndex: 0,
+      },
+      {
+        dataField: "CVVIN",
+        area: "filter",
+        areaIndex: 1,
+      },
+      {
+        dataField: "SoCode",
+        area: "filter",
+        areaIndex: 2,
+      },
+      {
+        dataField: "DeclareNo",
+        area: "filter",
+        areaIndex: 3,
+      },
+      {
+        dataField: "BankGuaranteeNo",
+        area: "filter",
+        areaIndex: 4,
       },
     ];
   }, [t]);
   const dataSource = new PivotGridDataSource({
     fields: fields,
-    store: data?.Data?.Lst_Rpt_DlrContractInstock,
+    store: data?.Data?.Lst_RptStatistic_HTC_CarDocReq,
   });
-
-  // useEffect(() => {
-  //   if (data) {
-  //     data.Data?.Lst_Rpt_DuKienDongTienTT.map(
-  //       (item: any, index: any) => (item.Id = index + 1)
-  //     );
-  //   }
-  // }, [data]);
-
-  // const columns: ColumnOptions[] = useMemo(() => {
-  //   return [
-  //     {
-  //       dataField: "Id",
-  //       // visible: true,
-  //       caption: t("STT"),
-  //       editorType: "dxSelectBox",
-  //     },
-  //     {
-  //       dataField: "BANKCODE",
-  //       // visible: true,
-  //       caption: t("BANKCODE"),
-  //     },
-  //     {
-  //       dataField: "BANKNAME_BL",
-  //       // visible: true,
-  //       caption: t("BANKNAME_BL"),
-  //     },
-  //     {
-  //       dataField: "BANKCODEMONITOR",
-  //       // visible: true,
-  //       caption: t("BANKCODEMONITOR"),
-  //     },
-  //     {
-  //       dataField: "BANKNAME_GS",
-  //       // visible: true,
-  //       caption: t("BANKNAME_GS"),
-  //     },
-  //     {
-  //       dataField: "COUNTCARID",
-  //       // visible: true,
-  //       caption: t("COUNTCARID"),
-  //     },
-  //     {
-  //       dataField: "GUARANTEEVALUE",
-  //       // visible: true,
-  //       caption: t("GUARANTEEVALUE"),
-  //     },
-  //     {
-  //       dataField: "GUARANTEEVALUENOPAYMENT",
-  //       // visible: true,
-  //       caption: t("GUARANTEEVALUENOPAYMENT"),
-  //     },
-  //   ];
-  // }, [isLoading]);
-
-  // // =================================================================
-  // const { saveState, loadState } = useSavedState<ColumnOptions[]>({
-  //   storeKey: "Rpt_NXTQuyenDoiNo-columns",
-  // });
-
-  // const chooserVisible = useVisibilityControl({ defaultVisible: false });
-  // const [realColumns, setColumnsState] = useReducer(
-  //   (state: any, changes: any) => {
-  //     saveState(changes);
-  //     return changes;
-  //   },
-  //   columns
-  // );
-  // const onHiding = useCallback(() => {
-  //   chooserVisible.close();
-  // }, []);
-
-  // const onApply = useCallback(
-  //   (changes: any) => {
-  //     setColumnsState(changes);
-  //     chooserVisible.close();
-  //   },
-  //   [setColumnsState]
-  // );
-
-  // const renderColumnChooser = useCallback(() => {
-  //   return (
-  //     <CustomColumnChooser
-  //       title={t("ToggleColumn")}
-  //       applyText={t("Apply")}
-  //       cancelText={t("Cancel")}
-  //       selectAllText={t("SelectAll")}
-  //       container={"#gridContainer"}
-  //       button={"#myColumnChooser"}
-  //       visible={chooserVisible.visible}
-  //       columns={columns}
-  //       onHiding={onHiding}
-  //       onApply={onApply}
-  //       actualColumns={realColumns}
-  //     />
-  //   );
-  // }, [chooserVisible, realColumns, columns]);
-  // const allToolbarItems: ToolbarItemProps[] = [
-  //   {
-  //     location: "after",
-  //     render: renderColumnChooser,
-  //   },
-  // ];
-  // const onToolbarPreparing = useCallback((e: any) => {
-  //   e.toolbarOptions.items.push({
-  //     widget: "dxButton",
-  //     location: "after",
-  //     options: {
-  //       icon: "/images/icons/settings.svg",
-  //       elementAttr: {
-  //         id: "myColumnChooser",
-  //       },
-  //       onClick: () => chooserVisible.toggle(),
-  //     },
-  //   });
-  // }, []);
-
-  // useEffect(() => {
-  //   const savedState = loadState() === undefined ? columns : loadState();
-
-  //   if (savedState) {
-  //     const columnOrders = savedState.map(
-  //       (column: ColumnOptions) => column.dataField
-  //     );
-  //     const outputColumns = columns.map((column: ColumnOptions) => {
-  //       const filterResult = savedState.find(
-  //         (c: ColumnOptions) => c.dataField === column.dataField
-  //       );
-  //       return {
-  //         ...column,
-  //         visible: filterResult ? filterResult.visible ?? true : false,
-  //       };
-  //     });
-  //     outputColumns.sort(
-  //       (a, b) =>
-  //         columnOrders.indexOf(a.dataField) - columnOrders.indexOf(b.dataField)
-  //     );
-  //     setColumnsState(outputColumns);
-  //   }
-  // }, []);
 
   return (
     <AdminContentLayout>
@@ -330,7 +206,7 @@ export const BasePivot = () => {
                 conditionFields={searchFields}
                 data={searchCondition}
                 onSearch={handleSearch}
-                storeKey={"base-search"}
+                storeKey={"Rpt_Statistic_HTC_CarDocReq-search"}
               />
             </div>
           </ContentSearchPanelLayout.Slot>
@@ -344,7 +220,7 @@ export const BasePivot = () => {
               showPane={true}
             />
             <div className="w-full mt-4">
-              {!!data && data?.Data?.Lst_Rpt_DlrContractInstock && (
+              {!!data && data?.Data?.Lst_RptStatistic_HTC_CarDocReq && (
                 <PivotGrid
                   id="pivotgrid"
                   dataSource={dataSource}
@@ -379,7 +255,10 @@ export const BasePivot = () => {
                   {/* cho phép người dùng xuất file */}
                   <Export enabled={true} />
                   {/* lưu cấu hình pivot vào trong local storage  */}
-                  <StateStoring enabled={true} storageKey={"base"} />
+                  <StateStoring
+                    enabled={true}
+                    storageKey={"Rpt_Statistic_HTC_CarDocReq"}
+                  />
                   <FieldPanel visible={true} />
                 </PivotGrid>
               )}
@@ -390,47 +269,3 @@ export const BasePivot = () => {
     </AdminContentLayout>
   );
 };
-
-// <DataGrid
-// id="gridContainer"
-// dataSource={data ?? []}
-// showBorders={true}
-// showRowLines={true}
-// showColumnLines={true}
-// remoteOperations={false}
-// columnAutoWidth={true}
-// cacheEnabled={true}
-// noDataText={t("ThereIsNoData")}
-// height={windowSize.height - 150}
-// onToolbarPreparing={onToolbarPreparing}
-// columnResizingMode="widget"
-// allowColumnResizing={true}
-// >
-// <ColumnChooser enabled={true} />
-// <ColumnFixing enabled={true} />
-// <HeaderFilter allowSearch={true} visible={true} />
-// <Scrolling
-//   showScrollbar={"always"}
-//   mode={"standard"}
-//   rowRenderingMode={"standard"}
-// />
-// <Paging enabled={true} />
-// <Pager visible={true} />
-// <Toolbar>
-//   {!!allToolbarItems &&
-//     allToolbarItems.map((item, index) => {
-//       return (
-//         <ToolbarItem key={index} location={item.location}>
-//           {item.widget === "dxButton" && (
-//             <Button {...item.options} />
-//           )}
-//           {!!item.render && item.render()}
-//         </ToolbarItem>
-//       );
-//     })}
-// </Toolbar>
-
-// {realColumns.map((column: ColumnOptions, index: number) => (
-//   <Column key={index} {...column} />
-// ))}
-// </DataGrid>

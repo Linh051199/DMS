@@ -4,7 +4,7 @@ import { Mst_Bank, Mst_Dealer } from "@/packages/types";
 import { ColumnOptions, FormOptions } from "@/types";
 
 interface UseFormSettingsProps {
-  columns: ColumnOptions[];
+  columns: ColumnOptions[] | undefined;
   listBankCode: Mst_Bank[];
   listDealerCode: Mst_Dealer[]
 
