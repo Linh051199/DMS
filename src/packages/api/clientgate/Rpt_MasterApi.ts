@@ -1,8 +1,8 @@
 import { ApiResponse } from "@/packages/types";
 import { AxiosInstance } from "axios";
 export interface Rpt_MasterParam {
-  MonthFrom:  any ;
-  MonthTo: any ;
+  MonthFrom: any;
+  MonthTo: any;
   CheckBanLe: 1 | 0;
   CheckTonKhoDaiLy: 1 | 0;
   CheckBanBuonHTC: 1 | 0;
@@ -83,7 +83,9 @@ export const useRpt_Master = (apiBase: AxiosInstance) => {
       return await apiBase.post<Rpt_MasterParam, ApiResponse<string>>(
         "/RptMaster/ExportDetailSearchHQ_BanLe",
         {
-          ...params,
+          MonthFrom: params.MonthFrom,
+          MonthTo: params.MonthTo,
+          FlagDataWH: params.FlagDataWH ? 1 : 0,
         }
       );
     },
@@ -93,7 +95,9 @@ export const useRpt_Master = (apiBase: AxiosInstance) => {
       return await apiBase.post<Rpt_MasterParam, ApiResponse<string>>(
         "/RptMaster/ExportDetailSearchHQ_Shipping",
         {
-          ...params,
+          MonthFrom: params.MonthFrom,
+          MonthTo: params.MonthTo,
+          FlagDataWH: params.FlagDataWH ? 1 : 0,
         }
       );
     },
@@ -103,7 +107,9 @@ export const useRpt_Master = (apiBase: AxiosInstance) => {
       return await apiBase.post<Rpt_MasterParam, ApiResponse<string>>(
         "/RptMaster/ExportDetailSearchHQ_BanBuonHTC",
         {
-          ...params,
+          MonthFrom: params.MonthFrom,
+          MonthTo: params.MonthTo,
+          FlagDataWH: params.FlagDataWH ? 1 : 0,
         }
       );
     },
@@ -113,7 +119,9 @@ export const useRpt_Master = (apiBase: AxiosInstance) => {
       return await apiBase.post<Rpt_MasterParam, ApiResponse<string>>(
         "/RptMaster/ExportDetailSearchHQ_NhapHang",
         {
-          ...params,
+          MonthFrom: params.MonthFrom,
+          MonthTo: params.MonthTo,
+          FlagDataWH: params.FlagDataWH ? 1 : 0,
         }
       );
     },

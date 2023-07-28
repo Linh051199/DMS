@@ -15,7 +15,6 @@ export function AuthProvider(props: React.PropsWithChildren<unknown>) {
 
   // const authSignal = signal<AuthState>(emptyState);
   const login = (accessToken: string, user?: IUser, orgData?: IOrg, clientGate?: ClientGateInfo) => {
-    logger.debug('do login:', accessToken, user);
     localStorage.setItem("token", accessToken);
     setAuthStore({
       ...authStore,

@@ -30,7 +30,6 @@ export const useMst_District = (apiBase: AxiosInstance) => {
     },
 
     Mst_District_Delete: async (key: any) => {
-      console.log(33, key)
       return await apiBase.post<SearchParam, ApiResponse<Mst_District>>(
         "/MstDistrict/Delete",
         {
@@ -90,7 +89,6 @@ export const useMst_District = (apiBase: AxiosInstance) => {
       keys: any[],
       keyword?: string
     ): Promise<ApiResponse<any>> => {
-      console.log("keys ", keys);
       if (keys.length > 0) {
         let result = '';
         for (let i = 0; i < keys.length; i++) {
@@ -99,7 +97,6 @@ export const useMst_District = (apiBase: AxiosInstance) => {
           result += `${districtCode},${provinceCode};`;
         }
         result = result.slice(0, -1);
-        console.log(result);
         return await apiBase.post<Partial<Mst_District>, ApiResponse<string>>(
           "/MstDistrict/ExportByListDistrictCodeAndProvinceCode",
           {

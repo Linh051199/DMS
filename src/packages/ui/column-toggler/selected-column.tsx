@@ -1,4 +1,4 @@
-import { ColumnOptions } from "@packages/ui/base-gridview";
+import { ColumnOptions } from "@/types";
 import { Button } from "devextreme-react";
 import React from "react";
 import { Icon } from "@packages/ui/icons";

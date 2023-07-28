@@ -54,20 +54,20 @@ export const useMst_RegistrationInfo = (apiBase: AxiosInstance) => {
     },
 
     Mst_RegistrationInfo_ExportExcel: async (
-      keys: Partial<Mst_RegistrationInfo>[],
+      keys: string[],
       keyword?: string
     ): Promise<ApiResponse<any>> => {
+      const condition = keys.map((item: any) => {
+        return `${item.RegistYear},${item.ProvinceCode}`
+      }).join(";")
+      console.log("key ", keys);
       if (keys.length > 0) {
-        const result = keys
-          .map((item) => {
-            return `${item.RegistYear},${item.ProvinceCode}`;
-          })
-          .join(";");
+        console.log(keys, condition)
         return await apiBase.post<
           Partial<Mst_RegistrationInfo>,
           ApiResponse<string>
         >("/MstRegistrationInfo/ExportByListCode", {
-          ListRegistYearAndProvinceCode: result,
+          ListRegistYearAndProvinceCode: condition
         });
       } else {
         return await apiBase.post<

@@ -57,6 +57,9 @@ export * from "./Master2/rate-appr-order-model-max/list/rate-appr-order-model-ma
 export * from "./Master2/invoiceID/list/invoiceID";
 export * from "./reports/ABasePivot/list/base";
 export * from "./reports/RptPayment01";
+export * from "./reports/Rpt_SalesReport/list/Rpt_SalesReport";
+export * from "./reports/Rpt_PivotRearrangeCB/list/Rpt_PivotRearrangeCB";
+export * from "./reports/Rpt_BaoCaoXeThieuBBBG/list/Rpt_BaoCaoXeThieuBBBG";
 export * from "./reports/Rpt_TheoDoiKiemTraDatHang/list/Rpt_TheoDoiKiemTraDatHang";
 export * from "./reports/Rpt_PivotTransPlanF/list/Rpt_PivotTransPlanF";
 export * from "./reports/Rpt_Statistic_HTC_CarDocReq/list/Rpt_Statistic_HTC_CarDocReq";
@@ -109,3 +112,4 @@ export * from "./reports/Rpt_StatisticHTCBackOrderSpecCode01Pivot/list/Rpt_Stati
 // Sale
 export * from "./sales/form-builder/form-builder";
 export * from "./sales/form-render/form-render";
+export * from "./sales/delivery-order";

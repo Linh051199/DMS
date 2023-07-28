@@ -20,6 +20,7 @@ import { sidebarAtom } from "@packages/store";
 import { useI18n } from "@/i18n/useI18n";
 import { useAuth } from "@packages/contexts/auth";
 import { usePermissions } from "@/packages/contexts/permission";
+import {Icon} from "@packages/ui/icons";
 
 export const AdminPageLayout = () => {
   const { t } = useI18n("Common");
@@ -48,19 +49,20 @@ export const AdminPageLayout = () => {
       )
       .filter(route => !route.permissionCode || (route.permissionCode && hasMenuPermission(route.permissionCode)))
       .map(route => ({
-        text: route.subMenuTitle,
+        subMenuTitle: route.subMenuTitle,
         path: route.path,
         key: route.key,
+        items: route.items?.filter(route => !!route.subMenuTitle)
       } as SidebarItem))
       ;
   }, [location]);
 
   const onNavigationChanged = useCallback(({ itemData, event, node }: ItemClickEvent) => {
-    if (!itemData?.path || node?.selected) {
+    if (!itemData?.path || node?.selected || (itemData.items?.length ?? 0 > 0)) {
       event?.preventDefault();
       return;
     }
-    navigate(itemData.path);
+    navigate(itemData.path && !(/^\//.test(itemData.path)) ? `/${itemData.path}` : itemData.path);
     scrollViewRef.current?.instance.scrollTo(0);
     toggleSidebar();
   }, [navigate, isLarge]);
@@ -101,7 +103,9 @@ export const AdminPageLayout = () => {
               location={'before'}
               cssClass={'menu-button'}
             >
-              <Button icon="menu" stylingMode="text" onClick={toggleSidebar} />
+              <Button stylingMode="text" onClick={toggleSidebar}>
+                <Icon name={'menu'} width={12} height={12}/>
+              </Button>
             </ToolbarItem>
           }
         </Toolbar>
@@ -117,7 +121,7 @@ export const AdminPageLayout = () => {
         openedStateMode={isLarge ? 'shrink' : 'overlap'}
         revealMode={isXSmall ? 'slide' : 'expand'}
         minSize={0}
-        maxSize={250}
+        maxSize={200}
         shading={false}
         opened={isSidebarOpen}
         template={'menu'}

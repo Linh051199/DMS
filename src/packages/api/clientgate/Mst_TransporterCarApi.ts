@@ -65,15 +65,8 @@ export const useMst_TransporterCar = (apiBase: AxiosInstance) => {
       keys: string[],
       keyword?: string
     ): Promise<ApiResponse<any>> => {
-      console.log("keys nè ", keys, keys.length);
 
       if (keys.length > 0) {
-        // console.log(
-        //   "export nè",
-        //   keys
-        //     .map((item) => `${item.TransporterCode},${item.PlateNo}`)
-        //     .join(";")
-        // );
         const listExport = keys
           .map((item: any) => `${item.TransporterCode},${item.PlateNo}`)
           .join(";");

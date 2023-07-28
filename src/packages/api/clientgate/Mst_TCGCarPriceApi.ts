@@ -76,7 +76,6 @@ export const useMst_TCGCarPriceApi = (apiBase: AxiosInstance) => {
     },
 
     Mst_TCGCarPrice_Create: async (values: Partial<Mst_TCGCarPrice>) => {
-      console.log(56, convertDate(values?.EffectiveDate as Date));
 
       return await apiBase.post<DeleteBankParam, ApiResponse<Mst_TCGCarPrice>>(
         "/MstTCGCarPrice/Create",

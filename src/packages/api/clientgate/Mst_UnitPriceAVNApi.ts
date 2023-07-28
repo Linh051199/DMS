@@ -18,7 +18,6 @@ export const useMst_UnitPriceAVN   = (apiBase: AxiosInstance) => {
     Mst_UnitPriceAVN_Delete: async (
       key: Partial<Mst_UnitPriceAVN>
     ): Promise<ApiResponse<Mst_UnitPriceAVN>> => {
-      console.log("key: ", key);
       return await apiBase.post<string, ApiResponse<Mst_UnitPriceAVN>>(
         "/MstUnitPriceAVN/Delete",
         {

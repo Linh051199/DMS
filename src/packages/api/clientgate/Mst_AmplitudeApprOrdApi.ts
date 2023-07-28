@@ -53,42 +53,42 @@ export const useMst_AmplitudeApprOrd = (apiBase: AxiosInstance) => {
       });
     },
 
-    Mst_AmplitudeApprOrd_ExportExcel: async (
-      keys: Partial<Mst_AmplitudeApprOrd>[],
-      keyword?: string
-    ): Promise<ApiResponse<any>> => {
-      if (keys.length > 0) {
-        return await apiBase.post<
-          Partial<Mst_AmplitudeApprOrd>,
-          ApiResponse<string>
-        >("/MstAmplitudeApprOrd/ExportByListDealerCode", {
-          ListDealerCode: keys
-            .map((item: Partial<Mst_AmplitudeApprOrd>) => item.DealerCode)
-            .join(","),
-          ListModelCode: keys
-            .map((item: Partial<Mst_AmplitudeApprOrd>) => item.ModelCode)
-            .join(","),
-        });
-      }
-
-      return await apiBase.post<
-        Partial<Mst_AmplitudeApprOrd>,
-        ApiResponse<string>
-      >("/MstAmplitudeApprOrd/Export", {
-        KeyWord: keyword,
-        FlagActive: "",
-      });
-    },
-
-    Mst_AmplitudeApprOrd_ExportExcel_Template: async (): Promise<
+    Mst_AmplitudeApprOrd_ExportTemplate: async (): Promise<
       ApiResponse<any>
     > => {
       return await apiBase.post<
         Partial<Mst_AmplitudeApprOrd>,
         ApiResponse<string>
-      >("/MstAmplitudeApprOrd/ExportTemplate");
+      >("/MstAmplitudeApprOrd/ExportTemplate", {});
     },
-
+    Mst_AmplitudeApprOrd_ExportExcel: async (
+      keys: string[],
+      keyword?: string
+    ): Promise<ApiResponse<any>> => {
+      console.log("key ", keys);
+      if (keys.length > 0) {
+        return await apiBase.post<
+          Partial<Mst_AmplitudeApprOrd>,
+          ApiResponse<string>
+        >("/MstAmplitudeApprOrd/ExportByListDealerCode", {
+          ListDealerCode: keys.map((item: any) => {
+            // console.log(item)
+            return item.DealerCode
+          }).join(","),
+          ListModelCode: keys.map((item: any) => {
+            return item.ModelCode
+          }).join(",")
+        });
+      } else {
+        return await apiBase.post<
+          Partial<Mst_AmplitudeApprOrd>,
+          ApiResponse<string>
+        >("/MstAmplitudeApprOrd/Export", {
+          KeyWord: keyword,
+          FlagActive: "",
+        });
+      }
+    },
     Mst_AmplitudeApprOrd_DeleteMultiple: async (data: string[]) => {
       return await apiBase.post<SearchParam, ApiResponse<Mst_AmplitudeApprOrd>>(
         "/MstAmplitudeApprOrd/DeleteMultiple",

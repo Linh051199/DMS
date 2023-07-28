@@ -1,0 +1,334 @@
+import ScrollView from "devextreme-react/scroll-view";
+import { SubGrid } from "@/packages/components/sub-grid";
+import { CarDeliveryOrder, CarDeliveryOrderDetail } from "@packages/types";
+import DataGrid, { IToolbarItemProps } from "devextreme-react/data-grid";
+import { BButton } from "@/packages/components/buttons";
+import { ForwardedRef, forwardRef, MutableRefObject, useRef } from "react";
+import { useI18n } from "@/i18n/useI18n";
+import { useVisibilityControl } from "@packages/hooks";
+import { ColumnOptions } from "@/types";
+import { DeleteConfirmationBox } from "@packages/ui/modal";
+import { useParams } from "react-router-dom";
+
+interface CarListProps {
+  order: CarDeliveryOrder;
+  cars: CarDeliveryOrderDetail[];
+  onDeleteSingle: (key: string) => void;
+  onDeleteMultiple: (keys: string[]) => void;
+  queryKey: string[];
+}
+
+export const ViewList = forwardRef(
+  (
+    { cars, order, onDeleteSingle, onDeleteMultiple, queryKey }: CarListProps,
+    ref: ForwardedRef<DataGrid>
+  ) => {
+    const { t } = useI18n("DeliveryOrder");
+    const params = useParams();
+
+    const columns: ColumnOptions[] = [
+      {
+        dataField: "MyIdxSeq",
+        caption: t("STT"),
+        visible: true,
+        cellRender: ({ rowIndex }: any) => {
+          return <div>{rowIndex + 1}</div>;
+        },
+      },
+      {
+        dataField: "DeliveryOrderNo",
+        visible: true,
+        caption: t("DeliveryOrderNo"),
+      },
+      {
+        dataField: "CarId",
+        visible: true,
+        caption: t("CarId"),
+      },
+      {
+        dataField: "StorageCode",
+        visible: true,
+        caption: t("StorageCode"),
+      },
+      {
+        dataField: "DeliveryVIN",
+        visible: true,
+        caption: t("DeliveryVIN"),
+      },
+      {
+        dataField: "DeliveryStartDate",
+        visible: true,
+        caption: t("DeliveryStartDate"),
+      },
+      {
+        dataField: "DeliveryOutDate",
+        visible: true,
+        caption: t("DeliveryOutDate"),
+      },
+      {
+        dataField: "DeliveryExpectedDate",
+        visible: true,
+        caption: t("DeliveryExpectedDate"),
+      },
+      {
+        dataField: "TransportMinutesExpectedDate",
+        visible: true,
+        caption: t("TransportMinutesExpectedDate"),
+      },
+      {
+        dataField: "DeliveryEndDate",
+        visible: true,
+        caption: t("DeliveryEndDate"),
+      },
+      {
+        dataField: "DeliveryRemark",
+        visible: true,
+        caption: t("DeliveryRemark"),
+      },
+      {
+        dataField: "ConfirmRemark",
+        visible: true,
+        caption: t("ConfirmRemark"),
+      },
+      {
+        dataField: "ConfirmStatus",
+        visible: true,
+        caption: t("ConfirmStatus"),
+      },
+      {
+        dataField: "ConfirmDate",
+        visible: true,
+        caption: t("ConfirmDate"),
+      },
+      {
+        dataField: "ConfirmBy",
+        visible: true,
+        caption: t("ConfirmBy"),
+      },
+      {
+        dataField: "LogLUDateTime",
+        visible: true,
+        caption: t("LogLUDateTime"),
+      },
+      {
+        dataField: "LogLUBy",
+        visible: true,
+        caption: t("LogLUBy"),
+      },
+      {
+        dataField: "ModelCode",
+        visible: true,
+        caption: t("ModelCode"),
+      },
+      {
+        dataField: "ColorCode",
+        visible: true,
+        caption: t("ColorCode"),
+      },
+      {
+        dataField: "SpecCode",
+        visible: true,
+        caption: t("SpecCode"),
+      },
+      {
+        dataField: "SpecDescription",
+        visible: true,
+        caption: t("SpecDescription"),
+      },
+      {
+        dataField: "ActualSpec",
+        visible: true,
+        caption: t("ActualSpec"),
+      },
+      {
+        dataField: "AC_SpecDescription",
+        visible: true,
+        caption: t("AC_SpecDescription"),
+      },
+      {
+        dataField: "PMGBankGuaranteeNo",
+        visible: true,
+        caption: t("PMGBankGuaranteeNo"),
+      },
+      {
+        dataField: "VINColorCode",
+        visible: true,
+        caption: t("VINColorCode"),
+      },
+      {
+        dataField: "VIN_Color_VN_Combined",
+        visible: true,
+        caption: t("VIN_Color_VN_Combined"),
+      },
+      {
+        dataField: "CVEngineNo",
+        visible: true,
+        caption: t("CVEngineNo"),
+      },
+      {
+        dataField: "PaymentPercent",
+        visible: true,
+        caption: t("PaymentPercent"),
+      },
+      {
+        dataField: "GuaranteePercent",
+        visible: true,
+        caption: t("GuaranteePercent"),
+      },
+      {
+        dataField: "OSOSOCode",
+        visible: true,
+        caption: t("OSOSOCode"),
+      },
+      {
+        dataField: "CVLocation",
+        visible: true,
+        caption: t("CVLocation"),
+      },
+      {
+        dataField: "OSODCarDueDate",
+        visible: true,
+        caption: t("OSODCarDueDate"),
+      },
+      {
+        dataField: "OCNCode",
+        visible: true,
+        caption: t("OCNCode"),
+      },
+      {
+        dataField: "UnitPriceActual",
+        visible: true,
+        caption: t("UnitPriceActual"),
+      },
+      {
+        dataField: "BankCode",
+        visible: true,
+        caption: t("BankCode"),
+      },
+      {
+        dataField: "cdo_ApprovedDate2",
+        visible: true,
+        caption: t("cdo_ApprovedDate2"),
+      },
+    ];
+    const handleDelete = () => {
+      const gridRef = ref as MutableRefObject<DataGrid>;
+      if (
+        gridRef &&
+        gridRef.current &&
+        gridRef.current.instance.getSelectedRowKeys().length === 0
+      ) {
+        return;
+      }
+      controlConfirmBoxVisible.open();
+    };
+    const deleteVisible = useVisibilityControl({ defaultVisible: false });
+    const handleSelectionChanged = (e: any) => {
+      const gridRef = ref as MutableRefObject<DataGrid>;
+      if (
+        gridRef &&
+        gridRef.current &&
+        gridRef.current?.instance.getSelectedRowsData().length > 0
+      ) {
+        if (!["R"].includes(order.DeliveryOrderStatus)) {
+          deleteVisible.open();
+        }
+      } else {
+        deleteVisible.close();
+      }
+    };
+    const onCancelDelete = () => {
+      controlConfirmBoxVisible.close();
+    };
+    const onCancelDeleteSingle = () => {
+      confirmDeleteSingleVisible.close();
+      localStorage.removeItem("carDeliveryOrderDeleteItem");
+    };
+    const onDelete = async () => {
+      const gridRef = ref as MutableRefObject<DataGrid>;
+      const keys = gridRef.current?.instance.getSelectedRowKeys();
+      onDeleteMultiple(keys);
+    };
+    const subGridToolbars: IToolbarItemProps[] = [
+      {
+        location: "before",
+        render: () => {
+          return <div className={"font-bold mr-2"}>{t("CarList")}</div>;
+        },
+      },
+      {
+        location: "before",
+        render: () => {
+          return (
+            <BButton
+              label={t("Delete")}
+              onClick={handleDelete}
+              visible={deleteVisible.visible}
+            />
+          );
+        },
+      },
+      {
+        location: "after",
+        render: () => {
+          return (
+            <div className={""}>
+              {t("TotalRow")}: {cars.length}
+            </div>
+          );
+        },
+      },
+    ];
+    const handleStartDelete = (key: string) => {
+      // set value to input via ref
+      localStorage.setItem("carDeliveryOrderDeleteItem", key);
+      confirmDeleteSingleVisible.open();
+    };
+    const handleDeleteSingle = () => {
+      // get selected item from input via ref
+      const selectedItem = localStorage.getItem("carDeliveryOrderDeleteItem");
+      if (selectedItem) {
+        onDeleteSingle(selectedItem);
+        localStorage.removeItem("carDeliveryOrderDeleteItem");
+      }
+    };
+    const deletingItemRef = useRef<any>(null);
+    const controlConfirmBoxVisible = useVisibilityControl({
+      defaultVisible: false,
+    });
+    const confirmDeleteSingleVisible = useVisibilityControl({
+      defaultVisible: false,
+    });
+    return (
+      <ScrollView>
+        <SubGrid
+          ref={ref}
+          toolbarItems={subGridToolbars}
+          dataSource={cars}
+          columns={columns}
+          onSelectionChanged={handleSelectionChanged}
+          onStartDelete={handleStartDelete}
+          showActions={true}
+          keyExpr={"CarId"}
+        />
+        <input type={"hidden"} ref={deletingItemRef} value={""} />
+        <div>
+          <DeleteConfirmationBox
+            control={controlConfirmBoxVisible}
+            title={t("Are you sure to delete selected records")}
+            onYesClick={onDelete}
+            onNoClick={onCancelDelete}
+          />
+        </div>
+        <div>
+          <DeleteConfirmationBox
+            control={confirmDeleteSingleVisible}
+            title={t("DeleteSingleConfirm")}
+            onYesClick={handleDeleteSingle}
+            onNoClick={onCancelDeleteSingle}
+          />
+        </div>
+      </ScrollView>
+    );
+  }
+);

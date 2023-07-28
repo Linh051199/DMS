@@ -56,15 +56,5 @@ export const useRpt_DebitReport02New = (apiBase: AxiosInstance) => {
         }
       );
     },
-    Rpt_DebitReport02New_ExportDetailSearchHQ: async (
-      params: Rpt_DebitReport02NewParam
-    ): Promise<ApiResponse<string>> => {
-      return await apiBase.post<Rpt_DebitReport02NewParam, ApiResponse<string>>(
-        "/RptDebitReport02New/ExportDetailSearchHQ",
-        {
-          ...params,
-        }
-      );
-    },
   };
 };

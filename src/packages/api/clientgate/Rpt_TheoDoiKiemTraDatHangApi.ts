@@ -2,7 +2,7 @@ import { ApiResponse } from "@/packages/types";
 import { AxiosInstance } from "axios";
 
 export interface Rpt_TheoDoiKiemTraDatHangParam {
-  YearPlan: string;
+  YearPlan: string | number;
   DealerCodeInput: string;
   FlagDataWH: 1 | 0;
 }
@@ -83,7 +83,7 @@ export const use_RptTheoDoiKiemTraDatHang = (apiBase: AxiosInstance) => {
     ): Promise<ApiResponse<string>> => {
       return await apiBase.post<
         Rpt_TheoDoiKiemTraDatHangParam,
-        ApiResponse<string>
+        ApiResponse<any>
       >("/RptTheoDoiKiemTraDatHang/ExportSearchHQ", {
         ...params,
       });

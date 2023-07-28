@@ -49,6 +49,9 @@ import {
   Rpt_Statistic_HTC_CarDocReq,
   Rpt_PivotTransPlanF,
   Rpt_TheoDoiKiemTraDatHang,
+  Rpt_BaoCaoXeThieuBBBG,
+  Rpt_PivotRearrangeCB,
+  Rpt_SalesReport,
 } from "@/pages";
 
 import { RouteItem } from "@/types";
@@ -164,6 +167,17 @@ export const reportRoutes: RouteItem[] = [
 
     getPageElement: () => <Rpt_ShareHTCStock03 />,
   },
+
+  {
+    key: "Rpt_PivotRearrangeCB", // Key menu con
+    path: "report/Rpt_PivotRearrangeCB", // Address trên browser
+    subMenuTitle: "(R1.1)Rpt_PivotRearrangeCB", // Title menu con
+    mainMenuKey: "report", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
+
+    getPageElement: () => <Rpt_PivotRearrangeCB />,
+  },
+
   {
     key: "Rpt_StatisticGrpDealer02", // Key menu con
     path: "report/Rpt_StatisticGrpDealer02", // Address trên browser
@@ -408,6 +422,15 @@ export const reportRoutes: RouteItem[] = [
     getPageElement: () => <Rpt_NXTQuyenDoiNo />,
   },
   {
+    key: "Rpt_BaoCaoXeThieuBBBG", // Key menu con
+    path: "report/Rpt_BaoCaoXeThieuBBBG", // Address trên browser
+    subMenuTitle: "(R2)Rpt_BaoCaoXeThieuBBBG", // Title menu con
+    mainMenuKey: "report", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
+
+    getPageElement: () => <Rpt_BaoCaoXeThieuBBBG />,
+  },
+  {
     key: "Rpt_BLDenHanThanhToan", // Key menu con
     path: "report/Rpt_BLDenHanThanhToan", // Address trên browser
     subMenuTitle: "(R2)Rpt_BLDenHanThanhToan", // Title menu con
@@ -517,5 +540,15 @@ export const reportRoutes: RouteItem[] = [
     permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
 
     getPageElement: () => <Rpt_TheoDoiKiemTraDatHang />,
+  },
+
+  {
+    key: "Rpt_SalesReport", // Key menu con
+    path: "report/Rpt_SalesReport", // Address trên browser
+    subMenuTitle: "(R4)Rpt_SalesReport", // Title menu con
+    mainMenuKey: "report", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
+
+    getPageElement: () => <Rpt_SalesReport />,
   },
 ];

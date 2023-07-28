@@ -31,7 +31,6 @@ export const useRptMasterData = (apiBase: AxiosInstance) => {
   apiBase.defaults.headers["DealerCode"] = "HTC"
   return {
     RptMasterData_SearchHQ: async (params: RptMasterDataParam): Promise<ApiResponse<Rpt_MasterData>> => {
-      console.log(34, params);
       return await apiBase.post<RptMasterDataParam, ApiResponse<Rpt_MasterData>>("/RptMasterData/SearchHQ", {
         ...params,
       });

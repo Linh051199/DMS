@@ -28,10 +28,10 @@ export const uniqueFilterByDataField = <T, K extends keyof T>(
         return acc;
       }, [] as { key: string; count: number }[])
       .sort((a: any, b: any) => {
-        if (!a.key) {
+        if(!a.key) {
           return -1;
         }
-        if (typeof a.key !== "string") {
+        if(typeof a.key !== 'string') {
           return a.key.toString().localeCompare(b.key.toString());
         }
         return a.key.localeCompare(b.key);
@@ -120,6 +120,5 @@ export const convertDate = (param: Date) => {
   var dateString = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
     .toISOString()
     .split("T")[0];
-  console.log("🚀 ~ dateString:", dateString);
   return dateString;
 };

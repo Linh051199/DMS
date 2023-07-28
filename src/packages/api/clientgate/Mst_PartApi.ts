@@ -44,7 +44,6 @@ export const useMst_Part = (apiBase: AxiosInstance) => {
       key: Partial<Mst_Part>,
       data: Partial<Mst_Part>
     ): Promise<ApiResponse<Mst_Part>> => {
-      console.log(47, key)
       return await apiBase.post("/MstPart/Update", {
         strJson: JSON.stringify({
           ...data,
@@ -63,12 +62,7 @@ export const useMst_Part = (apiBase: AxiosInstance) => {
           Partial<Mst_Part>,
           ApiResponse<string>
         >("/MstPart/ExportByListDealerCode", {
-          // ListDealerCode: keys
-          //   .map((item: Partial<Mst_Part>) => item.DealerCode)
-          //   .join(","),
-          // ListModelCode: keys
-          //   .map((item: Partial<Mst_Part>) => item.ModelCode)
-          //   .join(","),
+          ListPartCode: keys.join(",")
         });
       }
 
@@ -91,7 +85,6 @@ export const useMst_Part = (apiBase: AxiosInstance) => {
     },
 
     Mst_Part_DeleteMultiple: async (data: string[]) => {
-      console.log(94, data)
       const condition = data.map((item) => {
         return { PartCode: item }
       })

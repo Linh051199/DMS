@@ -2,10 +2,6 @@ import {useSlot, withSlot} from "@packages/hooks/useSlot";
 import ResponsiveBox, {Col, Item, Location, Row} from "devextreme-react/responsive-box";
 import React, {memo} from "react";
 import {ToggleSidebarButton} from "@packages/ui/toggle-sidebar-button";
-import {logger} from "@packages/logger";
-import {useAtomValue} from "jotai";
-import {permissionAtom} from "@packages/store";
-import {useAuth} from "@packages/contexts/auth";
 
 function screen(width: number) {
   return (width < 700) ? 'sm' : 'lg';

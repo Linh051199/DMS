@@ -26,7 +26,6 @@ export const useRpt_StockAndSalesDealer = (apiBase: AxiosInstance) => {
     Rpt_StockAndSalesDealer_SearchHQ: async (
       params: Rpt_StockAndSalesDealerParam
     ): Promise<ApiResponse<Rpt_StockAndSalesDealerParamData>> => {
-      console.log(29, params)
       return await apiBase.post<
         Rpt_StockAndSalesDealerParam,
         ApiResponse<Rpt_StockAndSalesDealerParamData>

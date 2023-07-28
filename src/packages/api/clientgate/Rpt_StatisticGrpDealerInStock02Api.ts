@@ -55,7 +55,6 @@ export const useRptStaticGrpDealerInSock02 = (apiBase: AxiosInstance) => {
             });
         },
         RptStaticGrpDealerInSock02_SearchDL: async (params: RptStatisticGrpDealerInStock02Param): Promise<ApiResponse<Rpt_StatisticGrpDealerInStock02Data>> => {
-            // console.log(34, params);
             return await apiBase.post<RptStatisticGrpDealerInStock02Param, ApiResponse<Rpt_StatisticGrpDealerInStock02Data>>("/RptStatisticGrpDealerInStock02/SearchDL", {
                 ...params,
             });

@@ -39,7 +39,7 @@ export const useAuthService = () => {
       logger.debug('client gate:', clientGate)
       if(clientGate) {
         // setClientGateInfo(clientGate.Data._objResult[0])
-        login(localStorage.getItem('token') as string, resp.Data.CurrentUser, resp.Data.OrgData, clientGate.Data._objResult[0])
+        login(localStorage.getItem('token') as string, resp.Data.CurrentUser, resp.Data.OrgData, clientGate.Data._objResult?.[0])
       } else {
         login(localStorage.getItem('token') as string, resp.Data.CurrentUser, resp.Data.OrgData)
       }

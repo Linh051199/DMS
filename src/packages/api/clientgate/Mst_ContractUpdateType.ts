@@ -67,11 +67,14 @@ export const useMst_ContractUpdateTypeApi = (apiBase: AxiosInstance) => {
     Mst_ContractUpdateType_DeleteMultiple: async (
       contractUpdateType: string[]
     ) => {
+      const req = contractUpdateType.map((item: string) => {
+        return { ContractUpdateType: item };
+      });
       return await apiBase.post<
         SearchParam,
         ApiResponse<Mst_ContractUpdateType>
       >("/MstContractUpdateType/DeleteMultiple", {
-        strJson: JSON.stringify(contractUpdateType),
+        strJson: JSON.stringify(req),
       });
     },
 

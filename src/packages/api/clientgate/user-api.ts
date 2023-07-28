@@ -1,4 +1,4 @@
-import {ApiResponse, CGResponse, Province, SearchParam, User} from "@/packages/types";
+import {ApiResponse, User} from "@/packages/types";
 import { AxiosInstance } from "axios";
 export const useUserApi = (apiBase: AxiosInstance) => {
   return {

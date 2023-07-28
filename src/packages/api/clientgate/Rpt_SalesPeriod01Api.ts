@@ -7,6 +7,7 @@ export interface Rpt_SalesPeriod01Param {
   Quarter?: string;
   Month?: string;
   Dealer?: string;
+
 }
 
 export interface Rpt_SalesPeriod01Record {
@@ -26,6 +27,7 @@ export interface Rpt_SalesPeriod01Record {
   Z_CAR_ORDER_APPROVE: number;
 }
 
+
 interface Rpt_SalesPeriod01ParamData {
   Lst_RptSales_Period_01_ByDealer?: Rpt_SalesPeriod01Record[];
   Lst_RptSales_Period_01_ByModel?: Rpt_SalesPeriod01Record[];
@@ -36,7 +38,6 @@ export const useRpt_SalesPeriod01 = (apiBase: AxiosInstance) => {
     Rpt_SalesPeriod01_SearchHQ: async (
       params: Rpt_SalesPeriod01Param
     ): Promise<ApiResponse<Rpt_SalesPeriod01ParamData>> => {
-      console.log("🚀 ~ params:", params);
       return await apiBase.post<
         Rpt_SalesPeriod01Param,
         ApiResponse<Rpt_SalesPeriod01ParamData>

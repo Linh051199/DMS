@@ -38,7 +38,7 @@ import CustomColumnChooser from "@packages/ui/column-toggler/custom-column-choos
 import { IFormOptions } from "devextreme-react/form";
 import { IPopupOptions } from "devextreme-react/popup";
 import { EditorPreparingEvent } from "devextreme/ui/data_grid";
-import { ColumnOptions, ToolbarItemProps } from "./types";
+import { ColumnOptions, ToolbarItemProps } from "@/types";
 import {
   checkDataPopPup,
   gridStateAtom,

@@ -156,6 +156,8 @@ import { useMst_Part } from "./clientgate/Mst_PartApi";
 import { useMst_MaintainTaskItemApi } from "./clientgate/Mst_MaintainTaskItemApi";
 import { useRpt_PivotRetailContractApi } from "./clientgate/Rpt_PivotRetailContractApi";
 import { useMst_InvoiceIDHTCApi } from "./clientgate/Mst_InvoiceIDHTCApi";
+import { useMst_CarAllocationByAreaApi } from "./clientgate/Mst_CarAllocationByArea";
+import { useRpt_HMCReportV2 } from "./clientgate/Rpt_HMCReportV2Api";
 
 // report end
 
@@ -451,6 +453,7 @@ export const createClientGateApi = (
 
   // DongNV
   const mstMaintainTaskItem = useMst_MaintainTaskItemApi(apiBase);
+  const mstCarAllocationByArea = useMst_CarAllocationByAreaApi(apiBase)
   const rptStaticGrpDealerInSock02 =
     useRptStaticGrpDealerInSock02(reportApiBase);
   const rptMasterdata = useRptMasterData(reportApiBase);
@@ -522,6 +525,8 @@ export const createClientGateApi = (
   const rpt_StockAndSalesDealer = useRpt_StockAndSalesDealer(reportApiBase);
   const rpt_PivotRetailContractApi =
     useRpt_PivotRetailContractApi(reportApiBase);
+    const rpt_HMCReportV2 =
+    useRpt_HMCReportV2(reportApiBase);
 
   return {
     // report start
@@ -562,6 +567,7 @@ export const createClientGateApi = (
     ...rptSaleExpectedTarget, //DongNV
     ...rpt_BLDenhanthanhtoan, //DongNV
     ...rpt_StockAndSalesDealer, //DongNV
+    ...mstCarAllocationByArea, //DongNV
     // report end
     ...useMstInvoiceIDHTC, // ThangPV
     ...mstInvoiceIDApi,
@@ -674,6 +680,7 @@ export const createClientGateApi = (
     ...useCarDeliveryOrderApi,
     ...useCarCarApi,
     ...rpt_PivotRetailContractApi,
+    ...rpt_HMCReportV2,
   };
 };
 

@@ -2,10 +2,10 @@ import { ApiResponse } from "@/packages/types";
 import { AxiosInstance } from "axios";
 export interface Rpt_GuaranteeDebit01Param {
   GrtNo: string;
-  DateOpenFrom: Date | string;
-  DateOpenTo: Date | string;
-  StartDateTo: Date | string;
-  PaymentDateEndTo: Date | string;
+  DateOpenFrom: Date | string | "";
+  DateOpenTo: Date | string | "";
+  StartDateTo: Date | string | "";
+  PaymentDateEndTo: Date | string | "";
   FlagDataWH: 1 | 0;
 }
 

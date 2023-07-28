@@ -4,11 +4,12 @@ import { searchPanelVisibleAtom } from "@layouts/content-searchpanel-layout";
 import Form, {
   ButtonItem,
   ButtonOptions,
-  GroupItem,
   IItemProps,
   SimpleItem,
 } from "devextreme-react/form";
 import React, {
+  ForwardedRef,
+  forwardRef,
   useCallback,
   useEffect,
   useMemo,
@@ -21,12 +22,12 @@ import { useVisibilityControl } from "@packages/hooks";
 import { SearchPanelSettings } from "@packages/ui/search-panel/search-panel-settings";
 import { useSavedState } from "@packages/ui/base-gridview/components/use-saved-state";
 import CustomColumnChooser from "@packages/ui/column-toggler/custom-column-chooser";
-import { ColumnOptions } from "@packages/ui/base-gridview";
 import { LoadPanel } from "devextreme-react";
 import { useWindowSize } from "@packages/hooks/useWindowSize";
 
 import "./search-panel-v2.scss";
 import { useAtomValue } from "jotai";
+import {ColumnOptions} from "@/types";
 
 interface ItemProps extends IItemProps {
   order?: number;
@@ -38,15 +39,18 @@ interface SearchPanelProps {
   onSearch?: (data: any) => void;
   storeKey: string;
   enableColumnToggler?: boolean;
+  isProcessing?: boolean;
 }
 
-export const SearchPanelV2 = ({
+export const SearchPanelV2 = forwardRef(({
   conditionFields = [],
   data,
   onSearch,
   storeKey,
   enableColumnToggler = true,
-}: SearchPanelProps) => {
+  isProcessing=false
+}: SearchPanelProps, ref: ForwardedRef<Form>) => {
+  console.log('ref:', ref)
   const { t } = useI18n("Common");
   const { loadState, saveState } = useSavedState<ColumnOptions[]>({
     storeKey: `search-panel-settings-${storeKey}`,
@@ -111,6 +115,13 @@ export const SearchPanelV2 = ({
   }, []);
   const windowSize = useWindowSize();
   const htmlFormRef = useRef(null);
+  const setupRef = (r: any) => {
+    console.log('form ref:', r)
+    if(r) {
+      formRef.current = r
+      ref = r
+    }
+  }
   return (
     <div
       className={`${
@@ -128,7 +139,7 @@ export const SearchPanelV2 = ({
         {!isLoading && (
           <form ref={htmlFormRef} className={"h-full"} onSubmit={handleSearch}>
             <Form
-              ref={(r) => (formRef.current = r)}
+              ref={ref}
               formData={data}
               labelLocation={"top"}
               colCount={1}
@@ -148,8 +159,9 @@ export const SearchPanelV2 = ({
                   text={"Search"}
                   icon={"search"}
                   stylingMode={"contained"}
-                  width={"90%"}
+                  width={"95%"}
                   type={"default"}
+                  disabled={isProcessing}
                   useSubmitBehavior={true}
                 />
               </ButtonItem>
@@ -176,4 +188,4 @@ export const SearchPanelV2 = ({
       )}
     </div>
   );
-};
+});

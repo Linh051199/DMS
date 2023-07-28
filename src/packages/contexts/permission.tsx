@@ -1,10 +1,11 @@
 import React, { createContext, useContext } from "react";
 import { useAtomValue } from "jotai";
-import { permissionAtom } from "@packages/store";
+import { permissionAtom } from "@packages/store/permission-store";
 
 interface PermissionContextProps {
   hasMenuPermission: (code: string) => boolean;
   hasButtonPermission: (code: string) => boolean;
+  isHQ: () => boolean;
 }
 const PermissionContext = createContext({} as PermissionContextProps);
 
@@ -19,11 +20,16 @@ export function PermissionProvider(props: React.PropsWithChildren<unknown>) {
   const hasButtonPermission = (code: string) => {
     return permissionStore.buttons?.includes(code) ?? false;
   };
+  
+  const isHQ = () => {
+    return "MAIN.HQ" === permissionStore.sysUser?.BizUserType;
+  }
   return (
     <PermissionContext.Provider
       value={{
         hasMenuPermission,
-        hasButtonPermission
+        hasButtonPermission,
+        isHQ
       }}
       {...props}
     />

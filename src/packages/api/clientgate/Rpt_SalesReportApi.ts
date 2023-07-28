@@ -41,13 +41,16 @@ export const useRptSalesReportApi = (apiBase: AxiosInstance) => {
     RptSalesReport_SearchByModelHQ: async (
       param: Partial<RptSalesReportParamDto>
     ) => {
+      console.log("🚀 ~ param:", param);
       return await apiBase.post<
         RptSalesReportParam,
         ApiResponse<{
           Lst_RptStatistic_HTCStockOut02_ByModel: RptSalesReportByModelRecord[];
         }>
       >("/RptSalesReport/SearchByModelHQ", {
-        MonthReport: format(param.MonthReport!, "yyyy-MM-dd"),
+        MonthReport: param.MonthReport
+          ? format(param.MonthReport!, "yyyy-MM-dd")
+          : "",
         FlagDataWH: param.FlagDataWH ? 1 : 0,
         LstModelCode: (param.ModelCodes ?? []).join(","),
       });

@@ -8,7 +8,7 @@ export interface Rpt_PivotRetailContractParam {
   CreatedDateFrom: Date | string | "";
   MDDealerCodeConditionList: string;
   MAAreaCodeConditonList: string;
-  DateBegin: string;
+  DateBegin: string | number;
   CountTuan: string;
   FlagDataWH: 1 | 0;
 }

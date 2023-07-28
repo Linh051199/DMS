@@ -45,7 +45,7 @@ import {
   EditorPreparingEvent,
 } from "devextreme/ui/data_grid";
 import { DeleteConfirmationBox } from "../modal";
-import { ColumnOptions, ToolbarItemProps } from "./types";
+import { ColumnOptions, ToolbarItemProps } from "@/types";
 import { useSavedState } from "@packages/ui/base-gridview/components/use-saved-state";
 import { PopupGridPageNavigator } from "@packages/ui/base-gridview/components/popup-grid-page-navigator";
 import { PopupGridPageSummary } from "@packages/ui/base-gridview/components/popup-grid-page-summary";

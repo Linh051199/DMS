@@ -107,9 +107,6 @@ export const useMst_InsuranceType = (apiBase: AxiosInstance) => {
     },
 
     Mst_InsuranceType__DeleteMultiple: async (data: Object[]) => {
-      console.log("===data", data, {
-        strJson: JSON.stringify(data),
-      });
       return await apiBase.post<SearchParam, ApiResponse<Mst_InsuranceType>>(
         "/MstInsuranceType/DeleteMultiple",
         {

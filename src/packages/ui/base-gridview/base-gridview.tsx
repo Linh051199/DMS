@@ -38,7 +38,7 @@ import CustomColumnChooser from "@packages/ui/column-toggler/custom-column-choos
 import { IFormOptions } from "devextreme-react/form";
 import { IPopupOptions } from "devextreme-react/popup";
 import { EditorPreparingEvent } from "devextreme/ui/data_grid";
-import { ColumnOptions, ToolbarItemProps } from "./types";
+import { ColumnOptions, ToolbarItemProps } from "@/types";
 import {
   gridStateAtom,
   normalGridDeleteMultipleConfirmationBoxAtom,
@@ -247,7 +247,7 @@ const GridViewRaw = ({
       <PageSize
         title={t("Showing")}
         onChangePageSize={onChangePageSize}
-        allowdPageSizes={[10, 100, 200, 500, 1000]}
+        allowdPageSizes={[100, 200, 500, 1000]}
         showAllOption={true}
         showAllOptionText={t("ShowAll")}
         defaultPageSize={datagridRef.current?.instance.pageSize()}
@@ -388,8 +388,6 @@ const GridViewRaw = ({
             displayMode={"adaptive"}
             showPageSizeSelector
           />
-          <ColumnChooser enabled={true} />
-          <ColumnFixing enabled={true} />
           <HeaderFilter allowSearch={true} />
           <Scrolling
             renderAsync={true}

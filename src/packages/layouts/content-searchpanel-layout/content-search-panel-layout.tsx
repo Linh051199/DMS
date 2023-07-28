@@ -4,7 +4,6 @@ import Drawer from "devextreme-react/drawer";
 import {useAtomValue} from "jotai";
 import {searchPanelVisibleAtom} from "./store";
 import {ScrollView} from "devextreme-react";
-import {useWindowSize} from "@packages/hooks/useWindowSize";
 import "./content-search-panel-layout.scss"
 
 interface ContentSearchPanelLayoutProps {
@@ -12,7 +11,7 @@ interface ContentSearchPanelLayoutProps {
 
 export const InnerContentSearchPanelLayout = ({children}: PropsWithChildren<ContentSearchPanelLayoutProps>) => {
   const searchPanelVisible = useAtomValue(searchPanelVisibleAtom)
-  const windowSize = useWindowSize()
+  // const windowSize = useWindowSize()
   const SearchPanelSlot = useSlot({
     children,
     name: "SearchPanel",
@@ -40,12 +39,12 @@ export const InnerContentSearchPanelLayout = ({children}: PropsWithChildren<Cont
         revealMode={'slide'}
         height={'100%'}
         render={() =>
-          <ScrollView className={'p-2'} id={'search-pane'}>
+          <ScrollView className={'min-w-[300px]'} id={'search-pane'}>
             {searchMemo}
           </ScrollView>
         }
       >
-          {contentMemo}
+        {contentMemo}
       </Drawer>
     </div>
   )

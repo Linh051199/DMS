@@ -53,6 +53,38 @@
   }
 
   &__search {
+    .search-field {
+      border-width: 0.5px;
+      border-color: #5F7D95;
+      &.dx-texteditor {
+        border-radius: 3px;
+      }
+      
+      .dx-texteditor-container {
+        .dx-placeholder {
+          &:before {
+            padding: 6px;
+            color: #5F7D95;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+          }
+        }
+        .dx-texteditor-input {
+          padding: 6px;
+        }
+        
+      }
+
+      .dx-button-mode-outlined {
+        border: none;
+        &.dx-state-hover {
+          background-color: transparent;
+        }
+      }
+    }
+
     .dx-widget {
       display: flex;
       align-items: center;

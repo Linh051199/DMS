@@ -4,15 +4,22 @@ import { ReactComponent as EditIcon } from './svg/edit.svg'
 import { ReactComponent as AddIcon } from './svg/add.svg'
 import { ReactComponent as TrashIcon } from './svg/trash.svg'
 import { ReactComponent as PlusIcon } from './svg/plus-circle.svg'
+import { ReactComponent as SearchIcon } from './svg/search.svg'
+import { ReactComponent as DoneIcon } from './svg/done.svg'
+import { ReactComponent as MenuIcon } from './svg/menu.svg'
+
 export type Dict = {
   [key: string]: any;
 };
 const ICONS = {
-  'remove': RemoveIcon,
-  'add': AddIcon,
-  'edit': EditIcon,
+  remove: RemoveIcon,
+  add: AddIcon,
+  edit: EditIcon,
   trash: TrashIcon,
-  plus: PlusIcon
+  plus: PlusIcon,
+  search: SearchIcon,
+  done: DoneIcon,
+  menu: MenuIcon
 }
 export type IconName = keyof typeof ICONS;
 

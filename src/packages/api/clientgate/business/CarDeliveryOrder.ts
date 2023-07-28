@@ -59,7 +59,20 @@ export const useCarDeliveryOrder = (apiBase: AxiosInstance) => {
           }
         })
     },
-    CarDeliveryOrder_DeleteDetailMultiHQ: async (order: CarDeliveryOrder, cars: CarDeliveryOrderDetail[]) => {
+    CarDeliveryOrder_DeleteDetailHQ: async (order: CarDeliveryOrder, car: string) => {
+      return await apiBase.post<CarDeliveryOrderResponse, ApiResponse<string>>(
+        "/CarDeliveryOrder/DeleteDetailHQ",
+        {
+          strDeliveryOrderNo: order.DeliveryOrderNo,
+          strCarID: car
+        },
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          }
+        })
+    },
+    CarDeliveryOrder_DeleteDetailMultiHQ: async (order: CarDeliveryOrder, cars: string[]) => {
       return await apiBase.post<CarDeliveryOrderResponse, ApiResponse<string>>(
         "/CarDeliveryOrder/DeleteDetailMultiHQ",
         {
@@ -68,7 +81,7 @@ export const useCarDeliveryOrder = (apiBase: AxiosInstance) => {
               DeliveryOrderNo: order.DeliveryOrderNo
             },
             Lst_Car_DeliveryOrderDetail: cars.map(car => ({
-              CarId: car.CarId
+              CarId: car
             }))
           })
         },
@@ -82,11 +95,11 @@ export const useCarDeliveryOrder = (apiBase: AxiosInstance) => {
       const searchParam = {
         ...param
       };
-      if (param.CreatedDates) {
-        searchParam.CreatedDateFrom = param.CreatedDates[0] ? formatDate(param.CreatedDates[0]) : "";
-        searchParam.CreatedDateTo = param.CreatedDates[1] ? formatDate(param.CreatedDates[1]) : "";
+      if (param.CreatedDateFromTo) {
+        searchParam.CreatedDateFrom = param.CreatedDateFromTo[0] ? formatDate(param.CreatedDateFromTo[0]) : "";
+        searchParam.CreatedDateTo = param.CreatedDateFromTo[1] ? formatDate(param.CreatedDateFromTo[1]) : "";
       }
-      delete searchParam.CreatedDates;
+      delete searchParam.CreatedDateFromTo;
       return await apiBase.post<Partial<SearchCarDeliveryOrderParam>, ApiResponse<string>>(
         "/CarDeliveryOrder/ExportForHcareDL",
         {
@@ -103,11 +116,11 @@ export const useCarDeliveryOrder = (apiBase: AxiosInstance) => {
       const searchParam = {
         ...param
       };
-      if (param.CreatedDates) {
-        searchParam.CreatedDateFrom = param.CreatedDates[0] ? formatDate(param.CreatedDates[0]) : "";
-        searchParam.CreatedDateTo = param.CreatedDates[1] ? formatDate(param.CreatedDates[1]) : "";
+      if (param.CreatedDateFromTo) {
+        searchParam.CreatedDateFrom = param.CreatedDateFromTo[0] ? formatDate(param.CreatedDateFromTo[0]) : "";
+        searchParam.CreatedDateTo = param.CreatedDateFromTo[1] ? formatDate(param.CreatedDateFromTo[1]) : "";
       }
-      delete searchParam.CreatedDates;
+      delete searchParam.CreatedDateFromTo;
       return await apiBase.post<Partial<SearchCarDeliveryOrderParam>, ApiResponse<string>>(
         "/CarDeliveryOrder/ExportForHcareHQ",
         {
@@ -124,11 +137,11 @@ export const useCarDeliveryOrder = (apiBase: AxiosInstance) => {
       const searchParam = {
         ...param
       };
-      if (param.CreatedDates) {
-        searchParam.CreatedDateFrom = param.CreatedDates[0] ? formatDate(param.CreatedDates[0]) : "";
-        searchParam.CreatedDateTo = param.CreatedDates[1] ? formatDate(param.CreatedDates[1]) : "";
+      if (param.CreatedDateFromTo) {
+        searchParam.CreatedDateFrom = param.CreatedDateFromTo[0] ? formatDate(param.CreatedDateFromTo[0]) : "";
+        searchParam.CreatedDateTo = param.CreatedDateFromTo[1] ? formatDate(param.CreatedDateFromTo[1]) : "";
       }
-      delete searchParam.CreatedDates;
+      delete searchParam.CreatedDateFromTo;
       return await apiBase.post<Partial<SearchCarDeliveryOrderParam>, ApiResponse<string>>(
         "/CarDeliveryOrder/ExportDL",
         {
@@ -145,11 +158,11 @@ export const useCarDeliveryOrder = (apiBase: AxiosInstance) => {
       const searchParam = {
         ...param
       };
-      if (param.CreatedDates) {
-        searchParam.CreatedDateFrom = param.CreatedDates[0] ? formatDate(param.CreatedDates[0]) : "";
-        searchParam.CreatedDateTo = param.CreatedDates[1] ? formatDate(param.CreatedDates[1]) : "";
+      if (param.CreatedDateFromTo) {
+        searchParam.CreatedDateFrom = param.CreatedDateFromTo[0] ? formatDate(param.CreatedDateFromTo[0]) : "";
+        searchParam.CreatedDateTo = param.CreatedDateFromTo[1] ? formatDate(param.CreatedDateFromTo[1]) : "";
       }
-      delete searchParam.CreatedDates;
+      delete searchParam.CreatedDateFromTo;
       return await apiBase.post<Partial<SearchCarDeliveryOrderParam>, ApiResponse<string>>(
         "/CarDeliveryOrder/ExportHQ",
         {
@@ -162,7 +175,7 @@ export const useCarDeliveryOrder = (apiBase: AxiosInstance) => {
         }
       );
     },
-    CarDeliveryOrder_CreateDL: async (order: any, selectedCars: any[]): Promise<ApiResponse<CarDeliveryOrderResponse>> => {
+    CarDeliveryOrder_CreateHQ: async (order: any, selectedCars: any[]): Promise<ApiResponse<CarDeliveryOrderResponse>> => {
       const data = {
         Car_DeliveryOrder: {
           ...order,
@@ -177,7 +190,7 @@ export const useCarDeliveryOrder = (apiBase: AxiosInstance) => {
         }))
       }
       return await apiBase.post<any, ApiResponse<CarDeliveryOrderResponse>>(
-        "/CarDeliveryOrder/CreateDL",
+        "/CarDeliveryOrder/CreateHQ",
         {
           strJson: JSON.stringify(data)
         },
@@ -195,11 +208,11 @@ export const useCarDeliveryOrder = (apiBase: AxiosInstance) => {
         ...param,
         FlagDataWH: param.FlagDataWH ? "1" : "0"
       };
-      if (param.CreatedDates) {
-        searchParam.CreatedDateFrom = param.CreatedDates[0] ? formatDate(param.CreatedDates[0]) : "";
-        searchParam.CreatedDateTo = param.CreatedDates[1] ? formatDate(param.CreatedDates[1]) : "";
+      if (param.CreatedDateFromTo) {
+        searchParam.CreatedDateFrom = param.CreatedDateFromTo[0] ? formatDate(param.CreatedDateFromTo[0]) : "";
+        searchParam.CreatedDateTo = param.CreatedDateFromTo[1] ? formatDate(param.CreatedDateFromTo[1]) : "";
       }
-      delete searchParam.CreatedDates;
+      delete searchParam.CreatedDateFromTo;
       return await apiBase.post<Partial<SearchCarDeliveryOrderParam>, ApiResponse<CarDeliveryOrder>>(
         param.FlagDataWH ? "/CarDeliveryOrder/SearchWHHQ": "/CarDeliveryOrder/SearchHQ",
         {
@@ -219,11 +232,11 @@ export const useCarDeliveryOrder = (apiBase: AxiosInstance) => {
         ...param,
         FlagDataWH: param.FlagDataWH ? "1" : "0"
       };
-      if (param.CreatedDates) {
-        searchParam.CreatedDateFrom = param.CreatedDates[0] ? formatDate(param.CreatedDates[0]) : "";
-        searchParam.CreatedDateTo = param.CreatedDates[1] ? formatDate(param.CreatedDates[1]) : "";
+      if (param.CreatedDateFromTo) {
+        searchParam.CreatedDateFrom = param.CreatedDateFromTo[0] ? formatDate(param.CreatedDateFromTo[0]) : "";
+        searchParam.CreatedDateTo = param.CreatedDateFromTo[1] ? formatDate(param.CreatedDateFromTo[1]) : "";
       }
-      delete searchParam.CreatedDates;
+      delete searchParam.CreatedDateFromTo;
       return await apiBase.post<Partial<SearchCarDeliveryOrderParam>, ApiResponse<CarDeliveryOrder>>(
         param.FlagDataWH ? "/CarDeliveryOrder/SearchWHDL": "/CarDeliveryOrder/SearchDL",
         {

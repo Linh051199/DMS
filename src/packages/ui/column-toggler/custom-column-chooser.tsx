@@ -1,5 +1,5 @@
 import { useI18n } from "@/i18n/useI18n";
-import { ColumnOptions } from "@packages/ui/base-gridview";
+import { ColumnOptions } from "@/types";
 import List from "devextreme-react/list";
 import Popup, { Position, ToolbarItem } from "devextreme-react/popup";
 import ScrollView from "devextreme-react/scroll-view";

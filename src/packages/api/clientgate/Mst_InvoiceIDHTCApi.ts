@@ -11,9 +11,6 @@ export const useMst_InvoiceIDHTCApi = (apiBase: AxiosInstance) => {
     Mst_InvoiceIDHTC_Search: async (
       params: Mst_InvoiceIDHTCSearch
     ): Promise<ApiResponse<Mst_InvoiceIDHTC>> => {
-      console.log("params nè", params, {
-        ...params,
-      });
       return await apiBase.post<
         Mst_InvoiceIDHTCSearch,
         ApiResponse<Mst_InvoiceIDHTC>

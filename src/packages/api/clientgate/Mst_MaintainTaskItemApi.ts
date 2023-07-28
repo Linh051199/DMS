@@ -90,7 +90,6 @@ export const useMst_MaintainTaskItemApi = (apiBase: AxiosInstance) => {
       data.map((item) => {
         console.log(item)
       })
-      console.log(94, data)
       return await apiBase.post<SearchParam, ApiResponse<Mst_MaintainTaskItem>>(
         "/MstMaintainTaskItem/DeleteMultiplee",
         {

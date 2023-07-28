@@ -12,6 +12,8 @@ import { ExportConfirmBox } from "@packages/ui/modal";
 import { useLayoutEffect, useState } from "react";
 import { UploadDialog } from "../upload-dialog/upload-dialog";
 import "./header-form.scss";
+import {Icon} from "@packages/ui/icons";
+import {BButton} from "@packages/components/buttons";
 
 const keywordAtom = atom("");
 
@@ -22,6 +24,7 @@ export interface HeaderFormProps {
   onExportExcel?: (selectedOnly: boolean) => void;
   onDownloadTemplate?: () => void;
   selectedItems?: string[];
+  placeholder? : string;
 }
 
 export const HeaderForm = ({
@@ -31,6 +34,7 @@ export const HeaderForm = ({
   onExportExcel,
   onDownloadTemplate,
   selectedItems,
+  placeholder
 }: HeaderFormProps) => {
   const { t } = useI18n("Common");
   const [keyword, setKeyword] = useAtom(keywordAtom);
@@ -58,6 +62,7 @@ export const HeaderForm = ({
     <div className="headerform w-full">
       <div className="headerform__search w-1/3">
         <TextBox
+          className={"search-field"}
           showClearButton
           stylingMode={"outlined"}
           value={keyword}
@@ -65,20 +70,29 @@ export const HeaderForm = ({
           onEnterKey={handleSearch}
           onPaste={handleSearch}
           onValueChanged={(e) => setKeyword(e.value)}
+          placeholder={placeholder}
+          inputAttr={{
+            class: "search-field__input"
+          }}
+          
         >
           <Button
-            icon="search"
+            hoverStateEnabled={false}
+            activeStateEnabled={false}
+            focusStateEnabled={false}
             className={"border-none"}
             stylingMode={"outlined"}
-          />
+          >
+            <Icon name={"search"} size={14} className={"search-icon"} />
+          </Button>
         </TextBox>
       </div>
       <div className="headerform__button">
-        <Button
+        <BButton
           icon="/images/icons/plus-circle.svg"
           stylingMode={"contained"}
           type="default"
-          text={t("AddNew")}
+          label={t("AddNew")}
           onClick={onAddNew}
         />
       </div>
@@ -94,6 +108,9 @@ export const HeaderForm = ({
             wrapperAttr: {
               class: "headerform__menuitems",
             },
+          }}
+          elementAttr={{
+            class: "showmore-button",
           }}
           icon={"/images/icons/more.svg"}
         >

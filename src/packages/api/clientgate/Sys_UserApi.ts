@@ -147,11 +147,6 @@ export const useSys_user = (apiBase: AxiosInstance) => {
             PhoneNo: values.PhoneNo ?? "",
             Email: values.Email ?? "",
           }),
-        },
-        {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
         }
       );
     },

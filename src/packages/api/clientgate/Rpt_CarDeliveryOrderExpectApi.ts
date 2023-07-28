@@ -130,7 +130,6 @@ export const useRpt_CarDeliveryOrderExpectData = (apiBase: AxiosInstance) => {
     apiBase.defaults.headers["DealerCode"] = "HTC"
     return {
         Rpt_CarDeliveryOrderExpectData_SearchHQ: async (params: Rpt_CarDeliveryOrderExpectParam): Promise<ApiResponse<Rpt_CarDeliveryOrderExpectData>> => {
-            console.log(34, params);
             return await apiBase.post<Rpt_CarDeliveryOrderExpectParam, ApiResponse<Rpt_CarDeliveryOrderExpectData>>("RptCarDeliveryOrderExpect/SearchHQ", {
                 ...params,
             });

@@ -1,7 +1,7 @@
 import { ApiResponse } from "@/packages/types";
 import { AxiosInstance } from "axios";
 export interface Rpt_TonHoSoNganHangParam {
-  TDate_To: string;
+  TDate_To: string | Date;
   FlagDataWH: 1 | 0;
   MortageBankCode: string;
 }

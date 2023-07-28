@@ -12,6 +12,7 @@ import "./dx-styles.scss";
 import { AdminDashboardPage } from "./pages/admin-dashboard";
 import "./themes/generated/theme.additional.css";
 import "./themes/generated/theme.base.css";
+import {match, P} from "ts-pattern";
 
 export default function Root() {
   // to trigger localization service
@@ -27,24 +28,52 @@ export default function Root() {
               {protectedRoutes
                 .filter((route) => route.key === route.mainMenuKey)
                 .map((route) => {
-                  return (
-                    <Route
-                      key={route.key}
-                      path={`${route.path}`}
-                      element={route.getPageElement()}
-                    />
-                  );
+                  return match(route.getPageElement)
+                    .with(undefined, () => {
+                      return route.items?.map(child => {
+                        return (
+                          <Route
+                            key={child.key}
+                            path={`${route.path}/${child.path}`}
+                            element={child.getPageElement?.()}
+                          />
+                        )
+                      })
+                    })
+                    .otherwise(() => {
+                      return (
+                        <Route
+                          key={route.key}
+                          path={`${route.path}`}
+                          element={route.getPageElement?.()}
+                        />
+                      );
+                    })
                 })}
               {protectedRoutes
                 .filter((route) => route.key !== route.mainMenuKey)
                 .map((route) => {
-                  return (
-                    <Route
-                      key={route.key}
-                      path={`${route.path}`}
-                      element={route.getPageElement()}
-                    />
-                  );
+                  return match(route.getPageElement)
+                    .with(undefined, () => {
+                      return route.items?.map(child => {
+                        return (
+                          <Route
+                            key={child.key}
+                            path={`${child.path}`}
+                            element={child.getPageElement?.()}
+                          />
+                        )
+                      })
+                    })
+                    .otherwise(() => {
+                      return (
+                        <Route
+                          key={route.key}
+                          path={`${route.path}`}
+                          element={route.getPageElement?.()}
+                        />
+                      );
+                    })
                 })}
             </Route>
           </Route>

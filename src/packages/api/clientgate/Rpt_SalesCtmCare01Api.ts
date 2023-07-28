@@ -1,7 +1,7 @@
 import { ApiResponse } from "@/packages/types";
 import { AxiosError, AxiosInstance } from "axios";
 
-export interface Rpt_StatisticHTCStockOut01ParamRptSalesCtmCare01Param {
+export interface RptSalesCtmCare01Param {
   DeliveryDateFrom: string;
   DeliveryDateTo: string;
   CreateDealDateFrom: string;

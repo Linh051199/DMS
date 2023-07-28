@@ -1,9 +1,6 @@
 import { AxiosInstance } from "axios";
 import {
   ApiResponse,
-  CarDeliveryOrderResponse,
-  CarDeliveryOrder,
-  SearchCarDeliveryOrderParam,
   Car_CarForLXXSearch, Car_CarForLXX,
 } from "@packages/types";
 import { formatDate } from "@packages/common/date_utils";
@@ -22,6 +19,16 @@ export const useCarCarService = (apiBase: AxiosInstance) => {
         searchParam.SOApprovedDateTo = param.SOApprovedDates[1] ? formatDate(param.SOApprovedDates[1]) : undefined;
       }
       delete searchParam.SOApprovedDates;
+      if(param.MonthOrders) {
+        searchParam.MonthOrderFrom = param.MonthOrders[0] ? param.MonthOrders[0] : undefined;
+        searchParam.MonthOrderTo = param.MonthOrders[1] ? param.MonthOrders[1] : undefined;
+      }
+      delete searchParam.MonthOrders;
+      if(param.PaymentPercents) {
+        searchParam.PaymentPercentFrom = param.PaymentPercents[0] ? param.PaymentPercents[0] : undefined;
+        searchParam.PaymentPercentTo = param.PaymentPercents[1] ? param.PaymentPercents[1] : undefined;
+      }
+      delete searchParam.PaymentPercents;
       return await apiBase.post<Partial<Car_CarForLXXSearch>, ApiResponse<Car_CarForLXX>>(
         "/CarCar/SearchWHForLXXDL",
         {
@@ -45,6 +52,17 @@ export const useCarCarService = (apiBase: AxiosInstance) => {
         searchParam.SOApprovedDateTo = param.SOApprovedDates[1] ? formatDate(param.SOApprovedDates[1]) : undefined;
       }
       delete searchParam.SOApprovedDates;
+      if(param.MonthOrders) {
+        searchParam.MonthOrderFrom = param.MonthOrders[0] ? param.MonthOrders[0] : undefined;
+        searchParam.MonthOrderTo = param.MonthOrders[1] ? param.MonthOrders[1] : undefined;
+      }
+      delete searchParam.MonthOrders;
+      if(param.PaymentPercents) {
+        searchParam.PaymentPercentFrom = param.PaymentPercents[0] ? param.PaymentPercents[0] : undefined;
+        searchParam.PaymentPercentTo = param.PaymentPercents[1] ? param.PaymentPercents[1] : undefined;
+      }
+      delete searchParam.PaymentPercents;
+      
       return await apiBase.post<Partial<Car_CarForLXXSearch>, ApiResponse<Car_CarForLXX>>(
         "/CarCar/SearchWHForLXXHQ",
         {

@@ -58,33 +58,59 @@ export const useAuto_MapVIN_StorageRate = (apiBase: AxiosInstance) => {
           ...data,
           ...key,
         }),
-        ColsUpd: Object.keys(data).join(","),
+        // ColsUpd: Object.keys(data).join(","),
+        ColsUpd: "MBVal,MTVal,MNVal",
       });
     },
+
+    // Auto_MapVIN_StorageRate_ExportExcel: async (
+    //   keyword?: string
+    // ): Promise<ApiResponse<any>> => {
+    //   return await apiBase.post<
+    //     Partial<Auto_MapVIN_StorageRate>,
+    //     ApiResponse<string>
+    //   >("/AutoMapVINStorageRate/Export", {
+    //     KeyWord: keyword,
+    //     FlagActive: "",
+    //   });
+    // },
+
+    // Auto_MapVIN_StorageRate_ExportByListCode: async (
+    //   keys: any
+    // ): Promise<ApiResponse<any>> => {
+    //   console.log(81, keys)
+    //   return await apiBase.post<
+    //     Partial<Auto_MapVIN_StorageRate>,
+    //     ApiResponse<string>
+    //     >("/AutoMapVINDistributionSumRate/ExportByListCode", {
+    //     ListModelCodeAndSpecCodeAndColorExtCode: keys.join(","),
+    //   });
+    // },
 
     Auto_MapVIN_StorageRate_ExportExcel: async (
+      keys: string[],
       keyword?: string
     ): Promise<ApiResponse<any>> => {
-      return await apiBase.post<
-        Partial<Auto_MapVIN_StorageRate>,
-        ApiResponse<string>
-      >("/AutoMapVINStorageRate/Export", {
-        KeyWord: keyword,
-        FlagActive: "",
-      });
+      console.log("key ", keys);
+      if (keys.length > 0) {
+        return await apiBase.post<
+          Partial<Auto_MapVIN_StorageRate>,
+          ApiResponse<string>
+        >("/AutoMapVINDistributionSumRate/ExportByListCode", {
+          ListModelCodeAndSpecCodeAndColorExtCode: keys.map((item: any) => {
+            return item.ModelCode, item.SpecCode, item.ColorExtCode
+          }),
+        });
+      } else {
+        return await apiBase.post<
+          Partial<Auto_MapVIN_StorageRate>,
+          ApiResponse<string>
+        >("/AutoMapVINStorageRate/Export", {
+          KeyWord: keyword,
+          FlagActive: "",
+        });
+      }
     },
-
-    Auto_MapVIN_StorageRate_ExportByListCode: async (
-      keys: any
-    ): Promise<ApiResponse<any>> => {
-      return await apiBase.post<
-        Partial<Auto_MapVIN_StorageRate>,
-        ApiResponse<string>
-      >("/AutoMapVINStorageRate/ExportByListCode", {
-        ListStorageCodeAndModelCodeAndSpecCodeAndColorExtCode: keys,
-      });
-    },
-
     Auto_MapVIN_StorageRate_ExportTemplate: async (): Promise<
       ApiResponse<any>
     > => {

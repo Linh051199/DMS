@@ -7,6 +7,7 @@ import {MenuBar} from '../menu-bar';
 
 import './Header.scss';
 import {HeaderProps} from "@/types";
+import {Icon} from "@packages/ui/icons";
 
 export function Header({ menuToggleEnabled, title, toggleMenu, extraItems, items, logo, onMenuItemClick}: HeaderProps) {
   const menubar = useMemo(() => {
@@ -23,7 +24,9 @@ export function Header({ menuToggleEnabled, title, toggleMenu, extraItems, items
           widget={'dxButton'}
           cssClass={'menu-button'}
         >
-          <Button icon="menu" stylingMode="text" onClick={toggleMenu} />
+          <Button stylingMode="text" onClick={toggleMenu}>
+            <Icon name={'menu'} width={12} height={12} />
+          </Button>
         </Item>
         <Item
           location={'before'}

@@ -37,6 +37,15 @@ export interface DeleteBankAccountParam {
   AccountNo: string;
   BankCode: string;
 }
+
+export interface Mst_Province {
+  ProvinceCode: string,
+  AreaCode: string,
+  ProvinceName: string,
+  FlagActive: string,
+  LogLUDateTime: string,
+  LogLUBy: string
+}
 export interface Mst_Dealer {
   DealerCode: string;
   DealerType: string;
@@ -100,6 +109,8 @@ export interface Mst_UnitPriceAVN {
   LogLUBy: string;
 }
 
+
+
 export interface Mst_Transporter {
   TransporterCode: string;
   TransporterName: string;
@@ -131,6 +142,19 @@ export interface Auto_MapVIN_StorageRate {
   MNVal: string;
   LogLUDateTime: string;
   LogLUBy: string;
+}
+
+export interface Mst_CarAllocationByArea {
+  ModelCode: string,
+  ModelName: string,
+  SpecCode: string,
+  SpecDescription: string,
+  MBPercent: number,
+  MTPercent: number,
+  MNPercent: number,
+  FlagActive: string,
+  LogLUDateTime: string,
+  LogLUBy: string
 }
 
 export interface Mst_DelayTransports {
@@ -230,8 +254,6 @@ export interface Mst_DealerType {
   LogLUBy: string;
 }
 
-
-
 export interface CGResult<T> {
   PageIndex: number;
   PageSize: number;
@@ -296,6 +318,11 @@ export interface Search_Mst_Quota extends SearchParam {
   SOApprDateFrom: string;
   SOApprDateToInit: string;
   SOApprDateTo: string;
+}
+
+export interface Search_Mst_CarPrice extends SearchParam {
+  SOType: string;
+  SpecCode: string;
 }
 
 export interface Search_Mst_Bank extends SearchParam {
@@ -435,6 +462,7 @@ export interface Mst_BankAccount {
   AccountNoHTC: string;
   md_DealerName: string;
   mb_BankName: string;
+  BankName?: string;
 }
 
 // export interface Mst_BankAccount {
@@ -461,6 +489,28 @@ export interface Mst_AmplitudeApprOrd {
   LogLUBy: string;
   md_DealerName: string;
   mcm_ModelName: string;
+}
+
+export interface Mst_MaintainTaskItem {
+  MtnTkCode: string
+  MtnTkItemCode: string
+  MtnTkItemName: string
+  ViewIdx: string
+  FlagActive: string
+  LogLUDateTime: string
+  LogLUBy: string
+}
+
+export interface Mst_Part {
+  PartCode: string,
+  PartName: string,
+  PartNameFS: string,
+  PartDesc: string,
+  PartUnitCodeStd: string,
+  PartUnitCodeDefault: string,
+  FlagActive: string,
+  LogLUDateTime: string,
+  LogLUBy: string
 }
 export interface Sys_UserControl {
   DataList: {
@@ -520,22 +570,38 @@ export interface Mst_PointRegis {
   LogLUBy: string;
   md_DealerName: string; // Tên đại lý
 }
+type BizUserTypes = "MAIN.HQ" | "MAIN.DL"
 
 export interface User {
   UserCode: string;
-  SUDealerCode: string;
-  SUBankCode: string;
   UserName: string;
   UserPassword: string;
+  Email: string;
+  DealerCode: string;
+  BankCode: string;
+  TransporterCode?: string;
+  InsCompanyCode?: string;
+  Language?: string;
+  PhoneNo?: string;
+  TimeZone?: string;
+  UserID?: string;
   FlagSysAdmin: string;
   FlagSysViewer: string;
-  SUFlagActive: string;
+  FlagActive: string;
+  LogLUDTimeUTC?: string;
+  LogLUBy?: string;
+  md_DealerName: string;
+  mb_BankName: string;
+  mt_TransporterName?: string;
+  mic_InsCompanyName?: string;
+  BizUserType: BizUserTypes;
+  SUDealerCode?: string;
+  SUBankCode?: string;
+  SUFlagActive?: string;
   SUTransporterCode?: string;
-  SUInsCompanyCode: string;
+  SUInsCompanyCode?: string;
   NetworkID?: string;
   UserPasswordNew?: string;
-  PhoneNo?: string;
-  EMail?: string;
   MST?: string;
   OrganCode?: string;
   DepartmentCode?: string;
@@ -549,9 +615,6 @@ export interface User {
   CustomerCodeSys?: string;
   CustomerCode?: string;
   CustomerName?: string;
-  FlagActive: string;
-  LogLUDTimeUTC?: string;
-  LogLUBy: string;
   ACId?: string;
   ACAvatar?: string;
   ACEmail?: string;
@@ -565,6 +628,18 @@ export interface User {
   mdept_DepartmentName?: string;
   mnnt_DealerType?: string;
   ctitctg_CustomerGrpCode?: string;
+}
+export interface Permission {
+  GroupCode: string;
+  ObjectCode: string;
+  LogLUDateTime: string;
+  LogLUBy: string;
+  so_ObjectCode: string;
+  so_ObjectName: string;
+  so_ServiceCode: string;
+  so_ObjectType: string;
+  so_FlagExecModal: "0" | "1";
+  so_FlagActive: "0" | "1";
 }
 
 export interface Mst_SalesOrderType {
@@ -752,6 +827,25 @@ export interface Mst_InvoiceIDType {
   LogLUBy: string;
 }
 
+export interface Mst_InvoiceIDHTCSearch {
+  InvoiceIDCode?: string;
+  CreatedDateFrom?: string;
+  CreatedDateTo?: string;
+  FlagActive?: string;
+  Ft_PageIndex?: number;
+  Ft_PageSize?: number;
+  CreatedDate?: string;
+}
+export interface Mst_InvoiceIDHTC {
+  InvoiceIDCode: string;
+  InvoiceIDType: string;
+  CreatedDate: string;
+  CreatedBy: string;
+  FlagActive: string;
+  LogLUDTimeUTC: string;
+  LogLUBy: string;
+}
+
 export interface Mst_Discount {
   EffectiveDate: string;
   EffectiveDateEnd: string;
@@ -803,6 +897,24 @@ export interface Rpt_PrincipleContract {
   JobTitle: string;
   LogLUDateTime: string;
   LogLUBy: string;
+}
+
+export interface Rpt_PenaltyPmtDelay {
+  DEALERCODE: string;
+  DEALERNAME: string;
+  SOCODE: number;
+  OSO_APPROVEDDATE2: number;
+  TOTALAPPROVEDQUANTITY: number;
+  TOTALUNITPRICEACTUAL: number;
+  MAX_QTYDATEDELAYPMTCOC: number;
+  MAX_QTYDATEDELAYOPENGRM: number;
+  MAX_QTYDATEDELAYPMTGRM: number;
+  MAX_QTYDATEDELAY60PMT: number;
+  MAX_QTYDELAY40PMTREMAIN: number;
+  TOTALDATEPENALTY: number;
+  MDC_PENALTYPERCENT: number;
+  AMOUNTPENALTYTTC: number;
+  PENALIZEACTUAL: number;
 }
 
 export interface Mst_StorageGlobal {
@@ -958,7 +1070,7 @@ export interface SearchBankParam extends SearchParam {
 export interface DeleteTCGCarPriceParam {
   SOType: string;
   SpecCode: string;
-  EffectiveDate: string;
+  EffectiveDate: Date | string;
 }
 
 export interface Mst_TCGCarPrice {
@@ -971,10 +1083,17 @@ export interface Mst_TCGCarPrice {
   LogLUBy: string;
 }
 
-export interface SearchTCGCarPriceParam extends SearchParam {
+export interface SearchTCGCarPriceParam {
   SOType: string;
   SpecCode: string;
+  EffectiveDate: Date | string;
+  Ft_PageSize: number;
+  Ft_PageIndex: number;
 }
+// export interface SearchTCGCarPriceParam extends SearchParam {
+//   SOType: string;
+//   SpecCode: string;
+// }
 
 export interface DeleteBankParam {
   BankCode: string;
@@ -982,11 +1101,6 @@ export interface DeleteBankParam {
 }
 
 // ===================================
-
-export interface SearchTCGCarPriceParam extends SearchParam {
-  SOType: string;
-  SpecCode: string;
-}
 
 export interface Mst_Qualification {
   QualificationCode: string;
@@ -1036,6 +1150,7 @@ export interface SearchCarPriceParam {
   FlagActive: FlagActiveEnum;
   SOType: string;
   SpecCode: string;
+  EffectiveDate: Date | string;
   Ft_PageSize: number;
   Ft_PageIndex: number;
 }
@@ -1132,7 +1247,7 @@ export interface RptPayment01Data {
 }
 
 export interface RptHRSalesManParam {
-  DealerCodeInput: string;
+  DealerCodeInput: string[];
   AreaCode: string;
   SMType: string;
   HRMonthFrom: string;
@@ -1284,84 +1399,220 @@ export type RptStatisticHTCStockOut02Record =
   | RptStatisticHTCStockOut02ByDealerRecord
   | RptStatisticHTCStockOut02ByModelRecord;
 
-
-  export type RptSalesReportRecord =
+export type RptSalesReportRecord =
   | RptSalesReportByDealerRecord
   | RptSalesReportByModelRecord;
 
-  export interface RptSalesReportByDealerRecord {
-    DealerCode: string;
-    DealerName: string;
-    Total: number;
-    Level: number;
-    Day01: number;
-    Day02: number;
-    Day03: number;
-    Day04: number;
-    Day05: number;
-    Day06: number;
-    Day07: number;
-    Day08: number;
-    Day09: number;
-    Day10: number;
-    Day11: number;
-    Day12: number;
-    Day13: number;
-    Day14: number;
-    Day15: number;
-    Day16: number;
-    Day17: number;
-    Day18: number;
-    Day19: number;
-    Day20: number;
-    Day21: number;
-    Day22: number;
-    Day23: number;
-    Day24: number;
-    Day25: number;
-    Day26: number;
-    Day27: number;
-    Day28: number;
-    Day29: number;
-    Day30: number;
-    Day31: number;
-  }
+export interface RptSalesReportByDealerRecord {
+  DealerCode: string;
+  DealerName: string;
+  Total: number;
+  Level: number;
+  Day01: number;
+  Day02: number;
+  Day03: number;
+  Day04: number;
+  Day05: number;
+  Day06: number;
+  Day07: number;
+  Day08: number;
+  Day09: number;
+  Day10: number;
+  Day11: number;
+  Day12: number;
+  Day13: number;
+  Day14: number;
+  Day15: number;
+  Day16: number;
+  Day17: number;
+  Day18: number;
+  Day19: number;
+  Day20: number;
+  Day21: number;
+  Day22: number;
+  Day23: number;
+  Day24: number;
+  Day25: number;
+  Day26: number;
+  Day27: number;
+  Day28: number;
+  Day29: number;
+  Day30: number;
+  Day31: number;
+}
 
-  export interface RptSalesReportByModelRecord {
-    CVModelCode: string;
-    Total: number;
-    Level: number;
-    ModelName: string;
-    ModelProductionCode: string;
-    Day01: number;
-    Day02: number;
-    Day03: number;
-    Day04: number;
-    Day05: number;
-    Day06: number;
-    Day07: number;
-    Day08: number;
-    Day09: number;
-    Day10: number;
-    Day11: number;
-    Day12: number;
-    Day13: number;
-    Day14: number;
-    Day15: number;
-    Day16: number;
-    Day17: number;
-    Day18: number;
-    Day19: number;
-    Day20: number;
-    Day21: number;
-    Day22: number;
-    Day23: number;
-    Day24: number;
-    Day25: number;
-    Day26: number;
-    Day27: number;
-    Day28: number;
-    Day29: number;
-    Day30: number;
-    Day31: number;
-  }
+export interface RptSalesReportByModelRecord {
+  CVModelCode: string;
+  Total: number;
+  Level: number;
+  ModelName: string;
+  ModelProductionCode: string;
+  Day01: number;
+  Day02: number;
+  Day03: number;
+  Day04: number;
+  Day05: number;
+  Day06: number;
+  Day07: number;
+  Day08: number;
+  Day09: number;
+  Day10: number;
+  Day11: number;
+  Day12: number;
+  Day13: number;
+  Day14: number;
+  Day15: number;
+  Day16: number;
+  Day17: number;
+  Day18: number;
+  Day19: number;
+  Day20: number;
+  Day21: number;
+  Day22: number;
+  Day23: number;
+  Day24: number;
+  Day25: number;
+  Day26: number;
+  Day27: number;
+  Day28: number;
+  Day29: number;
+  Day30: number;
+  Day31: number;
+}
+
+export interface SearchCarDeliveryOrderParam {
+  DeliveryOrderNo: string;
+  DealerCode: string;
+  DeliveryOrderStatus: string;
+  CreatedDateFrom: string;
+  CreatedDateTo: string;
+  CarId: string;
+  DeliveryVIN: string;
+  SOCode: string;
+  Ft_PageIndex: number;
+  Ft_PageSize: number;
+  CreatedDateFromTo: Date[];
+  FlagDataWH: boolean;
+}
+export interface CarDeliveryOrder {
+  MyIdxSeq: number;
+  DeliveryOrderNo: string;
+  DealerCode: string;
+  md_DealerName: string;
+  DeliveryAddress: string;
+  TransportCompanyName: string;
+  TransportCompanyPhoneNo: string;
+  TransportCompanyFaxNo: string;
+  DeliveryOrderStatus: string;
+  CreatedDate: string;
+  CreatedBy: string;
+  ApprovedDate1: string;
+  ApprovedBy1: string;
+  ApprovedDate2: string;
+  ApprovedBy2: string;
+  LogLUDateTime: string;
+  LogLUBy: string;
+}
+
+export interface CarDeliveryOrderDetail {
+  MyIdxSeq: number;
+  DeliveryOrderNo: string;
+  CarId: string;
+  StorageCode: string;
+  DeliveryVIN: string;
+  DeliveryStartDate: Date | null;
+  DeliveryOutDate: string;
+  DeliveryExpectedDate: Date | null;
+  TransportMinutesExpectedDate: Date | null;
+  DeliveryEndDate: string;
+  DeliveryRemark: string | null;
+  ConfirmRemark: string | null;
+  ConfirmStatus: string;
+  ConfirmDate: string;
+  ConfirmBy: string;
+  LogLUDateTime: string;
+  LogLUBy: string;
+  ModelCode: string;
+  ColorCode: string;
+  SpecCode: string;
+  SpecDescription: string;
+  ActualSpec: string;
+  AC_SpecDescription: string;
+  PMGBankGuaranteeNo: string;
+  VINColorCode: string;
+  VIN_Color_VN_Combined: string;
+  CVEngineNo: string;
+  PaymentPercent: string;
+  GuaranteePercent: string;
+  OSOSOCode: string;
+  CVLocation: string | null;
+  OSODCarDueDate: string;
+  OCNCode: string;
+  UnitPriceActual: number;
+  BankCode: string;
+  cdo_ApprovedDate2: string;
+}
+
+export interface CarDeliveryOrderResponse {
+  Lst_Car_DeliveryOrderDetail: CarDeliveryOrderDetail[];
+  Lst_Car_DeliveryOrder: CarDeliveryOrder[];
+}
+
+export interface Mst_Dealer_Address {
+  DealerCode: string;
+  Idx: number;
+  DealerAddress: string;
+}
+
+export interface Car_CarForLXXSearch {
+  VIN: string; // Số VIN
+  FlagMappedVIN: string; // TT map Vin (1=đã map)
+  SOCode: string; // Số đơn hàng
+  FlagCancelCar: string; // TT hủy xe (0=đã hủy)
+  DealerCode: string; // Đại lý
+  FlagAbleToCreateDO: string; // Có thể xuất xe (1=Có thể)
+  FlagCQDate: string; // Ngày kiểm tra CL (1=có) --> Ko có truyền điều kiện vào mà để xử lý sau khi call hàm: CVCQStartDate
+  FlagTaxPaymentDate: string; // Ngày nộp thuế (1=có) --> Ko có truyền điều kiện vào mà để xử lý dữ liệu sau khi call hàm: CVTaxPaymentDate
+  PaymentPercentFrom: string; // % thanh toán từ
+  PaymentPercentTo: string; // % thanh toán đến
+  MonthOrderFrom: string; // Tháng đơn hàng từ
+  MonthOrderTo: string; // Tháng đơn hàng đến
+  SOApprovedDateFrom: string; // Ngày xác nhận ĐH từ
+  SOApprovedDateTo: string; // Ngày xác nhận ĐH đến
+  DealerContractNo: string; // Số PLHĐ/Số HĐ --> Thấy có truyền vào ở hàm Client cũ nhưng không thấy truyền điều kiện vào hàm Biz ??
+  CarId: string; // Số xe - Tìm kiếm 1 hàm Get
+  SOApprovedDates?: Date[];
+  MonthOrders?: string[];
+  PaymentPercents?: string[];
+  Ft_PageIndex: number;
+  Ft_PageSize: number;
+}
+
+export interface Car_CarForLXX {
+  CarId: any; // Mã xe
+  DealerCode: any; // Mã đại lý
+  OSOSOCode: any; // Số đơn hàng
+  OSODApprovedDate: any; // Ngày xác nhận ĐH
+  VIN: any; // VIN
+  ModelCode: any; // Mã model
+  ModelName: any; // Tên model
+  SpecCode: any; // Mã spec thực tế
+  SpecDescription: any; // Đặc tả xe thực tế
+  VINColorCode: any; // Mã màu/Mã màu thực tế
+  VIN_Color_VN_Combined: any; // Tên màu TV/Tên màu thực tế
+  STORAGECODECURRENT: any; // Mã kho
+  UNITPRICEACTUAL: any; // Giá cuối cùng
+  PMPDAMOUNTTOTAL: any; // Tổng thanh toán
+  Payment_Deposit_Percent: any; // % TT cọc
+  Grt_Percent: any; // % bảo lãnh
+  Payment_Percent: any; // % thanh toán
+  DutyCompleted_Percent: any; // % hoàn thành nghĩa vụ giao xe
+  DutyCompleted_Percent_AF: any; // % HT điều kiện giao xe
+  CarCancelRemark: any; // Ghi chú hủy xe
+  MapVINDate: any; // Ngày map VIN
+  SSR_REARRANGESTATUS: any; // TT lệnh điều chuyển kho
+  OCNCode: any; // OCN
+  CVEngineNo: any; // Số máy
+  DlrCtrNo: any; // Số PLHĐ/Số HĐ
+  //sd: any; // Ngày đến hạn trả xe ĐL
+}

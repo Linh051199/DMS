@@ -55,20 +55,17 @@ export const useMst_MinInventory = (apiBase: AxiosInstance) => {
       keyword?: string
     ): Promise<ApiResponse<any>> => {
       if (keys.length > 0) {
+        console.log("===keys", keys);
+        const list = keys
+          .map((item) => {
+            return `${item.SpecCode},${item.ModelCode}`;
+          })
+          .join(";");
         return await apiBase.post<
           Partial<Mst_MinInventory>,
           ApiResponse<string>
         >("/MstMinInventory/ExportByListCode", {
-          ListModelCode: keys
-            .map((item: Partial<Mst_MinInventory>) => {
-              return item.ModelCode;
-            })
-            .join(","),
-          ListSpecCode: keys
-            .map((item: Partial<Mst_MinInventory>) => {
-              return item.SpecCode;
-            })
-            .join(","),
+          ListSpecCodeAndModelCode: list,
         });
       } else {
         return await apiBase.post<

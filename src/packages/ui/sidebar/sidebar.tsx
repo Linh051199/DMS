@@ -34,7 +34,11 @@ export function Sidebar(props: React.PropsWithChildren<SidebarProps>) {
   const { isLarge } = useScreenSize();
   function normalizePath() {
     return items.filter(item => !item.isHidden).map((item) => (
-      { ...item, text: t(item.text), expanded: isLarge, path: item.path && !(/^\//.test(item.path)) ? `/${item.path}` : item.path }
+      { ...item, 
+        text: t(item.subMenuTitle),
+        expanded: isLarge,
+        path: item.path && !(/^\//.test(item.path)) ? `/${item.path}` : item.path,
+      }
     ));
   }
   const treeItems = useMemo(
@@ -86,6 +90,7 @@ export function Sidebar(props: React.PropsWithChildren<SidebarProps>) {
             ref={treeViewRef}
             items={treeItems}
             keyExpr={'path'}
+            displayExpr={"subMenuTitle"}
             selectionMode={'single'}
             focusStateEnabled={false}
             expandEvent={'click'}
