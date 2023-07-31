@@ -57,6 +57,8 @@ export * from "./Master2/rate-appr-order-model-max/list/rate-appr-order-model-ma
 export * from "./Master2/invoiceID/list/invoiceID";
 export * from "./reports/ABasePivot/list/base";
 export * from "./reports/RptPayment01";
+export * from "./reports/Rpt_PmtBankMarketSum01/Rpt_PmtBankMarketSum01";
+export * from "./reports/Rpt_DLSDealLoanEUBankMarketSum01/list/Rpt_DLSDealLoanEUBankMarketSum01_Tab";
 export * from "./reports/Rpt_SalesReport/list/Rpt_SalesReport";
 export * from "./reports/Rpt_PivotRearrangeCB/list/Rpt_PivotRearrangeCB";
 export * from "./reports/Rpt_BaoCaoXeThieuBBBG/list/Rpt_BaoCaoXeThieuBBBG";

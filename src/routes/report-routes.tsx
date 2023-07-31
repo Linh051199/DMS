@@ -52,7 +52,10 @@ import {
   Rpt_BaoCaoXeThieuBBBG,
   Rpt_PivotRearrangeCB,
   Rpt_SalesReport,
+  Rpt_DLSDealLoanEUBankMarketSum01,
+  Rpt_PmtBankMarketSum01,
 } from "@/pages";
+import Rpt_DLSDealLoanEUBankMarketSum01_Tabs from "@/pages/reports/Rpt_DLSDealLoanEUBankMarketSum01/list/Rpt_DLSDealLoanEUBankMarketSum01_Tab";
 
 import { RouteItem } from "@/types";
 export const reportRoutes: RouteItem[] = [
@@ -550,5 +553,25 @@ export const reportRoutes: RouteItem[] = [
     permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
 
     getPageElement: () => <Rpt_SalesReport />,
+  },
+
+  {
+    key: "Rpt_DLSDealLoanEUBankMarketSum01", // Key menu con
+    path: "report/Rpt_DLSDealLoanEUBankMarketSum01", // Address trên browser
+    subMenuTitle: "(R4)Rpt_DLSDealLoanEUBankMarketSum01", // Title menu con
+    mainMenuKey: "report", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
+
+    getPageElement: () => <Rpt_DLSDealLoanEUBankMarketSum01_Tabs />,
+  },
+
+  {
+    key: "Rpt_PmtBankMarketSum01", // Key menu con
+    path: "report/Rpt_PmtBankMarketSum01", // Address trên browser
+    subMenuTitle: "(R4)Rpt_PmtBankMarketSum01", // Title menu con
+    mainMenuKey: "report", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
+
+    getPageElement: () => <Rpt_PmtBankMarketSum01 />,
   },
 ];

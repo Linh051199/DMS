@@ -50,7 +50,6 @@ export const SearchPanelV2 = forwardRef(({
   enableColumnToggler = true,
   isProcessing=false
 }: SearchPanelProps, ref: ForwardedRef<Form>) => {
-  console.log('ref:', ref)
   const { t } = useI18n("Common");
   const { loadState, saveState } = useSavedState<ColumnOptions[]>({
     storeKey: `search-panel-settings-${storeKey}`,
