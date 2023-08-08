@@ -1,0 +1,37 @@
+@import "./custom-styles/datagrid";
+@import "./custom-styles/button";
+@import "./custom-styles/input";
+@import "./custom-styles/form";
+@import "./custom-styles/common";
+
+.btn-search {
+  .dx-button-content {
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+  }
+
+  .dx-button-text {
+    text-transform: none !important;
+    font-size: 14px;
+  }
+}
+.dx-checkbox-icon {
+  width: 14px !important;
+  height: 14px !important;
+}
+.dx-icon-clear {
+  background-image: url("/images/icons/x.svg") !important;
+  background: transparent;
+  background-size: 14px;
+  //background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAHHSURBVHgBrVNdTsJAEJ7ZAjFGE29gPQF6AusNPIDB9tEQorz5gLqoib6hQcKj6wngBnAD8ASWGxDlAWHZdXahpTTEF91ku38z33wz8xXgjwPXXZ5U6h4DdogIrjlrrQZMSiEey+GvAP5FbUdv515pe6y1HtBr3xohyxOKARM4nVSTQDGAf1lzdTbXIWtANQvEfam7Al6pH2vm1AgI8GtyIJ7KQ3PPIgOVyXLrzPAIpAzTVGEku/aNbBYsIQYw0RHxFKezMsB4qLPZXqHSuImMCtfNG3L6sJSJnUmRGHnmnJlHz/gEEIqHUtsCXjeeaeEEQiEYoFacZlXwomEWFiovAw1gALqLFNClSr9HEcVtkRPTKk0eO9+XeJwOYp8Ku7tSg/RQwPS6fXrMARiGVL58MucocsQkWRNqXd5oY7G3LfI0sg452A7oXK6HSj1HtKkmnCic4+dkT25lPAdZCx22J/hZGOvg9KrRomWfhHIEGztDwYNhkqrPmy6Mx2C1QsV7uysGyxQMFWcS2B6TgfweeelcpZRLoTmsmkhnNYqSM240QccQ9FzKZLVPX5dmG53NIMlu7c80B5K+aa+lSUUGpbppef/L+AGJlct9GWOI4gAAAABJRU5ErkJggg==") !important;
+}
+
+.dx-show-clear-button .dx-icon-clear::before {
+  //background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAHHSURBVHgBrVNdTsJAEJ7ZAjFGE29gPQF6AusNPIDB9tEQorz5gLqoib6hQcKj6wngBnAD8ASWGxDlAWHZdXahpTTEF91ku38z33wz8xXgjwPXXZ5U6h4DdogIrjlrrQZMSiEey+GvAP5FbUdv515pe6y1HtBr3xohyxOKARM4nVSTQDGAf1lzdTbXIWtANQvEfam7Al6pH2vm1AgI8GtyIJ7KQ3PPIgOVyXLrzPAIpAzTVGEku/aNbBYsIQYw0RHxFKezMsB4qLPZXqHSuImMCtfNG3L6sJSJnUmRGHnmnJlHz/gEEIqHUtsCXjeeaeEEQiEYoFacZlXwomEWFiovAw1gALqLFNClSr9HEcVtkRPTKk0eO9+XeJwOYp8Ku7tSg/RQwPS6fXrMARiGVL58MucocsQkWRNqXd5oY7G3LfI0sg452A7oXK6HSj1HtKkmnCic4+dkT25lPAdZCx22J/hZGOvg9KrRomWfhHIEGztDwYNhkqrPmy6Mx2C1QsV7uysGyxQMFWcS2B6TgfweeelcpZRLoTmsmkhnNYqSM240QccQ9FzKZLVPX5dmG53NIMlu7c80B5K+aa+lSUUGpbppef/L+AGJlct9GWOI4gAAAABJRU5ErkJggg==") !important;
+  background-image: url("/images/icons/x.svg") !important;
+  content: ''
+}
+
+.dx-checkbox-icon {
+  border: solid 1px #5F7D95 !important;
+}

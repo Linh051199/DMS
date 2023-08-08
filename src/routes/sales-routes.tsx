@@ -2,6 +2,8 @@ import {
   AdminPage,
   DeliveryOrderManagementPage,
   DeliveryOrderDetailPage,
+  Sto_TranspReqManagementPage,
+  Sto_TranspReqDetailPage,
 } from "@/pages";
 import { DeliveryOrderDetailClonePage } from "@/pages/sales/delivery-order-clone/delivery-order-detail-clone";
 import { DeliveryOrderManagementClonePage } from "@/pages/sales/delivery-order-clone/delivery-order-list-clone";
@@ -62,6 +64,28 @@ export const salesRoutes: RouteItem[] = [
         path: "sales/deliveryOrderClone/manageDeliveryOrderClone/:code",
         mainMenuKey: "sales",
         getPageElement: () => <DeliveryOrderDetailClonePage />,
+      },
+    ],
+  },
+
+  {
+    key: "transp-req",
+    path: "sales/transpReq",
+    subMenuTitle: "TranspReq",
+    mainMenuKey: "sales",
+    items: [
+      {
+        key: "manageTranspReq",
+        path: "sales/transpReq/manageTranspReq",
+        subMenuTitle: "TranspReqManagement",
+        mainMenuKey: "sales",
+        getPageElement: () => <Sto_TranspReqManagementPage />,
+      },
+      {
+        key: "manageTranspReqDetail",
+        path: "sales/transpReq/manageTranspReq/:code",
+        mainMenuKey: "sales",
+        getPageElement: () => <Sto_TranspReqDetailPage />,
       },
     ],
   },

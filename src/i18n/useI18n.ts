@@ -10,7 +10,6 @@ interface Locale {
 }
 export const useI18n = (cat: string) => {
   const [data] = useAtom(localeAtom);
-  // console.log("🚀 ~ data:", data)
 
   const cache = useRef<Locale[]>([]);
 
@@ -24,15 +23,15 @@ export const useI18n = (cat: string) => {
 
   const translateWithFormat = (key: string, ...args: any[]) => {
     // format string
-
+    
     const format = (str: string, ...args: any[]) => {
       return str.replace(/{(\d+)}/g, (match, i) => {
         return typeof args[i] != "undefined" ? args[i] : match;
       });
-    };
+    }
     const text = translate(key);
     return format(text, ...args);
-  };
+  }
   const translate = (key: string) => {
     if (!key || key == "") return key;
     const texts = data;
@@ -63,6 +62,6 @@ export const useI18n = (cat: string) => {
   };
   return {
     t: translate,
-    tf: translateWithFormat,
+    tf: translateWithFormat
   };
 };

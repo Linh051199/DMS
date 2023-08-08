@@ -47,7 +47,7 @@ export interface Rpt_GuaranteeDebit01Record {
   TT_EFFRECEIVED: number;
   TT_DISCOUNTVALUE: number;
   TT_EFFREMAIN: number;
-  BANKNAME: string ;
+  BANKNAME: string;
 }
 
 interface Rpt_GuaranteeDebit01ParamData {
@@ -69,6 +69,7 @@ export const useRpt_GuaranteeDebit01 = (apiBase: AxiosInstance) => {
     Rpt_GuaranteeDebit01_ExportSearchHQ: async (
       params: Rpt_GuaranteeDebit01Param
     ): Promise<ApiResponse<string>> => {
+      console.log("🚀 ~ params:", params);
       return await apiBase.post<Rpt_GuaranteeDebit01Param, ApiResponse<string>>(
         "/RptGuaranteeDebit01/ExportSearchHQ",
         {

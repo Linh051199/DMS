@@ -275,6 +275,7 @@ const GridViewRaw = ({
         onHiding={onHiding}
         onApply={onApply}
         actualColumns={realColumns}
+        gridInstance={datagridRef.current?.instance}
       />
     );
   }, [chooserVisible, realColumns, columns]);

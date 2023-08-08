@@ -391,46 +391,49 @@ export const BasePivot = () => {
   );
 };
 
-// <DataGrid
-// id="gridContainer"
-// dataSource={data ?? []}
-// showBorders={true}
-// showRowLines={true}
-// showColumnLines={true}
-// remoteOperations={false}
-// columnAutoWidth={true}
-// cacheEnabled={true}
-// noDataText={t("ThereIsNoData")}
-// height={windowSize.height - 150}
-// onToolbarPreparing={onToolbarPreparing}
-// columnResizingMode="widget"
-// allowColumnResizing={true}
-// >
-// <ColumnChooser enabled={true} />
-// <ColumnFixing enabled={true} />
-// <HeaderFilter allowSearch={true} visible={true} />
-// <Scrolling
-//   showScrollbar={"always"}
-//   mode={"standard"}
-//   rowRenderingMode={"standard"}
-// />
-// <Paging enabled={true} />
-// <Pager visible={true} />
-// <Toolbar>
-//   {!!allToolbarItems &&
-//     allToolbarItems.map((item, index) => {
-//       return (
-//         <ToolbarItem key={index} location={item.location}>
-//           {item.widget === "dxButton" && (
-//             <Button {...item.options} />
-//           )}
-//           {!!item.render && item.render()}
-//         </ToolbarItem>
-//       );
-//     })}
-// </Toolbar>
-
-// {realColumns.map((column: ColumnOptions, index: number) => (
-//   <Column key={index} {...column} />
-// ))}
-// </DataGrid>
+{
+  /* <DataGrid
+  id="gridContainer"
+  dataSource={data ?? []}
+  showBorders={true}
+  showRowLines={true}
+  showColumnLines={true}
+  // columns={realColumns}
+  columnAutoWidth={true}
+  allowColumnResizing={true}
+  columnResizingMode="widget"
+  onToolbarPreparing={onToolbarPreparing}
+  allowColumnReordering={false}
+  className={"mx-auto my-5"}
+  width={"100%"}
+  height={windowSize.height - 150} // fix toggle column height
+>
+  <ColumnFixing enabled={true} />
+  <Sorting mode="multiple" />
+  <HeaderFilter visible={true}>
+    <Search enabled={true} />
+  </HeaderFilter>
+  <Paging enabled={false} />
+  <Scrolling showScrollbar={"always"} />
+  {realColumns.map((col: any) => (
+    <Column key={col.dataField} {...col} />
+  ))}
+  <Toolbar>
+    <Item>
+      <CustomColumnChooser
+        title={t("ToggleColumn")}
+        applyText={t("Apply")}
+        cancelText={t("Cancel")}
+        selectAllText={t("SelectAll")}
+        container={"#gridContainer"}
+        button={"#myColumnChooser"}
+        visible={visible}
+        columns={columns}
+        actualColumns={realColumns}
+        onHiding={onHiding}
+        onApply={onApply}
+      />
+    </Item>
+  </Toolbar>
+</DataGrid>; */
+}

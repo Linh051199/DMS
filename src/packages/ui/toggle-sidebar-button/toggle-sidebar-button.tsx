@@ -12,10 +12,14 @@ export const ToggleSidebarButton = () => {
     setSidebarOpen(true)
   }
   return (
-    <Button hoverStateEnabled={false} activeStateEnabled={false} focusStateEnabled={false} 
-            visible={!isOpen} className={'toggle-sidebar'} stylingMode={'text'} 
-            onClick={toggleSidebar} >
-      <Icon name={'menu'} width={12} height={12} />
-    </Button>
+    <div className={'dms-sidebar__toolbar'}>
+      <Icon 
+        className={'cursor-pointer'} 
+        name={'menu'} 
+        width={12} 
+        height={12} 
+        onClick={toggleSidebar}
+      />
+    </div>
   )
 }

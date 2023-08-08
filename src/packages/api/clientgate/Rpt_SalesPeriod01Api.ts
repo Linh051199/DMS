@@ -3,7 +3,7 @@ import { AxiosInstance } from "axios";
 export interface Rpt_SalesPeriod01Param {
   ReportType?: "Model" | "Dealer" | "";
   Type: string;
-  Year?: string;
+  Year?: any;
   Quarter?: string;
   Month?: string;
   Dealer?: string;

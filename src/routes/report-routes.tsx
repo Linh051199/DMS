@@ -1,7 +1,6 @@
 import {
   AdminPage,
   BasePivot,
-  RptPayment01Page,
   RptStaticGrpDealerInSock02,
   Rpt_BaoCaoMoi,
   Rpt_CarDeliveryOrderExpect,
@@ -19,7 +18,6 @@ import {
   Rpt_ShareHTCStock03,
   Rpt_SMCertificate,
   Rpt_StatisticGrpDealer02,
-  Rpt_StatisticGrpDealer03,
   Rpt_StatisticGrpDealer03Clone,
   Rpt_StatisticHTCBackOrderDealer01,
   Rpt_StatisticHTCBackOrderSpecCode01,
@@ -52,8 +50,9 @@ import {
   Rpt_BaoCaoXeThieuBBBG,
   Rpt_PivotRearrangeCB,
   Rpt_SalesReport,
-  Rpt_DLSDealLoanEUBankMarketSum01,
   Rpt_PmtBankMarketSum01,
+  Rpt_PivotRetailContract,
+  Rpt_ProfileGuaranteeEffect,
 } from "@/pages";
 import Rpt_DLSDealLoanEUBankMarketSum01_Tabs from "@/pages/reports/Rpt_DLSDealLoanEUBankMarketSum01/list/Rpt_DLSDealLoanEUBankMarketSum01_Tab";
 
@@ -333,6 +332,16 @@ export const reportRoutes: RouteItem[] = [
   },
 
   {
+    key: "Rpt_ProfileGuaranteeEffect", // Key menu con
+    path: "report/Rpt_ProfileGuaranteeEffect", // Address trên browser
+    subMenuTitle: "(R1.1)Rpt_ProfileGuaranteeEffect", // Title menu con
+    mainMenuKey: "report", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
+
+    getPageElement: () => <Rpt_ProfileGuaranteeEffect />,
+  },
+
+  {
     key: "Rpt_SalesPeriod01", // Key menu con
     path: "report/Rpt_SalesPeriod01", // Address trên browser
     subMenuTitle: "(R2)Rpt_SalesPeriod01", // Title menu con
@@ -573,5 +582,15 @@ export const reportRoutes: RouteItem[] = [
     permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
 
     getPageElement: () => <Rpt_PmtBankMarketSum01 />,
+  },
+
+  {
+    key: "Rpt_PivotRetailContract", // Key menu con
+    path: "report/Rpt_PivotRetailContract", // Address trên browser
+    subMenuTitle: "(R4)Rpt_PivotRetailContract", // Title menu con
+    mainMenuKey: "report", // Key của menu cha
+    permissionCode: "MNU_ADMIN_MST_TRANSPORTERCAR",
+
+    getPageElement: () => <Rpt_PivotRetailContract />,
   },
 ];

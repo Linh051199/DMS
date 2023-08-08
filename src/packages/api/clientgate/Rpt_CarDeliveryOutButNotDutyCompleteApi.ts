@@ -6,7 +6,7 @@ export enum EReportType {
 }
 
 export interface Rpt_CarDeliveryOutButNotDutyCompleteParam {
-  ReportType: EReportType;
+  ReportType: EReportType | "";
   DateFrom: string;
   DateTo: string;
   FlagDataWH: 1 | 0;

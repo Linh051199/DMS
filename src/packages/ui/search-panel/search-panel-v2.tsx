@@ -28,6 +28,7 @@ import { useWindowSize } from "@packages/hooks/useWindowSize";
 import "./search-panel-v2.scss";
 import { useAtomValue } from "jotai";
 import {ColumnOptions} from "@/types";
+import FieldToggler from "@packages/ui/field-toggler/field-toggler";
 
 interface ItemProps extends IItemProps {
   order?: number;
@@ -50,6 +51,7 @@ export const SearchPanelV2 = forwardRef(({
   enableColumnToggler = true,
   isProcessing=false
 }: SearchPanelProps, ref: ForwardedRef<Form>) => {
+  console.log('ref:', ref)
   const { t } = useI18n("Common");
   const { loadState, saveState } = useSavedState<ColumnOptions[]>({
     storeKey: `search-panel-settings-${storeKey}`,
@@ -169,7 +171,7 @@ export const SearchPanelV2 = forwardRef(({
         )}
       </div>
       {enableColumnToggler && (
-        <CustomColumnChooser
+        <FieldToggler
           title={t("SearchPanelSettings")}
           applyText={t("Apply")}
           cancelText={t("Cancel")}

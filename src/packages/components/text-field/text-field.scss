@@ -1,11 +1,17 @@
 .text-field {
-  .dx-texteditor-container {
-    border: 0.5px solid #5F7D95;
-    border-radius: 2px;
-    .dx-texteditor-input-container {
-      .dx-placeholder {
-        top: -4px;
-      }
+  
+}
+
+.dx-root-simple-item {
+  .dms-form-field {
+    &.dx-field-item {
+      padding-bottom: 0;
     }
   }
+  .dx-field-item-label {
+    &.dx-field-item-label-location-top {
+      padding-bottom: 6px;
+    }
+  }
+  margin-bottom: 0;
 }

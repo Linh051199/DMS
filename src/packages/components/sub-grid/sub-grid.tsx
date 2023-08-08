@@ -1,4 +1,4 @@
-import {ForwardedRef, forwardRef, MutableRefObject, useCallback, useEffect, useMemo, useReducer, useState} from "react";
+import { ForwardedRef, forwardRef, MutableRefObject, useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import DataGrid, {
   Button as DxButton,
   Column,
@@ -9,11 +9,11 @@ import DataGrid, {
   Toolbar
 } from "devextreme-react/data-grid";
 import "src/packages/components/sub-grid/sub-grid.scss"
-import {ColumnOptions} from "@/types";
-import {useVisibilityControl} from "@packages/hooks";
-import {useSavedState} from "@packages/ui/base-gridview/components";
+import { ColumnOptions } from "@/types";
+import { useVisibilityControl } from "@packages/hooks";
+import { useSavedState } from "@packages/ui/base-gridview/components";
 import CustomColumnChooser from "@packages/ui/column-toggler/custom-column-chooser";
-import {useI18n} from "@/i18n/useI18n";
+import { useI18n } from "@/i18n/useI18n";
 import { DeleteMultipleConfirmationBox } from "src/packages/components/delete-confirm-box";
 
 const noop = (e: any) => {
@@ -42,10 +42,10 @@ export const SubGrid = forwardRef((
     onStartDelete,
     keyExpr
   }: SubGridProps, ref: ForwardedRef<DataGrid>) => {
-  const {t} = useI18n("Common");
-  const chooserVisible = useVisibilityControl({defaultVisible: false});
+  const { t } = useI18n("Common");
+  const chooserVisible = useVisibilityControl({ defaultVisible: false });
 
-  const {saveState, loadState} = useSavedState<ColumnOptions[]>({
+  const { saveState, loadState } = useSavedState<ColumnOptions[]>({
     storeKey: storeKey ?? "empty",
   });
 
@@ -129,6 +129,7 @@ export const SubGrid = forwardRef((
       />
     );
   }, [chooserVisible, realColumns, columns]);
+
   const allToolbarItems: IToolbarItemProps[] = useMemo(() => {
     return [
       ...(toolbarItems || []),
@@ -146,13 +147,13 @@ export const SubGrid = forwardRef((
   const innerSavingRowHandler = useCallback((e: any) => {
     if (e.changes && e.changes.length > 0) {
       // we don't enable batch mode, so only 1 change at a time.
-      const {type} = e.changes[0];
+      const { type } = e.changes[0];
       if (type === "remove") {
         // set selected keys, then open the confirmation
         setDeletingId(e.changes[0].key);
-        
+
         // show the confirmation box of Delete single case
-        if(onStartDelete && onStartDelete !== noop) {
+        if (onStartDelete && onStartDelete !== noop) {
           onStartDelete(e.changes[0].key)
         } else {
           deleteConfirmationVisible.open();
@@ -165,10 +166,10 @@ export const SubGrid = forwardRef((
     }
   }, []);
   const onDeleteConfirmed = () => {
-    if(onDeleteRows) {
+    if (onDeleteRows) {
       onDeleteRows?.([deletingId])
     } else {
-      
+
     }
     deleteConfirmationVisible.close()
   }
@@ -191,7 +192,7 @@ export const SubGrid = forwardRef((
         onToolbarPreparing={onToolbarPreparing}
         onSaving={innerSavingRowHandler}
       >
-        <Selection mode={'multiple'} showCheckBoxesMode={"always"} selectAllMode={"page"}/>
+        <Selection mode={'multiple'} showCheckBoxesMode={"always"} selectAllMode={"page"} />
         <Editing
           mode={'row'}
           allowUpdating={false}
@@ -228,13 +229,13 @@ export const SubGrid = forwardRef((
           />
         </Column>
         <Toolbar>
-          {allToolbarItems.map((item, idx) => (
-            <ToolbarItem key={idx} {...item} />
-          ))}
+          {allToolbarItems.map((item, idx) => {
+            return <ToolbarItem key={idx} {...item} />
+          })}
         </Toolbar>
-        {realColumns.map((item, idx) => (
-          <Column key={idx} {...item} />
-        ))}
+        {realColumns.map((item, idx) => {
+          return <Column key={idx} {...item} />
+        })}
       </DataGrid>
 
       <DeleteMultipleConfirmationBox

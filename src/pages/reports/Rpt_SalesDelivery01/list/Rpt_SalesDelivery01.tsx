@@ -41,6 +41,7 @@ export const Rpt_SalesDelivery01 = () => {
   const [searchCondition, setSearchCondition] = useState<IReportParam>(
     {} as IReportParam
   );
+  console.log("🚀 ~ searchCondition:", searchCondition);
   const [listSearchDealer, setListSearchDealer] = useState<any>([]);
 
   const [loadingKey, reloading] = useReducer(() => nanoid(), "0");
@@ -131,7 +132,6 @@ export const Rpt_SalesDelivery01 = () => {
         validationGroup: "form",
         onValueChanged: (e: any) => {
           // change report type, have to re-render
-          reloading();
         },
         dataSource: [
           {
@@ -273,7 +273,7 @@ export const Rpt_SalesDelivery01 = () => {
       <AdminContentLayout.Slot name={"Content"}>
         <ContentSearchPanelLayout>
           <ContentSearchPanelLayout.Slot name={"SearchPanel"}>
-            <div className="w-[200px]">
+            <div>
               <SearchPanelV2
                 conditionFields={searchFields}
                 data={searchCondition}

@@ -8,46 +8,10 @@ export interface RptSellCustomerDealer_ForSale_MstParam {
 }
 
 export interface RptSellCustomerDealer_ForSale_MstRecord {
-  CARID: string;
   CVMODELCODE: string;
-  NEXTDLSDDEALERCODEOWNER: string;
-  CVCOLORCODE: string;
   DLSDDEALERCODEOWNER: string;
-  DEALERNAME: string;
-  DLSDDEALERCODESOURCE: string;
-  NEXTDLSDDLSDDEALNO: string;
-  MYSTATUS: string;
-  VIN: string;
   TT_CARID: string;
-  CVCUSTOMSCLEARANCEDATE: string;
-  DUTYCOMPLETEDDATE: string;
-  TOTALCOMPLETEDDATE: string;
-  CMP1_PAYMENTENDDATE_CBU30_CKD15: string;
-  COCONLY_COMPLETEDDATE: string;
-  CCSPECCODE: string;
-  CVCOLORCODE1: string;
-  CVMODELCODE1: string;
-  DLSDPRONVINCENAMEBUYER: string;
   DLSDDEALERNAMEOWNER: string;
-  PRODUCTIONMONTH: string;
-  PRODUCTIONYEAR: string;
-  SOCODE: string;
-  OSODAPPROVEDDATE: string;
-  SALESTYPENAMEVN: string;
-  NEXTDLSDDDELIVERYMONTH: string;
-  DCD_UNITPRICE: string;
-  AREACODECUS: string;
-  AREANAMECUS: string;
-  AREACODEDEALER: string;
-  AREANAMEDEALER: string;
-  HTCSTAFFINCHARGE: string;
-  CODATE: string;
-  COYEAR: string;
-  SMCODE: string;
-  SMNAME: string;
-  DDDDELIVERYDATE: string;
-  DD2DEALDATE: string;
-  DCCREATEDDATE: string;
 }
 
 interface RptSellCustomerDealer_ForSale_MstData {

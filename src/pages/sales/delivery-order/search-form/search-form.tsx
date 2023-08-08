@@ -308,6 +308,8 @@ export const SearchForm = ({ data, onSearch }: SearchFormProps) => {
   );
 
   const chooserVisible = useVisibilityControl({ defaultVisible: false });
+
+  
   return (
     <div id={"searchForm"}>
       <Header

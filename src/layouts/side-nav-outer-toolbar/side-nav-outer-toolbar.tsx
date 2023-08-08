@@ -2,7 +2,7 @@ import Drawer from 'devextreme-react/drawer';
 import ScrollView from 'devextreme-react/scroll-view';
 import React, { useState, useCallback, useRef, useTransition } from 'react';
 import { useNavigate } from 'react-router';
-import { SideNavigationMenu, Footer } from '@/components';
+import { SideNavigationMenu, Footer } from '@packages/components';
 import './side-nav-outer-toolbar.scss';
 import { useScreenSize } from '@/utils/media-query';
 import { Template } from 'devextreme-react/core/template';

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useCallback, useMemo } from 'react';
 import TreeView from 'devextreme-react/tree-view';
 import { useScreenSize } from '@/utils/media-query';
-import 'src/packages/ui/sidebar/sidebar.scss';
+import './sidebar.scss';
 
 import * as events from 'devextreme/events';
 import dxTreeView, { ItemClickEvent } from 'devextreme/ui/tree_view';
@@ -37,7 +37,15 @@ export function Sidebar(props: React.PropsWithChildren<SidebarProps>) {
       { ...item, 
         text: t(item.subMenuTitle),
         expanded: isLarge,
-        path: item.path && !(/^\//.test(item.path)) ? `/${item.path}` : item.path,
+        // path: item.path && !(/^\//.test(item.path)) ? `/${item.path}` : item.path,
+        path: `/${item.path}`,
+        items: item.items?.filter((subItem: any) => !subItem.isHidden).map((subItem: any) => (
+          {
+            ...subItem,
+            text: t(subItem.subMenuTitle),
+            path: `/${subItem.path}`,
+          }
+        ))
       }
     ));
   }
@@ -67,14 +75,15 @@ export function Sidebar(props: React.PropsWithChildren<SidebarProps>) {
       return;
     }
     if (currentPath !== undefined) {
+      treeView.expandAll()
       const cleanedPath = currentPath.replace(`/${networkId}`, '');
       treeView.selectItem(cleanedPath);
-      treeView.expandItem(cleanedPath);
+      // treeView.expandItem(cleanedPath);
     }
-
-    if (compactMode) {
-      treeView.collapseAll();
-    }
+    //
+    // if (compactMode) {
+    //   treeView.collapseAll();
+    // }
   }, [currentPath, compactMode, items]);
   return (
     <div
@@ -82,15 +91,15 @@ export function Sidebar(props: React.PropsWithChildren<SidebarProps>) {
       ref={getWrapperRef}
     >
       {children}
-      <div className={'menu-container pl-2'}>
+      <div className={'menu-container'}>
         <ScrollView className={'pb-4'} showScrollbar={'always'}>
           <TreeView
-            className={'pb-4 mb-6 menu-list'}
+            className={'pl-2 pb-4 mb-6 menu-list'}
             visible={!compactMode}
             ref={treeViewRef}
             items={treeItems}
             keyExpr={'path'}
-            displayExpr={"subMenuTitle"}
+            displayExpr={"text"}
             selectionMode={'single'}
             focusStateEnabled={false}
             expandEvent={'click'}

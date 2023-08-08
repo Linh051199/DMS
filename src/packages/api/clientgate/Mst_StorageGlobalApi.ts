@@ -6,6 +6,7 @@ export const useMst_StorageGlobalApi = (apiBase: AxiosInstance) => {
     Mst_StorageGlobal_Search: async (
       params: SearchParam
     ): Promise<ApiResponse<Mst_StorageGlobal>> => {
+      console.log("🚀 ~ params:", params)
       return await apiBase.post<SearchParam, ApiResponse<Mst_StorageGlobal>>(
         "/MstStorageGlobal/Search",
         {

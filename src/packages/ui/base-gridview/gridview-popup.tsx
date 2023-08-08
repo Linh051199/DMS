@@ -15,6 +15,7 @@ import {
   Texts,
   Toolbar,
   LoadPanel as GridLoadPanel,
+  StateStoring, Search,
 } from "devextreme-react/data-grid";
 
 import { PageSize } from "@packages/ui/page-size";
@@ -51,6 +52,7 @@ import { PopupGridPageNavigator } from "@packages/ui/base-gridview/components/po
 import { PopupGridPageSummary } from "@packages/ui/base-gridview/components/popup-grid-page-summary";
 import { useSetAtom } from "jotai";
 import { popupGridStateAtom } from "@packages/ui/base-gridview/store/popup-grid-store";
+import {differenceBy} from "lodash-es";
 
 interface GridViewProps {
   defaultPageSize?: number;
@@ -114,7 +116,7 @@ const GridViewRaw = ({
   const [realColumns, setColumnsState] = useReducer(
     (state: any, changes: any) => {
       // save changes into localStorage
-      saveState(changes);
+      // saveState(changes);
       return changes;
     },
     columns
@@ -124,23 +126,16 @@ const GridViewRaw = ({
   useEffect(() => {
     const savedState = loadState();
     if (savedState) {
-      const columnOrders = savedState.map(
-        (column: ColumnOptions) => column.dataField
-      );
-      const outputColumns = columns.map((column: ColumnOptions) => {
-        const filterResult = savedState.find(
-          (c: ColumnOptions) => c.dataField === column.dataField
-        );
-        return {
-          ...column,
-          visible: filterResult ? filterResult.visible : false,
-        };
-      });
-      outputColumns.sort(
-        (a, b) =>
-          columnOrders.indexOf(a.dataField) - columnOrders.indexOf(b.dataField)
-      );
-      setColumnsState(outputColumns);
+      const shouldHideColumns = differenceBy<ColumnOptions, ColumnOptions>(columns, savedState, "dataField");
+      for (let i = 0; i < shouldHideColumns.length; i++) {
+        const column = shouldHideColumns[i];
+        dataGridRef.current?.instance.columnOption(column.dataField!, "visible", false)
+      }
+      // update column with new index
+      savedState.forEach((column: ColumnOptions, index: number) => {
+        dataGridRef.current?.instance.columnOption(column.dataField!, "visibleIndex", index + 1)
+        dataGridRef.current?.instance.columnOption(column.dataField!, "visible", true)
+      })
       setIsLoadingState(false);
     }
   }, []);
@@ -151,23 +146,17 @@ const GridViewRaw = ({
 
   const onApply = useCallback(
     (changes: any) => {
-      const latest = [...changes];
-      realColumns.forEach((column: ColumnOptions) => {
-        const found = changes.find(
-          (c: ColumnOptions) => c.dataField === column.dataField
-        );
-        if (!found) {
-          column.visible = false;
-          latest.push(column);
-        }
-      });
-
-      // const latest = realColumns.map((column: ColumnOptions) => {
-      //   const found = changes.find((c: ColumnOptions) => c.dataField === column.dataField);
-      //   column.visible = found ? found.visible : false;
-      //   return column
-      // })
-      setColumnsState(latest);
+      const shouldHideColumns = differenceBy<ColumnOptions, ColumnOptions>(columns, changes, "dataField");
+      for (let i = 0; i < shouldHideColumns.length; i++) {
+        const column = shouldHideColumns[i];
+        dataGridRef.current?.instance.columnOption(column.dataField!, "visible", false)
+      }
+      // update column with new index
+      changes.forEach((column: ColumnOptions, index: number) => {
+        dataGridRef.current?.instance.columnOption(column.dataField!, "visibleIndex", index + 1)
+        dataGridRef.current?.instance.columnOption(column.dataField!, "visible", true)
+      })
+      saveState(changes);
       setVisible(false);
     },
     [setColumnsState, setVisible]
@@ -282,13 +271,14 @@ const GridViewRaw = ({
             applyText={t("Apply")}
             cancelText={t("Cancel")}
             selectAllText={t("SelectAll")}
-            container={"#gridContainer"}
+            container={"#root"}
             button={"#myColumnChooser"}
             visible={visible}
             columns={columns}
             actualColumns={realColumns}
             onHiding={onHiding}
             onApply={onApply}
+            gridInstance={dataGridRef.current?.instance}
           />
         );
       },
@@ -369,7 +359,6 @@ const GridViewRaw = ({
             // to support custom delete confirmation
             e.cancel = true;
           }}
-          // stateStoring={stateStoring}
         >
           <ColumnChooser enabled={true} allowSearch={true} mode={"select"} />
           <ColumnFixing enabled={true} />
@@ -378,8 +367,9 @@ const GridViewRaw = ({
           <HeaderFilter
             visible={true}
             dataSource={dataSource}
-            allowSearch={true}
-          />
+          >
+            <Search enabled={true} />
+          </HeaderFilter>
           <Toolbar>
             {!!allToolbarItems &&
               allToolbarItems.map((item, index) => {
@@ -447,9 +437,10 @@ const GridViewRaw = ({
             rowRenderingMode={"standard"}
           />
           <GridLoadPanel enabled={true} />
-          {realColumns.map((col: any) => (
+          {columns.map((col: any) => (
             <Column key={col.dataField} {...col} allowSorting={true} />
           ))}
+          <StateStoring enabled={!!storeKey} type={"localStorage"} key={storeKey} />
         </DataGrid>
       </ScrollView>
       <DeleteConfirmationBox

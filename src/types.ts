@@ -1,14 +1,17 @@
 import dxTreeView, { ItemClickEvent } from "devextreme/ui/tree_view";
 import { EventInfo } from "devextreme/events";
 import { ClickEvent } from "devextreme/ui/button";
-import { ClientGateInfo, IOrg, IUser, Row } from "@packages/types";
+import {ClientGateInfo, IOrg, IUser, Row, User} from "@packages/types";
 import { IFormOptions, IItemProps } from "devextreme-react/form";
 import { IColumnProps, IToolbarItemProps } from "devextreme-react/data-grid";
+import React, {forwardRef} from "react";
 
 export interface AuthState {
   networkId: string;
   token?: string;
   currentUser?: IUser;
+  // full information about the user with permission
+  sysUser?: User;
   permissions?: string[];
   orgData?: IOrg;
   clientGate?: ClientGateInfo;
@@ -26,7 +29,6 @@ export interface AuthContextData {
   logout: () => void;
   selectNetwork: (networkId: string) => void;
   setClientGateInfo: (clientGate: ClientGateInfo) => void;
-  isHQ: () => boolean;
 }
 export interface SidebarItem {
   text?: string;
@@ -123,18 +125,27 @@ export interface FormOptions extends Omit<IFormOptions, "items"> {
   items: ExItem[];
 }
 
+export type Alignment = "center" | "left" | "right";
+export type DataType = "string" | "number" | "date" | "boolean" | "object";
 export interface ColumnOptions extends IColumnProps {
   editorType?: string;
   columnIndex?: number;
   groupKey?: string;
   isSearchable?: boolean;
+  alignment?: Alignment;
+  dataType?: DataType;
   order?: number;
   label?: {
     text?: string;
   }
 }
 
+
 export interface ToolbarItemProps extends IToolbarItemProps {
-  widget?: string;
   location?: any;
 }
+export type FixedForwardRef = <T, P = {}>(
+  render: (props: P, ref: React.Ref<T>) => React.ReactElement
+) => (props: P & React.RefAttributes<T>) => React.ReactElement;
+
+export const fixedForwardRef = forwardRef as FixedForwardRef;

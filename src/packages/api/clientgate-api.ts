@@ -158,6 +158,20 @@ import { useRpt_PivotRetailContractApi } from "./clientgate/Rpt_PivotRetailContr
 import { useMst_InvoiceIDHTCApi } from "./clientgate/Mst_InvoiceIDHTCApi";
 import { useMst_CarAllocationByAreaApi } from "./clientgate/Mst_CarAllocationByArea";
 import { useRpt_HMCReportV2 } from "./clientgate/Rpt_HMCReportV2Api";
+import { useRpt_StatisticHTCStock02 } from "./clientgate/Rpt_StatisticHTCStock02Api";
+import { useRpt_PivotPDI } from "./clientgate/Rpt_PivotPDIApi";
+import { useRpt_PivotMnfPlanMnfSummary } from "./clientgate/Rpt_PivotMnfPlanMnfSummaryApi";
+import { useRptPivotQLDatHangTraHang } from "./clientgate/Rpt_PivotQLDatHangTraHangApi";
+import { useRpt_PivotKHSX } from "./clientgate/Rpt_PivotKHSXApi";
+import { useRptTongHopXeDaiLy } from "./clientgate/Rpt_TongHopXeDaiLyApi";
+import { useRptSalesBalanceOrder } from "./clientgate/Rpt_SalesBalanceOrderApi";
+import { useRpt_EstimateDeliveryPlan } from "./clientgate/Rpt_EstimateDeliveryPlanApi";
+import { useRptDelayguaranteePaymentRealTime } from "./clientgate/Rpt_DelayguaranteePaymentRealTime";
+import { useRptMinimumSurvivalRealTime } from "./clientgate/Rpt_MinimumSurvivalRealTimeApi";
+import { useSto_TranspReq } from "./clientgate/business/Sto_TranspReq";
+import { useCommonApi } from "./common-api";
+import { useRpt_OrdOrderPlanHTMV } from "./clientgate/Rpt_OrdOrderPlanHTMV";
+import { useRpt_QuotaForDealer } from "./clientgate/Rpt_QuotaForDealer";
 
 // report end
 
@@ -348,6 +362,8 @@ export const createClientGateApi = (
   const getCurrentUserApis = useGetForCurrentUser(reportApiBase);
   const provinceApis = useMst_Province_api(apiBase);
   const dealerApis = useDealerApi(apiBase);
+  const useStoTranspReq = useSto_TranspReq(apiBase);
+  const CommonApi = useCommonApi(apiBase);
 
   const mstAreaApi = useMst_AreaApi(apiBase); // KhanhNB
   const mstSalesOrderType = useMst_SalesOrderTypeApi(apiBase); // KhanhNB
@@ -453,7 +469,7 @@ export const createClientGateApi = (
 
   // DongNV
   const mstMaintainTaskItem = useMst_MaintainTaskItemApi(apiBase);
-  const mstCarAllocationByArea = useMst_CarAllocationByAreaApi(apiBase)
+  const mstCarAllocationByArea = useMst_CarAllocationByAreaApi(apiBase);
   const rptStaticGrpDealerInSock02 =
     useRptStaticGrpDealerInSock02(reportApiBase);
   const rptMasterdata = useRptMasterData(reportApiBase);
@@ -483,6 +499,16 @@ export const createClientGateApi = (
   const rptDuKienDongTienTT_ChiTietData =
     useRpt_DuKienDongTienTT_ChiTiet(reportApiBase); // ThangPV
   const rpt_SMCertificate = useRpt_SMCertificate(reportApiBase); // ThangPV
+  const rpt_PivotQLDatHangTraHang = useRptPivotQLDatHangTraHang(reportApiBase); // ThangPV
+  const rpt_TongHopXeDaiLy = useRptTongHopXeDaiLy(reportApiBase); // ThangPV
+  const rpt_SalesBalanceOrder = useRptSalesBalanceOrder(reportApiBase); // ThangPV
+  const rpt_EstimateDeliveryPlan = useRpt_EstimateDeliveryPlan(reportApiBase); // LinhPV
+  const rpt_MinimumSurvivalRealTime =
+    useRptMinimumSurvivalRealTime(reportApiBase); // LinhPV
+  const rpt_OrdOrderPlanHTMV = useRpt_OrdOrderPlanHTMV(reportApiBase); // LinhPV
+  const rpt_QuotaForDealer = useRpt_QuotaForDealer(reportApiBase); // LinhPV
+  const rpt_DelayguaranteePaymentRealTime =
+    useRptDelayguaranteePaymentRealTime(reportApiBase); // LinhPV
   // report end
   const useRptShareHTCStock03 = useRpt_ShareHTCStock03(reportApiBase);
   const useRptPivotDlrCtmVisit = useRpt_PivotDlrCtmVisit(reportApiBase);
@@ -525,11 +551,16 @@ export const createClientGateApi = (
   const rpt_StockAndSalesDealer = useRpt_StockAndSalesDealer(reportApiBase);
   const rpt_PivotRetailContractApi =
     useRpt_PivotRetailContractApi(reportApiBase);
-    const rpt_HMCReportV2 =
-    useRpt_HMCReportV2(reportApiBase);
+  const rpt_HMCReportV2 = useRpt_HMCReportV2(reportApiBase);
+  const rpt_StatisticHTCStock02 = useRpt_StatisticHTCStock02(reportApiBase);
+  const rpt_PivotPDI = useRpt_PivotPDI(reportApiBase);
+  const rpt_PivotMnfPlanMnfSummary =
+    useRpt_PivotMnfPlanMnfSummary(reportApiBase);
+  const rpt_PivotKHSX = useRpt_PivotKHSX(reportApiBase);
 
   return {
     // report start
+    // xin chao
     ...SysUserControl,
     ...sysuser,
     ...useRptSPLSPSupportRetail, // ThangPV
@@ -546,6 +577,9 @@ export const createClientGateApi = (
     ...rptTheoDoiKiemTraDatHang, // ThangPV
     ...rptDuKienDongTienTT_ChiTietData, // ThangPV
     ...rpt_SMCertificate, // ThangPV
+    ...rpt_PivotQLDatHangTraHang, // ThangPV
+    ...rpt_TongHopXeDaiLy, // ThangPV
+    ...rpt_SalesBalanceOrder, // ThangPV
     ...rptStatisticHTCStock03,
     ...useRptPivotDlrTestDriver,
     ...RptStatisticDealerStockForSaleMstData,
@@ -568,6 +602,11 @@ export const createClientGateApi = (
     ...rpt_BLDenhanthanhtoan, //DongNV
     ...rpt_StockAndSalesDealer, //DongNV
     ...mstCarAllocationByArea, //DongNV
+    ...rpt_EstimateDeliveryPlan, //LinhPV
+    ...rpt_DelayguaranteePaymentRealTime, //LinhPV
+    ...rpt_MinimumSurvivalRealTime, //LinhPV
+    ...rpt_OrdOrderPlanHTMV, //LinhPV
+    ...rpt_QuotaForDealer, //LinhPV
     // report end
     ...useMstInvoiceIDHTC, // ThangPV
     ...mstInvoiceIDApi,
@@ -679,8 +718,14 @@ export const createClientGateApi = (
     ...rpt_Master,
     ...useCarDeliveryOrderApi,
     ...useCarCarApi,
+    ...useStoTranspReq,
     ...rpt_PivotRetailContractApi,
     ...rpt_HMCReportV2,
+    ...rpt_StatisticHTCStock02,
+    ...rpt_PivotPDI,
+    ...rpt_PivotMnfPlanMnfSummary,
+    ...rpt_PivotKHSX,
+    ...CommonApi,
   };
 };
 

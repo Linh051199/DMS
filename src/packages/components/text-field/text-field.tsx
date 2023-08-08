@@ -1,7 +1,6 @@
 import TextBox from "devextreme-react/text-box";
 import dxForm from "devextreme/ui/form";
-
-import "src/packages/components/text-field/text-field.scss"
+import "./text-field.scss"
 
 interface TextFieldProps {
   formInstance: dxForm
@@ -32,6 +31,7 @@ export const TextField = ({formInstance, dataField, width=270, placeholder, onVa
         }}
         placeholder={placeholder}
         onValueChanged={handleChanged}
+        showClearButton={true}
         readOnly={readOnly}
         defaultValue={defaultValue}
         validationMessagePosition={"bottom"}

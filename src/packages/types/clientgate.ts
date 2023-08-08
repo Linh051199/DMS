@@ -39,12 +39,12 @@ export interface DeleteBankAccountParam {
 }
 
 export interface Mst_Province {
-  ProvinceCode: string,
-  AreaCode: string,
-  ProvinceName: string,
-  FlagActive: string,
-  LogLUDateTime: string,
-  LogLUBy: string
+  ProvinceCode: string;
+  AreaCode: string;
+  ProvinceName: string;
+  FlagActive: string;
+  LogLUDateTime: string;
+  LogLUBy: string;
 }
 export interface Mst_Dealer {
   DealerCode: string;
@@ -109,8 +109,6 @@ export interface Mst_UnitPriceAVN {
   LogLUBy: string;
 }
 
-
-
 export interface Mst_Transporter {
   TransporterCode: string;
   TransporterName: string;
@@ -145,16 +143,16 @@ export interface Auto_MapVIN_StorageRate {
 }
 
 export interface Mst_CarAllocationByArea {
-  ModelCode: string,
-  ModelName: string,
-  SpecCode: string,
-  SpecDescription: string,
-  MBPercent: number,
-  MTPercent: number,
-  MNPercent: number,
-  FlagActive: string,
-  LogLUDateTime: string,
-  LogLUBy: string
+  ModelCode: string;
+  ModelName: string;
+  SpecCode: string;
+  SpecDescription: string;
+  MBPercent: number;
+  MTPercent: number;
+  MNPercent: number;
+  FlagActive: string;
+  LogLUDateTime: string;
+  LogLUBy: string;
 }
 
 export interface Mst_DelayTransports {
@@ -492,25 +490,25 @@ export interface Mst_AmplitudeApprOrd {
 }
 
 export interface Mst_MaintainTaskItem {
-  MtnTkCode: string
-  MtnTkItemCode: string
-  MtnTkItemName: string
-  ViewIdx: string
-  FlagActive: string
-  LogLUDateTime: string
-  LogLUBy: string
+  MtnTkCode: string;
+  MtnTkItemCode: string;
+  MtnTkItemName: string;
+  ViewIdx: string;
+  FlagActive: string;
+  LogLUDateTime: string;
+  LogLUBy: string;
 }
 
 export interface Mst_Part {
-  PartCode: string,
-  PartName: string,
-  PartNameFS: string,
-  PartDesc: string,
-  PartUnitCodeStd: string,
-  PartUnitCodeDefault: string,
-  FlagActive: string,
-  LogLUDateTime: string,
-  LogLUBy: string
+  PartCode: string;
+  PartName: string;
+  PartNameFS: string;
+  PartDesc: string;
+  PartUnitCodeStd: string;
+  PartUnitCodeDefault: string;
+  FlagActive: string;
+  LogLUDateTime: string;
+  LogLUBy: string;
 }
 export interface Sys_UserControl {
   DataList: {
@@ -570,7 +568,7 @@ export interface Mst_PointRegis {
   LogLUBy: string;
   md_DealerName: string; // Tên đại lý
 }
-type BizUserTypes = "MAIN.HQ" | "MAIN.DL"
+type BizUserTypes = "MAIN.HQ" | "MAIN.DL";
 
 export interface User {
   UserCode: string;
@@ -1494,6 +1492,7 @@ export interface SearchCarDeliveryOrderParam {
   CreatedDateFromTo: Date[];
   FlagDataWH: boolean;
 }
+
 export interface CarDeliveryOrder {
   MyIdxSeq: number;
   DeliveryOrderNo: string;
@@ -1520,11 +1519,11 @@ export interface CarDeliveryOrderDetail {
   CarId: string;
   StorageCode: string;
   DeliveryVIN: string;
-  DeliveryStartDate: Date | null;
-  DeliveryOutDate: string;
-  DeliveryExpectedDate: Date | null;
+  DeliveryStartDate: Date | null; //
+  DeliveryOutDate: string;//
+  DeliveryExpectedDate: Date | null;//
   TransportMinutesExpectedDate: Date | null;
-  DeliveryEndDate: string;
+  DeliveryEndDate: string;//
   DeliveryRemark: string | null;
   ConfirmRemark: string | null;
   ConfirmStatus: string;

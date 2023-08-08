@@ -1,4 +1,4 @@
-import { Button, DataGrid, LoadPanel } from "devextreme-react";
+import {Button, DataGrid, LoadPanel, Tooltip} from "devextreme-react";
 import {
   Column,
   ColumnChooser,
@@ -12,7 +12,7 @@ import {
   Item as ToolbarItem,
   Pager,
   Scrolling,
-  IStateStoringProps,
+  IStateStoringProps, StateStoring, Search,
 } from "devextreme-react/data-grid";
 
 import { PageSize } from "@packages/ui/page-size";
@@ -37,7 +37,7 @@ import { useWindowSize } from "@packages/hooks/useWindowSize";
 import CustomColumnChooser from "@packages/ui/column-toggler/custom-column-chooser";
 import { IFormOptions } from "devextreme-react/form";
 import { IPopupOptions } from "devextreme-react/popup";
-import { EditorPreparingEvent } from "devextreme/ui/data_grid";
+import {EditorPreparingEvent, OptionChangedEvent} from "devextreme/ui/data_grid";
 import { ColumnOptions, ToolbarItemProps } from "@/types";
 import {
   gridStateAtom,
@@ -55,6 +55,8 @@ import {
   useSavedState,
   DeleteSingleConfirmationBox,
 } from "./components";
+import {Icon} from "@packages/ui/icons";
+import {differenceBy} from "lodash-es";
 
 interface GridViewProps {
   defaultPageSize?: number;
@@ -69,7 +71,7 @@ interface GridViewProps {
   onSaveRow?: (option: any) => void;
   isLoading?: boolean;
   keyExpr?: string | string[];
-  onDeleteRows?: (rows: string[]) => void;
+  onDeleteRows?: (rows: string[]) => Promise<void | boolean>;
   onSelectionChanged: (rowKeys: string[]) => void;
   popupSettings?: IPopupOptions;
   formSettings?: IFormOptions;
@@ -77,6 +79,8 @@ interface GridViewProps {
   onEditRowChanges?: (changes: any) => void;
   storeKey?: string;
   stateStoring?: IStateStoringProps;
+  isHideActionColumn?: boolean;
+  isHideSelectionColumn?: boolean;
 }
 
 const GridViewRaw = ({
@@ -98,6 +102,8 @@ const GridViewRaw = ({
   onEditRowChanges,
   storeKey,
   stateStoring,
+  isHideActionColumn=false,
+  isHideSelectionColumn=false
 }: GridViewProps) => {
   const datagridRef = useRef<DataGrid | null>(null);
   const windowSize = useWindowSize();
@@ -111,36 +117,24 @@ const GridViewRaw = ({
   const chooserVisible = useVisibilityControl({ defaultVisible: false });
 
   const { saveState, loadState } = useSavedState<ColumnOptions[]>({
-    storeKey: storeKey ?? "empty",
+    storeKey: storeKey,
   });
-
-  const [realColumns, setColumnsState] = useReducer(
-    (state: any, changes: any) => {
-      // save changes into localStorage
-      saveState(changes);
-      return changes;
-    },
-    columns
-  );
 
   useEffect(() => {
     const savedState = loadState();
     if (savedState) {
-      const columnOrders = savedState.map(
-        (column: ColumnOptions) => column.dataField
-      );
-      const outputColumns = columns.map((column: ColumnOptions) => {
-        const filterResult = savedState.find(
-          (c: ColumnOptions) => c.dataField === column.dataField
-        );
-        column.visible = filterResult ? filterResult.visible : false;
-        return column;
-      });
-      outputColumns.sort(
-        (a, b) =>
-          columnOrders.indexOf(a.dataField) - columnOrders.indexOf(b.dataField)
-      );
-      setColumnsState(outputColumns);
+      // we need check the order of column from changes set
+      const shouldHideColumns = differenceBy<ColumnOptions, ColumnOptions>(columns, savedState, "dataField");
+      for (let i = 0; i < shouldHideColumns.length; i++) {
+        const column = shouldHideColumns[i];
+        datagridRef.current?.instance.columnOption(column.dataField!, "visible", false)
+      }
+      // update column with new index
+      savedState.forEach((column: ColumnOptions, index: number) => {
+        datagridRef.current?.instance.columnOption(column.dataField!, "visibleIndex", index + 1)
+        datagridRef.current?.instance.columnOption(column.dataField!, "visible", true)
+      })
+      // setColumnsState(outputColumns);
     }
   }, []);
   const onHiding = useCallback(() => {
@@ -150,34 +144,21 @@ const GridViewRaw = ({
   const onApply = useCallback(
     (changes: any) => {
       // we need check the order of column from changes set
-      const latest = [...changes];
-      realColumns.forEach((column: ColumnOptions) => {
-        const found = changes.find(
-          (c: ColumnOptions) => c.dataField === column.dataField
-        );
-        if (!found) {
-          column.visible = false;
-          latest.push(column);
-        }
-      });
-      setColumnsState(latest);
+      const shouldHideColumns = differenceBy<ColumnOptions, ColumnOptions>(columns, changes, "dataField");
+      for (let i = 0; i < shouldHideColumns.length; i++) {
+        const column = shouldHideColumns[i];
+        datagridRef.current?.instance.columnOption(column.dataField!, "visible", false)
+      }
+      // update column with new index
+      changes.forEach((column: ColumnOptions, index: number) => {
+        datagridRef.current?.instance.columnOption(column.dataField!, "visibleIndex", index + 1)
+        datagridRef.current?.instance.columnOption(column.dataField!, "visible", true)
+      })
+      saveState(changes);
       chooserVisible.close();
     },
-    [setColumnsState]
+    [chooserVisible, saveState]
   );
-  const onToolbarPreparing = useCallback((e: any) => {
-    e.toolbarOptions.items.push({
-      widget: "dxButton",
-      location: "after",
-      options: {
-        icon: "/images/icons/settings.svg",
-        elementAttr: {
-          id: "myColumnChooser",
-        },
-        onClick: () => chooserVisible.toggle(),
-      },
-    });
-  }, []);
   const setSelectionKeysAtom = useSetAtom(normalGridSelectionKeysAtom);
   const handleSelectionChanged = (e: any) => {
     setSelectionKeysAtom(e.selectedRowKeys);
@@ -194,9 +175,16 @@ const GridViewRaw = ({
     }
   };
   const handleEditingStart = (e: any) => {
-    switchEditMode(e, true);
+    const editMode = e.component.option("dms_editMode")
+    if(editMode) {
+      e.cancel = true
+    } else {
+      e.component.option("dms_editMode", true);
+      switchEditMode(e, true);
+    }
   };
   const handleEditCancelled = (e: any) => {
+    e.component.option("dms_editMode", false);
     switchEditMode(e, false);
   };
 
@@ -209,11 +197,9 @@ const GridViewRaw = ({
     switchEditMode(e, true);
   };
   const { t } = useI18n("Common");
-  let innerGridRef = useRef<DataGrid>(null);
 
   const setRef = (ref: any) => {
     datagridRef.current = ref;
-    innerGridRef = ref;
     onReady?.(ref);
   };
 
@@ -226,6 +212,7 @@ const GridViewRaw = ({
     const result = await onDeleteRows?.([key]);
     if (result) {
       setDeletingId("");
+      setSelectionKeysAtom([]);
     }
   };
   const onDeleteMultiple = async (keys: string[]) => {
@@ -239,71 +226,18 @@ const GridViewRaw = ({
     normalGridDeleteMultipleConfirmationBoxAtom
   );
   const handleConfirmDelete = () => {
+    const editMode = datagridRef.current?.instance.option("dms_editMode");
+    if(editMode) {
+      return;
+    }
     setConfirmBoxVisible(true);
   };
 
-  const renderPageSize = useCallback(() => {
-    return (
-      <PageSize
-        title={t("Showing")}
-        onChangePageSize={onChangePageSize}
-        allowdPageSizes={[100, 200, 500, 1000]}
-        showAllOption={true}
-        showAllOptionText={t("ShowAll")}
-        defaultPageSize={datagridRef.current?.instance.pageSize()}
-      />
-    );
-  }, []);
-  const renderPageNavigator = useCallback(() => {
-    return <NormalGridPageNavigator onPageChanged={onChangePageIndex} />;
-  }, []);
-
-  const renderColumnChooser = useCallback(() => {
-    return (
-      <CustomColumnChooser
-        title={t("ToggleColum")}
-        applyText={t("Apply")}
-        cancelText={t("Cancel")}
-        selectAllText={t("SelectAll")}
-        container={"#gridContainer"}
-        button={"#myColumnChooser"}
-        visible={chooserVisible.visible}
-        columns={columns}
-        onHiding={onHiding}
-        onApply={onApply}
-        actualColumns={realColumns}
-      />
-    );
-  }, [chooserVisible, realColumns, columns]);
   const allToolbarItems: ToolbarItemProps[] = useMemo(() => {
     return [
       ...(toolbarItems || []),
-      {
-        location: "before",
-        render: () => {
-          return <DeleteButton onClick={handleConfirmDelete} />;
-        },
-      },
-      {
-        location: "after",
-        render: renderPageSize,
-      },
-      {
-        location: "after",
-        render: renderPageNavigator,
-      },
-      {
-        location: "after",
-        render: () => {
-          return <NormalGridPageSummary />;
-        },
-      },
-      {
-        location: "after",
-        render: renderColumnChooser,
-      },
     ];
-  }, [chooserVisible, realColumns, columns]);
+  }, [chooserVisible, columns]);
 
   const handleEditorPreparing = (e: any) => {
     onEditorPreparing?.(e);
@@ -333,7 +267,18 @@ const GridViewRaw = ({
     }
     e.cancel = true;
   }, []);
-
+  
+  const handleOptionChanged = (e: OptionChangedEvent) => {
+    console.log("option changed", e);
+    if(e.fullName.includes("filterValues")) {
+      console.log("data source", e.component.getDataSource().items())
+      console.log("filter values", e.component.getCombinedFilter())
+    }
+    console.log("Grid state:", e.component.state())
+    if(e.fullName.includes(".fixed")) {
+      
+    }
+  }
   return (
     <div className={"base-gridview bg-white"}>
       <ScrollView showScrollbar={"always"}>
@@ -352,6 +297,7 @@ const GridViewRaw = ({
           columnAutoWidth={true}
           repaintChangesOnly
           showBorders
+          onOptionChanged={handleOptionChanged}
           onContentReady={(e) => {
             setGridAtom({
               pageIndex: e.component.pageIndex() ?? 0,
@@ -361,7 +307,7 @@ const GridViewRaw = ({
             });
           }}
           onInitialized={(e) => {
-            e.component?.option("headerFilter.visible", true);
+            // e.component?.option("headerFilter.visible", true);
             onReady?.(datagridRef.current);
           }}
           allowColumnResizing
@@ -369,7 +315,6 @@ const GridViewRaw = ({
           showRowLines
           columnResizingMode={"widget"}
           allowColumnReordering={false}
-          onToolbarPreparing={onToolbarPreparing}
           onSelectionChanged={handleSelectionChanged}
           onEditorPreparing={handleEditorPreparing}
           onEditCanceled={handleEditCancelled}
@@ -388,7 +333,9 @@ const GridViewRaw = ({
             displayMode={"adaptive"}
             showPageSizeSelector
           />
-          <HeaderFilter allowSearch={true} />
+          <HeaderFilter visible={true} >
+            <Search enabled={true} />
+          </HeaderFilter>
           <Scrolling
             renderAsync={true}
             mode={"standard"}
@@ -404,6 +351,62 @@ const GridViewRaw = ({
                   </ToolbarItem>
                 );
               })}
+            <ToolbarItem location="before">
+              <DeleteButton onClick={handleConfirmDelete} />
+            </ToolbarItem>
+            <ToolbarItem location={"after"}>
+              <PageSize
+                title={t("Showing")}
+                onChangePageSize={onChangePageSize}
+                allowdPageSizes={[100, 200, 500, 1000]}
+                showAllOption={true}
+                showAllOptionText={t("ShowAll")}
+                defaultPageSize={datagridRef.current?.instance.pageSize()}
+              />
+            </ToolbarItem>
+            <ToolbarItem location="after">
+              <NormalGridPageSummary />
+            </ToolbarItem>
+            <ToolbarItem location="after">
+              <NormalGridPageNavigator onPageChanged={onChangePageIndex} />
+            </ToolbarItem>
+              
+            <ToolbarItem location="after">
+              <div
+                id={"myColumnChooser"}
+                className={'search-form__settings cursor-pointer'}
+                onClick={() => chooserVisible.toggle()}
+              >
+                <Icon name={'setting'} width={14} height={14}/>
+                <Tooltip
+                  target="#myColumnChooser"
+                  showEvent="dxhoverstart"
+                  hideEvent="dxhoverend"
+                  container={'#myColumnChooser'}
+                >
+                  {/*&nbsp; is required to make it display at top level*/}
+                  <div className={'z-[9999]'} style={{zIndex: 9999}}>{t("ColumnToggleTooltip")}</div>
+                  &nbsp;
+                </Tooltip>
+              </div>
+            </ToolbarItem>
+            <ToolbarItem location="after">
+              <CustomColumnChooser
+                title={t("ToggleColum")}
+                applyText={t("Apply")}
+                cancelText={t("Cancel")}
+                selectAllText={t("SelectAll")}
+                container={"#root"}
+                button={"#myColumnChooser"}
+                visible={chooserVisible.visible}
+                columns={columns}
+                onHiding={onHiding}
+                onApply={onApply}
+                actualColumns={columns}
+                gridInstance={datagridRef.current?.instance}
+              />
+            </ToolbarItem>
+
           </Toolbar>
           <Editing
             mode={inlineEditMode}
@@ -417,7 +420,7 @@ const GridViewRaw = ({
             onChangesChange={onEditRowChanges ? onEditRowChanges : () => {}}
           ></Editing>
           <Column
-            visible
+            visible={!isHideActionColumn}
             type="buttons"
             width={100}
             fixed={false}
@@ -444,10 +447,16 @@ const GridViewRaw = ({
               icon={"/images/icons/refresh.svg"}
             />
           </Column>
-          <Selection mode="multiple" selectAllMode="page" />
-          {realColumns.map((col: any) => (
-            <Column key={col.dataField} {...col} />
-          ))}
+          <Selection mode={isHideSelectionColumn ? "none" : "multiple"} selectAllMode="page" />
+          {columns.map((col: any) => {
+            const {headerFilter, ...rest} = col;
+            return (
+              <Column key={col.dataField} {...rest}>
+                <HeaderFilter {...headerFilter} />
+              </Column>
+            )
+          } )}
+          <StateStoring enabled={!!storeKey} type={"localStorage"} key={storeKey} />
         </DataGrid>
       </ScrollView>
       <DeleteMultipleConfirmationBox

@@ -1,6 +1,69 @@
 @import "./themes/generated/variables.base.scss";
 @import "./themes/variables.common.scss";
 
+/* ====================CUSTOM READONLY COLOR DXSWITCH========================= */
+.dx-switch-custom-readonly .dx-switch-wrapper .dx-switch-container {
+  &::before {
+    background-color: #7fb79d !important ;
+  }
+  .dx-switch-inner .dx-switch-handle {
+    &::before {
+      background-color: #00703c;
+    }
+  }
+}
+/* ====================END========================= */
+/* ====================CUSTOM HIDDEN LABEL FLAGACTIVE========================= */
+.dx-switch-custom-hidden-label {
+  display: none !important;
+}
+/* ====================END========================= */
+.dx-pivotgrid {
+  .dx-pivotgrid-horizontal-headers,
+  .dx-pivotgrid-vertical-headers {
+    span {
+      color: #000000;
+    }
+  }
+}
+.dx-pivotgrid-fields-container {
+  .dx-pivotgrid-fields-area-head {
+    .dx-area-field {
+      &.dx-area-box {
+        color: #000000;
+      }
+    }
+  }
+}
+.dx-pivotgridfieldchooser-container {
+  .dx-area {
+    .dx-area-fields-header {
+      .dx-area-caption {
+        color: #000000;
+      }
+    }
+  }
+  .dx-area-fields {
+    .dx-area-field {
+      &.dx-area-box {
+        color: #000000;
+      }
+    }
+  }
+}
+/** custom treeview toggle visibility */
+.sidebar,
+.menu-list {
+  .dx-treeview-toggle-item-visibility {
+    left: unset;
+    right: 0;
+  }
+  .dx-treeview-node[aria-level="2"] {
+    .dx-treeview-item-content {
+      padding-left: 20px;
+    }
+  }
+}
 /** custom popup title **/
 .dx-popup-normal {
   .dx-popup-title {
@@ -10,14 +73,13 @@
       align-items: center;
       padding: 14px;
       background: #ececec;
-      
     }
   }
   .dx-popup-bottom {
-    background: #FFFFFF;
+    background: #ffffff;
     &.dx-toolbar {
-      border-top: 1px solid $base-border-color;     
-      background: #FFFFFF;
+      border-top: 1px solid $base-border-color;
+      background: #ffffff;
     }
   }
 }
@@ -30,7 +92,18 @@
     background: #ececec;
   }
 }
-
+/** tagbox filter popup */
+.dx-tagbox-popup-wrapper {
+  .dx-popup-bottom {
+    &.dx-toolbar {
+      .dx-toolbar-center {
+        display: flex;
+        flex-direction: row-reverse;
+        align-items: center;
+      }
+    }
+  }
+}
 /** custom header filter */
 .dx-header-filter-menu {
   .dx-popup-bottom {

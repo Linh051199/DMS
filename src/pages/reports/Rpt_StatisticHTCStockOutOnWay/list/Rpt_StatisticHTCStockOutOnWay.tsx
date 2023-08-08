@@ -102,77 +102,103 @@ export const Rpt_StatisticHTCStockOutOnWay = () => {
   const fields = useMemo<Field[]>(() => {
     return [
       {
-        caption: t("TOTAL"),
-        dataField: "TOTAL",
-        area: "data",
-        showGrandTotals: true,
-        showTotals: true,
-        visible: true,
-        summaryType: "count",
-        isMeasure: true,
-      },
-      {
-        caption: t("TRANSPORTERNAME"),
-        dataField: "TRANSPORTERNAME",
+        dataField: "DEALERCODE",
         area: "row",
-        visible: true,
-        areaIndex: 0,
-      },
-      {
-        caption: t("SPECDESCRIPTION"),
-        dataField: "SPECDESCRIPTION",
-        area: "row",
-        visible: true,
-        areaIndex: 1,
-      },
-      {
-        label: {
-          text: t("CARID"),
-        },
-        dataField: "CARID",
-        area: "filter",
-        visible: true,
-
-        areaIndex: 2,
-      },
-      {
-        label: {
-          text: t("CCCOLORCODE"),
-        },
-        dataField: "CCCOLORCODE",
-        area: "filter",
-        visible: true,
-
-        areaIndex: 3,
-      },
-      {
-        label: {
-          text: t("COLOR_EN_COMBINED"),
-        },
-        dataField: "COLOR_EN_COMBINED",
-        area: "filter",
-        visible: true,
-
         areaIndex: 4,
       },
       {
-        label: {
-          text: t("COLOR_EN_COMBINED"),
-        },
-        dataField: "COLOR_EN_COMBINED",
+        dataField: "CARID",
         area: "filter",
-        visible: true,
-
+        areaIndex: 0,
+      },
+      {
+        dataField: "VIN",
+        area: "row",
+        areaIndex: 2,
+        expanded: false,
+      },
+      {
+        dataField: "LOAITHUNG",
+        area: "row",
+        areaIndex: 9,
+      },
+      {
+        dataField: "CDODSTORAGECODE",
+        area: "row",
         areaIndex: 5,
       },
       {
-        label: {
-          text: t("CTRTRANSPORTERCODE"),
-        },
+        dataField: "CDODDELIVERYSTARTDATE",
+        area: "row",
+        areaIndex: 7,
+      },
+      {
+        dataField: "CDODDELIVERYOUTDATE",
+        area: "row",
+        areaIndex: 6,
+      },
+      {
+        dataField: "CDODDELIVERYEXPECTEDDATE",
+        area: "row",
+        areaIndex: 8,
+      },
+      {
+        dataField: "TOTAL",
+        area: "data",
+        areaIndex: 0,
+        summaryType: "count",
+      },
+      {
+        dataField: "TRANSPORTERNAME",
+        area: "row",
+        areaIndex: 0,
+        expanded: false,
+      },
+      {
+        dataField: "SPECDESCRIPTION",
+        area: "row",
+        areaIndex: 1,
+        expanded: false,
+      },
+      {
+        dataField: "COLOR_VN_COMBINED",
+        area: "row",
+        areaIndex: 3,
+      },
+
+      {
+        dataField: "CCSOCODE",
+        area: "filter",
+        areaIndex: 6,
+      },
+
+      {
+        dataField: "CVCOLORCODE",
+        area: "filter",
+        areaIndex: 1,
+      },
+      {
+        dataField: "CVENGINENO",
+        area: "filter",
+        areaIndex: 5,
+      },
+
+      {
+        dataField: "DELIVERYORDERNO",
+        area: "filter",
+        areaIndex: 3,
+      },
+
+      {
         dataField: "CTRTRANSPORTERCODE",
         area: "filter",
-        visible: true,
-        areaIndex: 6,
+        areaIndex: 4,
+      },
+
+      {
+        dataField: "COLOR_EN_COMBINED",
+        area: "filter",
+        areaIndex: 2,
       },
     ];
   }, [t]);

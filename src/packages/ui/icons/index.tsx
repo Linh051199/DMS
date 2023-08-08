@@ -7,6 +7,9 @@ import { ReactComponent as PlusIcon } from './svg/plus-circle.svg'
 import { ReactComponent as SearchIcon } from './svg/search.svg'
 import { ReactComponent as DoneIcon } from './svg/done.svg'
 import { ReactComponent as MenuIcon } from './svg/menu.svg'
+import { ReactComponent as SettingIcon } from './svg/settings.svg'
+import { ReactComponent as CollapseLeftIcon } from './svg/collapse-left.svg'
+import { ReactComponent as ChevronRightIcon } from './svg/chevron-right.svg'
 
 export type Dict = {
   [key: string]: any;
@@ -19,7 +22,10 @@ const ICONS = {
   plus: PlusIcon,
   search: SearchIcon,
   done: DoneIcon,
-  menu: MenuIcon
+  menu: MenuIcon,
+  setting: SettingIcon,
+  collapseLeft: CollapseLeftIcon,
+  chevronRight: ChevronRightIcon,
 }
 export type IconName = keyof typeof ICONS;
 

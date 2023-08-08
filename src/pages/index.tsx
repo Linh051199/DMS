@@ -81,6 +81,8 @@ export * from "./reports/Rpt_DuKienDongTienTT_ChiTiet/list/Rpt_DuKienDongTienTT_
 export * from "./reports/Rpt_NhapXuatTonTrongKy/list/Rpt_NhapXuatTonTrongKy";
 export * from "./reports/Rpt_XuatHoSo/list/Rpt_XuatHoSo";
 export * from "./reports/Rpt_Master/list/Rpt_Master";
+export * from "./reports/Rpt_ProfileGuaranteeEffect/list/Rpt_ProfileGuaranteeEffect";
+export * from "./reports/Rpt_PivotRetailContract/list/Rpt_PivotRetailContract";
 export * from "./reports/Rpt_DlrContractInstock/list/Rpt_DlrContractInstock";
 export * from "./reports/Rpt_WOOrderAndSchedule01/list/Rpt_WOOrderAndSchedule01";
 export * from "./reports/Rpt_SMCertificate/list/Rpt_SMCertificate";
@@ -115,3 +117,4 @@ export * from "./reports/Rpt_StatisticHTCBackOrderSpecCode01Pivot/list/Rpt_Stati
 export * from "./sales/form-builder/form-builder";
 export * from "./sales/form-render/form-render";
 export * from "./sales/delivery-order";
+export * from "./sales/Sto_TranspReq";

@@ -8,8 +8,8 @@ export const Link = ({ label, onClick }: LinkProps) => {
     onClick();
   };
   return (
-    <a href="#" className="hover:underline" onClick={handleClick}>
+    <div className={"code-cell hover:underline hover:text-[#00703c] hover:cursor-pointer text-[#0E223D]"} onClick={handleClick}>
       {label}
-    </a>
+    </div>
   );
 };

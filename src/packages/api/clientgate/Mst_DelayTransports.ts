@@ -55,16 +55,14 @@ export const useMst_DelayTransports = (apiBase: AxiosInstance) => {
       keyword?: string
     ): Promise<ApiResponse<any>> => {
       if (keys.length > 0) {
+        const condition = keys.map((item: any) => {
+          return `${item.StorageCode}, ${item.DealerCode}`
+        }).join(";")
         return await apiBase.post<
           Partial<Mst_DelayTransports>,
           ApiResponse<string>
         >("/MstDelayTransports/ExportByListCode", {
-          ListStorageCode: keys
-            .map((item: Partial<Mst_DelayTransports>) => item.StorageCode)
-            .join(","),
-          ListDealerCode: keys
-            .map((item: Partial<Mst_DelayTransports>) => item.DealerCode)
-            .join(","),
+          ListStorageCodeAndDealerCode: condition
         });
       }
 

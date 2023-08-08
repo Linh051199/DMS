@@ -1,4 +1,9 @@
 .headerform__menuitems {
+  .dx-overlay-content {
+    top: 8px !important;
+    left: 4px !important;
+  transform: translate(-4px, 24px) !important;
+  }
   .dx-widget {
     box-shadow: none !important;
     border: none;
@@ -46,7 +51,22 @@
   align-items: center;
   justify-content: center;
 
-  &__menuitems {}
+  &__menu {
+    .showmore-button {
+      .dx-buttongroup {
+        &.dx-state-focused {
+          border: solid 1px #00703c;
+        }
+        .dx-button {
+          background: linear-gradient(to bottom, #fff, #EFEFEF);
+        }
+      }
+    }
+  }
+  &__menuitems {
+
+  }
+  
 
   &__title {
     margin: 10px;

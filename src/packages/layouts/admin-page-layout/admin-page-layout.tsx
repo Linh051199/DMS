@@ -96,19 +96,9 @@ export const AdminPageLayout = () => {
         onMenuReady={onMenuReady}
         items={sidebarItems}
       >
-        <Toolbar id={'navigation-header'}>
-          {
-            !isXSmall &&
-            <ToolbarItem
-              location={'before'}
-              cssClass={'menu-button'}
-            >
-              <Button stylingMode="text" onClick={toggleSidebar}>
-                <Icon name={'menu'} width={12} height={12}/>
-              </Button>
-            </ToolbarItem>
-          }
-        </Toolbar>
+        <div className={'dms-sidebar__toolbar'}>
+          <Icon className={'cursor-pointer'} name={'menu'} width={12} height={12} onClick={toggleSidebar}/>
+        </div>
       </Sidebar>
     );
   }, [sidebarItems, toggleSidebar]);

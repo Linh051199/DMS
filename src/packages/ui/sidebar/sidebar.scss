@@ -15,7 +15,7 @@
     background-color: #FFFFFF;
     flex: 1;
     .menu-list {
-      width: 235px;
+      width: 200px;
     }
 
     .dx-treeview {
@@ -25,8 +25,6 @@
 
       // ## Icon width customization
       .dx-treeview-item {
-        padding-left: 0;
-        padding-right: 0;
 
         .dx-icon {
           width: $side-panel-min-width !important;
@@ -40,10 +38,6 @@
       // ##
       
       // ## Arrow customization
-      .dx-treeview-node {
-        padding: 0 0 !important;
-      }
-
       .dx-treeview-toggle-item-visibility {
         right: 10px;
         left: auto;
@@ -60,12 +54,18 @@
         &[aria-level='1'] {
           font-weight: bold;
           border-bottom: 1px solid $base-border-color;
+          padding-left: 10px;
         }
   
         &[aria-level='2'] .dx-treeview-item-content {
           font-weight: normal;
           padding: 0 $side-panel-min-width;
           padding-left: 20px;
+        }
+      }
+      .dx-swatch-additional  {
+        .dx-treeview-node {
+          padding-left: 0;
         }
       }
       // ##

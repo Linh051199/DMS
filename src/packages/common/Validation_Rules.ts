@@ -32,7 +32,7 @@ export const requiredStringType = {
 
 export const requiredType = {
   type: "required",
-};
+} as ValidationRule;
 
 export const RequiredField = (message: string): ValidationRule => {
   return {
@@ -59,7 +59,7 @@ export const regexLonType = {
 export const ExcludeSpecialCharactersType = {
   type: "pattern",
   pattern: excludeSpecialCharacters,
-};
+} as ValidationRule;
 
 export const ExcludeSpecialCharactersAllowSpaceType = {
   type: "pattern",

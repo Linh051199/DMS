@@ -101,11 +101,17 @@ export const HeaderForm = ({
           showArrowIcon={false}
           keyExpr={"id"}
           className="menu-items"
+          hoverStateEnabled={false}
+          activeStateEnabled={false}
           displayExpr={"text"}
           wrapItemText={false}
           dropDownOptions={{
             width: 200,
             wrapperAttr: {
+              style: {
+                top: 2,
+                left: 2
+              },
               class: "headerform__menuitems",
             },
           }}

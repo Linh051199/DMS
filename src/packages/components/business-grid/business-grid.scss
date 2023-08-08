@@ -1,0 +1,28 @@
+.dms-business-grid {
+  background: #FFFFFF;
+  .dx-datagrid {
+    background: #FFFFFF !important;
+    .dx-datagrid-header-panel {
+      background: #FFFFFF !important;
+      .dx-toolbar {
+        background: #FFFFFF !important;
+      }
+    }
+    .dx-command-select {
+
+      background: #FFFFFF !important;
+    }
+  }
+  .dx-datagrid-headers {
+    background: #FFFFFF !important;
+    .dx-datagrid-nowrap {
+      background: #FFFFFF !important;
+      
+    }
+    .dx-row {
+      &.dx-header-row {
+        background: #FFFFFF !important;
+      }
+    }
+  }
+}

@@ -6,6 +6,10 @@ import ScrollView from "devextreme-react/scroll-view";
 import { ItemReorderedEvent } from "devextreme/ui/list";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { SelectedColumn } from "./selected-column";
+import {CheckBox} from "devextreme-react";
+import Toolbar from "devextreme-react/toolbar";
+import {compact, sortBy} from "lodash-es";
+import dxDataGrid from "devextreme/ui/data_grid";
 
 interface CustomColumnChooserProps {
   title: string;
@@ -21,6 +25,7 @@ interface CustomColumnChooserProps {
   onApply: (columns: any[]) => void;
   storeKey?: string;
   position?: "left" | "right";
+  gridInstance?: dxDataGrid
 }
 
 export default function CustomColumnChooser(props: CustomColumnChooserProps) {
@@ -36,28 +41,56 @@ export default function CustomColumnChooser(props: CustomColumnChooserProps) {
     cancelText,
     title,
     selectAllText,
-    position = "right",
+    gridInstance
   } = props;
   const { t } = useI18n("Common");
   const listRef = useRef<List>(null);
   const backUpColumns = useRef<ColumnOptions[]>(actualColumns);
   const onPopupHiding = useCallback(() => {
-    setSelectedItems(backUpColumns.current);
+    // setSelectedItems(backUpColumns.current);
     onHiding();
   }, [onHiding]);
 
   const [selectedItems, setSelectedItems] = useState<ColumnOptions[]>(
-    actualColumns.filter((c) => c.visible)
+    columns.filter((c) => c.visible)
   );
   useEffect(() => {
+    if(!gridInstance) {
+      return
+    }
     // selected columns are not the same as actual columns
-    setSelectedItems(actualColumns.filter((c) => c.visible));
-    backUpColumns.current = actualColumns;
-  }, [actualColumns]);
+    // setSelectedItems(actualColumns.filter((c) => c.visible));
+    const currentVisibleColumns = compact(columns.filter((c: ColumnOptions) => {
+      const isVisible = gridInstance.columnOption(c.dataField!, "visible");
+      if (isVisible) {
+        return c;
+      }
+      return undefined;
+    }))
+    //order columns
+    const orderedColumns = sortBy(currentVisibleColumns, (c: ColumnOptions) => {
+      const order = gridInstance.columnOption(c.dataField!, "visibleIndex");
+      if (order !== undefined) {
+        return order;
+      }
+      return undefined;
+    })
+    console.log("XXX: init columns:", orderedColumns)
+    setSelectedItems(orderedColumns);
+    backUpColumns.current = orderedColumns
+  }, [columns, gridInstance]);
 
   const onSelectionChanged = useCallback(
     (e: any) => {
       setSelectedItems(e.component.option("selectedItems"));
+      const selectedItems = e.component.option("selectedItems");
+      if (selectedItems.length === 0) {
+        setSelectAllValue(false)
+      } else if(selectedItems.length < availableColumns.length){
+        setSelectAllValue(undefined)
+      } else if (selectedItems.length === availableColumns.length) {
+        setSelectAllValue(true)
+      }
     },
     [setSelectedItems]
   );
@@ -65,10 +98,14 @@ export default function CustomColumnChooser(props: CustomColumnChooserProps) {
     return {
       text: applyText,
       stylingMode: "contained",
+      elementAttr: {
+        class: 'popup-button apply-button'
+      },
       onClick: () => {
-        const selectedItems =
+        const data =
           listRef.current?.instance?.option("selectedItems");
-        onApply(selectedItems!);
+        backUpColumns.current = data!;
+        onApply(data!);
       },
     };
   }, [listRef, columns, onApply]);
@@ -77,6 +114,9 @@ export default function CustomColumnChooser(props: CustomColumnChooserProps) {
     return {
       text: cancelText,
       stylingMode: "outlined",
+      elementAttr: {
+        class: 'popup-button cancel-button'
+      },
       onClick: () => {
         setSelectedItems(backUpColumns.current);
         onHiding();
@@ -98,11 +138,19 @@ export default function CustomColumnChooser(props: CustomColumnChooserProps) {
     const changes = [...selectedItems];
     changes.splice(changes.indexOf(item), 1);
     setSelectedItems(changes);
+    if (changes.length === 0) {
+      setSelectAllValue(false)
+    } else if(changes.length < availableColumns.length){
+      setSelectAllValue(undefined)
+    } else if (changes.length === availableColumns.length) {
+      setSelectAllValue(true)
+    }
   };
 
   const removeAllSelectedItem = () => {
     // I need remove all items from the selectedItems array
     setSelectedItems([]);
+    setSelectAllValue(false)
   };
   const availableColumns = useMemo(() => {
     return columns.map((c) => ({
@@ -110,24 +158,46 @@ export default function CustomColumnChooser(props: CustomColumnChooserProps) {
       visible: true,
     }));
   }, [columns]);
+  const handleSelectAllChanged = (e: any) => {
+    if(listRef.current) {
+      if(e.value === true) {
+        listRef.current.instance.selectAll()
+        setSelectAllValue(true)
+      } else if (e.value === false) {
+        listRef.current.instance.unselectAll()
+        setSelectAllValue(false)
+      }
+    }
+  }
+  const [selectAllValue, setSelectAllValue] = useState<any>(true)
+  const selectAllItemMemo = useMemo(()=>{
+    return (
+      <CheckBox
+        className={"column-toggle__selectAll"}
+        value={selectAllValue}
+        onValueChanged={handleSelectAllChanged} text={`${selectAllText} (${availableColumns.length})`} />
+    )
+  }, [selectAllValue, availableColumns, actualColumns])
   return (
     <Popup
       container={container}
       title={title}
       className={"column-chooser"}
       width={700}
-      height={450}
+      wrapperAttr={{
+        class: 'column-chooser'
+      }}
+      height={500}
       resizeEnabled={false}
-      shading={false}
       showCloseButton={true}
       dragEnabled={false}
       visible={visible}
       onHiding={onPopupHiding}
     >
       <Position
-        at={`${position} top`}
-        my={`${position} top`}
-        of={`${container} ${button}`}
+        at={'center'}
+        my={'center'}
+        of={`${container}`}
       />
       <div className={"w-full flex flex-row max-h-[400px]"}>
         <ScrollView className={"flex-1"} height={350} showScrollbar={"always"}>
@@ -138,8 +208,14 @@ export default function CustomColumnChooser(props: CustomColumnChooserProps) {
             keyExpr={"dataField"}
             searchEnabled={true}
             searchExpr={"dataField"}
-            selectionMode="all"
-            selectAllText={selectAllText}
+            searchEditorOptions={{
+              elementAttr: {
+                class: 'column-toggle__search'
+              }
+            }}
+            className={"column-toggle__source"}
+            selectionMode="multiple"
+            // selectAllText={selectAllText}
             showSelectionControls={true}
             selectedItems={selectedItems}
             selectedItemKeys={selectedItems.map((item) => item.dataField)}
@@ -147,8 +223,9 @@ export default function CustomColumnChooser(props: CustomColumnChooserProps) {
             pageLoadMode={"scrollBottom"}
           />
         </ScrollView>
-        <ScrollView className={"flex-1"} height={350} showScrollbar={"always"}>
-          <div className="px-4 py-2 flex  items-center justify-center">
+        <div className={"separator-horizontal"} />
+        <ScrollView className={"flex-1 column-toggle__dest"} height={350} showScrollbar={"always"}>
+          <div className="pl-4 pt-1 flex  items-center justify-center dest-summary">
             <div className="font-bold">
               {`${t("Selected")} (${
                 !!selectedItems ? selectedItems.length : 0
@@ -169,6 +246,7 @@ export default function CustomColumnChooser(props: CustomColumnChooserProps) {
               allowReordering: true,
               rtlEnabled: true,
             }}
+            className={''}
             pageLoadMode={"scrollBottom"}
             itemRender={(item: any) => {
               return (
@@ -184,15 +262,25 @@ export default function CustomColumnChooser(props: CustomColumnChooserProps) {
       </div>
 
       <ToolbarItem
+        location="before"
+        toolbar="bottom"
+      >
+        {selectAllItemMemo}
+        {/*<CheckBox */}
+        {/*  className={"column-toggle__selectAll"} */}
+        {/*  defaultValue={selectedItems.length === availableColumns.length}*/}
+        {/*  onValueChanged={handleSelectAllChanged} text={`${selectAllText} (${availableColumns.length})`} />*/}
+      </ToolbarItem>
+      <ToolbarItem
         widget="dxButton"
-        location="center"
+        location="after"
         toolbar="bottom"
         options={applyButtonOptions}
       />
 
       <ToolbarItem
         widget="dxButton"
-        location="center"
+        location="after"
         toolbar="bottom"
         options={cancelButtonOptions}
       />

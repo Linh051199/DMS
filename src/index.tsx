@@ -2,6 +2,7 @@ import './polyfills';
 import React, {Suspense} from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import './styles.scss';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ToastContainer } from "react-toastify";

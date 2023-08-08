@@ -4,7 +4,7 @@ import ScrollView from 'devextreme-react/scroll-view';
 import Toolbar, { Item } from 'devextreme-react/toolbar';
 import React, { useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router';
-import { SideNavigationMenu, Footer } from '../../components';
+import { SideNavigationMenu, Footer } from '@packages/components';
 import './side-nav-inner-toolbar.scss';
 import { useScreenSize } from '@/utils/media-query';
 import { Template } from 'devextreme-react/core/template';

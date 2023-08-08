@@ -1,3 +1,30 @@
 .select-field {
-  
+  .dx-selectbox {
+    .dx-selectbox-container {
+      .dx-texteditor-container {
+        border: 1px solid #5F7D95;
+        border-radius: 3px;
+        background: #FFFFFF;
+        height: 30px;
+        .dx-texteditor-input[role='combobox'] {
+          font-size: 14px;
+          padding-left: 10px;
+          color: #5F7D95;
+        }
+      }
+    }
+  }
+}
+.dx-root-simple-item {
+  .dms-form-field {
+    &.dx-field-item {
+      padding-bottom: 0;
+    }
+  }
+  .dx-field-item-label {
+    &.dx-field-item-label-location-top {
+      padding-bottom: 6px;
+    }
+  }
+  margin-bottom: 0;
 }

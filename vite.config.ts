@@ -1,7 +1,8 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import viteTsconfigPaths from "vite-tsconfig-paths";
-import svgrPlugin from "vite-plugin-svgr";
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import viteTsconfigPaths from 'vite-tsconfig-paths';
+import svgrPlugin from 'vite-plugin-svgr';
+import viteRewriteAll from "vite-plugin-rewrite-all";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -10,19 +11,18 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
-      treeshake: false,
-    },
+      treeshake: false
+    }
   },
   resolve: {
     alias: {
-      "devextreme/ui": "devextreme/esm/ui",
-    },
+      "devextreme/ui": 'devextreme/esm/ui'
+    }
   },
   plugins: [
-    react({
-      jsxRuntime: "classic",
-    }),
-    viteTsconfigPaths(),
-    svgrPlugin(),
-  ],
+    react(
+      {
+        jsxRuntime: 'classic'
+      }
+    ), viteTsconfigPaths(), svgrPlugin()],
 });

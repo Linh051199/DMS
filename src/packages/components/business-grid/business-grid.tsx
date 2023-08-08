@@ -5,24 +5,27 @@ import DataGrid, {
   Selection,
   Pager,
   Paging,
-  ColumnFixing, Scrolling
+  ColumnFixing, Scrolling, StateStoring
 } from "devextreme-react/data-grid";
-import {ColumnOptions, ToolbarItemProps} from "@/types";
-import {Button, LoadPanel} from "devextreme-react";
-import {Icon} from "@packages/ui/icons";
-import {useAtom} from "jotai";
-import {searchPanelVisibleAtom} from "@layouts/content-searchpanel-layout";
-import {ForwardedRef, forwardRef, useCallback, useEffect, useReducer, useRef} from "react";
-import {useI18n} from "@/i18n/useI18n";
-import {match, P} from "ts-pattern";
-import {PageSize} from "@packages/ui/page-size";
-import {PageNavigator} from "@packages/ui/page-navigator";
-import {nanoid} from "nanoid";
-import {PagerSummary} from "@packages/ui/pager-summary";
+import { ColumnOptions, ToolbarItemProps } from "@/types";
+import { Button, LoadPanel, Tooltip } from "devextreme-react";
+import { Icon } from "@packages/ui/icons";
+import { useAtom } from "jotai";
+import { searchPanelVisibleAtom } from "@layouts/content-searchpanel-layout";
+import { ForwardedRef, forwardRef, useCallback, useEffect, useReducer, useRef } from "react";
+import { useI18n } from "@/i18n/useI18n";
+import { match, P } from "ts-pattern";
+import { PageSize } from "@packages/ui/page-size";
+import { PageNavigator } from "@packages/ui/page-navigator";
+import { nanoid } from "nanoid";
+import { PagerSummary } from "@packages/ui/pager-summary";
 import CustomColumnChooser from "@packages/ui/column-toggler/custom-column-chooser";
-import {useVisibilityControl} from "@packages/hooks";
-import {useSavedState} from "@packages/ui/base-gridview/components";
-
+import { useVisibilityControl } from "@packages/hooks";
+import { useSavedState } from "@packages/ui/base-gridview/components";
+import "./business-grid.scss"
+import { useWindowSize } from "@packages/hooks/useWindowSize";
+import {differenceBy} from "lodash-es";
+import dxDataGrid from "devextreme/ui/data_grid";
 
 interface BusinessGridProps {
   columns: ColumnOptions[],
@@ -36,8 +39,9 @@ interface BusinessGridProps {
   onPageSizeChanged: (pageSize: number) => void;
   storeKey: string
   isLoading?: boolean;
+  onSelectionChanged?: (e: any) => void;
+  keyExpr?: string;
 }
-
 export const BusinessGrid = forwardRef((
   {
     columns, toolbarItems, data,
@@ -48,10 +52,12 @@ export const BusinessGrid = forwardRef((
     pageSize = 100,
     onPageSizeChanged,
     storeKey,
-    isLoading
+    isLoading,
+    keyExpr,
+    onSelectionChanged
   }: BusinessGridProps, ref: ForwardedRef<any>) => {
-  const {t} = useI18n("Common");
-  const datagridRef = useRef<DataGrid>(null);
+  const { t } = useI18n("Common");
+  const datagridRef = useRef<DataGrid | null>(null);
   const [searchPanelVisible, setSearchPanelVisible] = useAtom(searchPanelVisibleAtom);
   const summaryText = t("{0}-{1} in {2}")
 
@@ -102,54 +108,49 @@ export const BusinessGrid = forwardRef((
   }, []);
   const onApply = useCallback(
     (changes: any) => {
-      // we need check the order of column from changes set
-      const latest = [...changes];
-      realColumns.forEach((column: ColumnOptions) => {
-        const found = changes.find(
-          (c: ColumnOptions) => c.dataField === column.dataField
-        );
-        if (!found) {
-          column.visible = false;
-          latest.push(column);
-        }
-      });
-      setColumnsState(latest);
+      const shouldHideColumns = differenceBy<ColumnOptions, ColumnOptions>(columns, changes, "dataField");
+      for (let i = 0; i < shouldHideColumns.length; i++) {
+        const column = shouldHideColumns[i];
+        datagridRef.current?.instance.columnOption(column.dataField!, "visible", false)
+      }
+      // update column with new index
+      changes.forEach((column: ColumnOptions, index: number) => {
+        datagridRef.current?.instance.columnOption(column.dataField!, "visibleIndex", index + 1)
+        datagridRef.current?.instance.columnOption(column.dataField!, "visible", true)
+      })
+      saveState(changes);
       chooserVisible.close();
     },
-    [setColumnsState]
+    [columns, saveState, datagridRef]
   );
 
-  const onToolbarPreparing = useCallback((e: any) => {
-    e.toolbarOptions.items.push({
-      widget: "dxButton",
-      location: "after",
-      options: {
-        icon: "/images/icons/settings.svg",
-        elementAttr: {
-          id: "myColumnChooser",
-        },
-        onClick: () => chooserVisible.toggle(),
-      },
-    });
-  }, []);
-
+  const setRef = (r: DataGrid | null) => {
+    datagridRef.current = r;
+    ref && (typeof ref === "function" ? ref(r) : (ref.current = r));
+  }
   const chooserVisible = useVisibilityControl({ defaultVisible: false });
+  const windowSize = useWindowSize()
   return (
     <DataGrid
-      ref={ref}
+      ref={r => setRef(r)}
       dataSource={data}
       id="gridContainer"
       columnAutoWidth
-      showBorders
-      showRowLines
-      showColumnLines
-      onToolbarPreparing={onToolbarPreparing}
+      allowColumnResizing
+      hoverStateEnabled={true}
+      showRowLines={false}
+      showBorders={false}
+      className={"dms-business-grid"}
+      height={`${windowSize.height - 115}px`}
+      width={"100%"}
+      keyExpr={keyExpr}
+      onSelectionChanged={onSelectionChanged ? onSelectionChanged : () => { }}
     >
       <LoadPanel visible={isLoading} />
       <Scrolling showScrollbar={'always'} />
-      <ColumnFixing enabled={true}/>
-      <Paging enabled={true} defaultPageSize={pageSize}/>
-      <Pager visible={false}/>
+      <ColumnFixing enabled={true} />
+      <Paging enabled={true} defaultPageSize={pageSize} />
+      <Pager visible={false} />
       <Selection
         mode="multiple"
         showCheckBoxesMode="always"
@@ -160,7 +161,7 @@ export const BusinessGrid = forwardRef((
           <Button
             stylingMode={'text'}
             onClick={() => setSearchPanelVisible(true)}>
-            <Icon name={"search"}/>
+            <Icon name={"search"} />
           </Button>
         </ToolbarItem>
         {!!allToolbarItems &&
@@ -170,7 +171,7 @@ export const BusinessGrid = forwardRef((
                 {
                   match(item.render)
                     .with(P.nullish, () => null)
-                    .otherwise(() => item.render?.())
+                    .otherwise(() => item.render?.(ref))
                 }
               </ToolbarItem>
             );
@@ -202,33 +203,55 @@ export const BusinessGrid = forwardRef((
             pageCount={pageCount ?? 0}
           />
         </ToolbarItem>
+        <ToolbarItem location="after">
+          <div
+            id={"myColumnChooser"}
+            className={'search-form__settings cursor-pointer'}
+            onClick={() => chooserVisible.toggle()}
+          >
+            <Icon name={'setting'} width={14} height={14} />
+            <Tooltip
+              target="#myColumnChooser"
+              showEvent="dxhoverstart"
+              hideEvent="dxhoverend"
+              container={'#myColumnChooser'}
+            >
+              {/*&nbsp; is required to make it display at top level*/}
+              <div className={'z-[9999]'} style={{ zIndex: 9999 }}>{t("ColumnToggleTooltip")}</div>
+              &nbsp;
+            </Tooltip>
+          </div>
+        </ToolbarItem>
+
         <ToolbarItem location={"after"}>
           <CustomColumnChooser
             title={t("ToggleColumn")}
             applyText={t("Apply")}
             cancelText={t("Cancel")}
             selectAllText={t("SelectAll")}
-            container={".dx-viewport"}
+            container={"#root"}
             button={"#myColumnChooser"}
             visible={chooserVisible.visible}
             columns={columns}
             onHiding={onHiding}
             onApply={onApply}
-            actualColumns={realColumns}
+            actualColumns={columns}
+            gridInstance={datagridRef.current?.instance}
           />
         </ToolbarItem>
 
       </Toolbar>
 
       {realColumns.map((column: ColumnOptions) => {
-          return (
-            <Column
-              key={nanoid()}
-              {...column}
-            />
-          );
-        }
+        return (
+          <Column
+            key={nanoid()}
+            {...column}
+          />
+        );
+      }
       )}
+      <StateStoring enabled={!!storeKey} type={"localStorage"} storageKey={storeKey} />
     </DataGrid>
   );
 });

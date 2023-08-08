@@ -1,0 +1,144 @@
+.text-field {
+  .dx-texteditor-container {
+    border: 1px solid #5F7D95;
+    border-radius: 3px;
+    background: #FFFFFF;
+    height: 30px;
+
+    .dx-texteditor-input-container {
+      .dx-placeholder {
+        top: -4px;
+        font-size: 14px;
+        color: #5F7D95;
+
+        &:before {
+        }
+      }
+
+    }
+  }
+
+  .dx-texteditor {
+    &.dx-editor-filled {
+      background: #FFFFFF;
+
+      .dx-texteditor-container {
+        border: 1px solid #5F7D95;
+      }
+
+      &:after {
+        border: none;
+      }
+
+      &:before {
+        border: none;
+      }
+
+      &.dx-state-hover {
+        background: #FFFFFF;
+
+        .dx-texteditor-container {
+          border: 1px solid #5F7D95;
+        }
+      }
+
+      &.dx-state-readonly {
+        background: #F5F5F5 !important;
+      }
+
+      &.dx-state-focused {
+        &:not(:has(.dx-state-readonly)) {
+          .dx-texteditor-container {
+            border: 1px solid #00703c;
+          }
+        }
+      }
+    }
+  }
+}
+
+.dx-dropdowneditor {
+  &.dx-texteditor {
+    border: none;
+    content: none;
+    &.dx-state-focused {
+      &:before {
+        border: none;
+      }
+      &:after {
+        border: none;
+      }
+      &:not(:has(.dx-state-readonly)) {
+        .dx-texteditor-container {
+          border: 1px solid #00703c;
+        }
+      }
+    }
+  }
+  .dx-selectbox-container {
+    .dx-texteditor-container {
+      border: 1px solid #5F7D95;
+    } 
+  }
+  &:after {
+    border: none;
+  }
+
+  &:before {
+    border: none;
+  }
+}
+.dx-selectbox-container {
+  .dx-texteditor-container {
+    border: 1px solid #5F7D95;
+    &[readonly="true"] {
+      background: #F5F5F5;
+    }
+
+    &.dx-state-hover {
+      background: #FFFFFF;
+
+      .dx-texteditor-container {
+        border: 1px solid #5F7D95;
+      }
+    }
+
+    &.dx-state-readonly {
+      background: #F5F5F5 !important;
+    }
+
+    &.dx-state-focused {
+      &:not(:has(.dx-state-readonly)) {
+        .dx-texteditor-container {
+          border: 1px solid #00703c;
+        }
+      }
+    }
+
+
+    .dx-texteditor-input-container {
+      .dx-placeholder {
+        padding: 0;
+        font-size: 14px;
+        color: #5F7D95;
+
+        &:before {
+          padding-top: 6px !important;
+          padding-bottom: 8px !important;
+        }
+      }
+    }
+  }
+
+}
+.dx-texteditor{
+  &.dx-editor-outlined {
+    box-shadow: none !important;
+    &.dx-state-hover {
+      box-shadow: none !important;
+    }
+    &.dx-state-focused {
+      border: solid 1px #5F7D95;
+    }
+  }
+}

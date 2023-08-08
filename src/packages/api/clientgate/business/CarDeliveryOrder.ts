@@ -59,7 +59,21 @@ export const useCarDeliveryOrder = (apiBase: AxiosInstance) => {
           }
         })
     },
+    CarDeliveryOrder_PrintOrder: async (orderNo: string, isHQ: boolean) => {
+      return await apiBase.post<CarDeliveryOrderResponse, ApiResponse<string>>(
+        `/CarDeliveryOrder/Print${isHQ ? 'HQ' : 'DL'}ByDeliveryOrderNo`,
+        {
+          DeliveryOrderNo: orderNo
+        },
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          }
+        })
+    },
     CarDeliveryOrder_DeleteDetailHQ: async (order: CarDeliveryOrder, car: string) => {
+      console.log(75, order)
+      console.log(76, car)
       return await apiBase.post<CarDeliveryOrderResponse, ApiResponse<string>>(
         "/CarDeliveryOrder/DeleteDetailHQ",
         {
@@ -85,11 +99,11 @@ export const useCarDeliveryOrder = (apiBase: AxiosInstance) => {
             }))
           })
         },
-      {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        }
-      })
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          }
+        })
     },
     CarDeliveryOrder_ExportForHcareDL: async (param: Partial<SearchCarDeliveryOrderParam>) => {
       const searchParam = {
@@ -214,7 +228,7 @@ export const useCarDeliveryOrder = (apiBase: AxiosInstance) => {
       }
       delete searchParam.CreatedDateFromTo;
       return await apiBase.post<Partial<SearchCarDeliveryOrderParam>, ApiResponse<CarDeliveryOrder>>(
-        param.FlagDataWH ? "/CarDeliveryOrder/SearchWHHQ": "/CarDeliveryOrder/SearchHQ",
+        param.FlagDataWH ? "/CarDeliveryOrder/SearchWHHQ" : "/CarDeliveryOrder/SearchHQ",
         {
           ...searchParam
         },
@@ -238,7 +252,7 @@ export const useCarDeliveryOrder = (apiBase: AxiosInstance) => {
       }
       delete searchParam.CreatedDateFromTo;
       return await apiBase.post<Partial<SearchCarDeliveryOrderParam>, ApiResponse<CarDeliveryOrder>>(
-        param.FlagDataWH ? "/CarDeliveryOrder/SearchWHDL": "/CarDeliveryOrder/SearchDL",
+        param.FlagDataWH ? "/CarDeliveryOrder/SearchWHDL" : "/CarDeliveryOrder/SearchDL",
         {
           ...searchParam
         },
@@ -254,21 +268,43 @@ export const useCarDeliveryOrder = (apiBase: AxiosInstance) => {
     ): Promise<ApiResponse<CarDeliveryOrderResponse>> => {
       return await apiBase.post<string, ApiResponse<CarDeliveryOrderResponse>>(
         "/CarDeliveryOrder/GetHQByDeliveryOrderNo",
-        {DeliveryOrderNo}
-      ); 
+        { DeliveryOrderNo }
+      );
     },
     CarDeliveryOrder_GetDLByDeliveryOrderNo: async (
       DeliveryOrderNo: string
     ): Promise<ApiResponse<CarDeliveryOrderResponse>> => {
       return await apiBase.post<string, ApiResponse<CarDeliveryOrderResponse>>(
         "/CarDeliveryOrder/GetDLByDeliveryOrderNo",
-        {DeliveryOrderNo}
+        { DeliveryOrderNo }
       );
     },
     CarDeliveryOrder_GetSeqForCarDeliveryOrder: async () => {
       return await apiBase.post<string, ApiResponse<string>>(
         "/CarDeliveryOrder/GetSeqForCarDeliveryOrder"
       );
-    }
+    },
+    // Yêu cầu vận tải
+    CarTranspReq_CreateHQ: async (order: any, selectedCars: any[]): Promise<ApiResponse<CarDeliveryOrderResponse>> => {
+      const data = {
+
+      }
+      return await apiBase.post<any, ApiResponse<CarDeliveryOrderResponse>>(
+        "/CarDeliveryOrder/CreateHQ",
+        {
+          strJson: JSON.stringify(data)
+        },
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          }
+        }
+      );
+    },
+
+    // End yêu cầu vận tải
   };
+
+
+
 };
